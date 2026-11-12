@@ -575,5 +575,68 @@
     "filename": "med_licensed_transporters_gid359172124.csv",
     "format": "csv",
     "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "il-dispensary-locations",
+    "state": "illinois",
+    "part5_ref": "IL 5 \u2014 Dispensary Locations map (the Tableau view behind it on public.data.illinois.gov)",
+    "url": "https://public.data.illinois.gov/t/Public/views/DispensaryMap/Map.csv",
+    "filename": "il_dispensary_locations_2026-11-10.csv",
+    "format": "csv",
+    "note": "The page says 'Dispensaries updated as of 11/10/2026'. Illinois publishes no dispensary file: the page embeds a Tableau view on public.data.illinois.gov, and this is that view's CSV export. Carries name, street, city, BLS region, coordinates and whether the store serves medical patients \u2014 but NO licence number, licence status or county. Note the CSV repeats the 'Dispensary Name' column twice."
+  },
+  {
+    "id": "fl-hemp-cultivation-licences",
+    "state": "florida",
+    "part5_ref": "FL 5 \u2014 FDACS Current List of Hemp Cultivation Licenses",
+    "url": "https://www.fdacs.gov/content/download/92628/file/active-hemp-cultivation-licenses-09102026.pdf",
+    "filename": "fdacs_active_hemp_cultivation_licences_2026-09-10.pdf",
+    "format": "pdf",
+    "note": "FDACS active hemp cultivation licences, dated 10 Sept 2026. Florida's MEDICAL marijuana licensees (MMTCs) are published by OMMU on knowthefactsmmj.com as per-MMTC web pages, not as a list file."
+  },
+  {
+    "id": "fl-approved-thc-labs",
+    "state": "florida",
+    "part5_ref": "FL 5 \u2014 FDACS List of Approved Designated Laboratories for THC Testing",
+    "url": "https://www.fdacs.gov/content/download/92484/file/approved-designated-labs-09092026.pdf",
+    "filename": "fdacs_approved_thc_labs_2026-09-09.pdf",
+    "format": "pdf",
+    "note": "Approved designated laboratories for THC testing, dated 9 Sept 2026."
+  },
+  {
+    "id": "hi-hemp-registry",
+    "state": "hawaii",
+    "part5_ref": "HI 5 \u2014 DOH Hemp Processor Registry public list",
+    "url": "https://health.hawaii.gov/hempprogram/files/2026/10/MHP-REGISTRY-LIST-PUBLIC_2026_1026.pdf",
+    "filename": "hi_hemp_registry_public_2026-10.pdf",
+    "format": "pdf",
+    "note": "Hawaii DOH hemp processor registry, public list, Oct 2026. Hawaii's medical dispensary licences are a separate DOH programme."
+  },
+  {
+    "id": "va-hemp-approved-labs",
+    "state": "virginia",
+    "part5_ref": "VA 5 \u2014 VDACS approved hemp testing laboratories",
+    "url": "https://www.vdacs.virginia.gov/pdf/hemp-approved-test-labs.pdf",
+    "filename": "vdacs_hemp_approved_test_labs.pdf",
+    "format": "pdf",
+    "note": "VDACS-approved hemp testing laboratories."
+  },
+  {
+    "id": "va-hemp-processors",
+    "state": "virginia",
+    "part5_ref": "VA 5 \u2014 VDACS registered industrial hemp processors under inspection",
+    "url": "https://www.vdacs.virginia.gov/pdf/food-safety-industrial-hemp-processors.pdf",
+    "filename": "vdacs_industrial_hemp_processors.pdf",
+    "format": "pdf",
+    "note": "Registered industrial hemp processors under VDACS food-safety inspection."
+  },
+  {
+    "id": "pa-doh-dispensaries-current",
+    "state": "pennsylvania",
+    "part5_ref": "PA 5 \u2014 DOH 'Medical Marijuana Dispensaries in Pennsylvania with Product' (the PDF itself, now parsed)",
+    "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/health/documents/topics/documents/programs/medical-marijuana/Medical%20Marijuana%20Dispensaries%20in%20Pennsylvania%20with%20Product.pdf",
+    "filename": "pa_doh_dispensaries_with_product_current.pdf",
+    "format": "pdf",
+    "note": "Product availability as of 10 Nov 2026 \u2014 far more current than the PASDA layer's Jan 2025 vintage. Gives dispensary name, address, city, zip, phone, website, the date medical marijuana became available and the date the store opened. KNOWN TYPOS: 'Bulter' for Butler. This supersedes PASDA as Pennsylvania's dispensary source."
   }
 ]

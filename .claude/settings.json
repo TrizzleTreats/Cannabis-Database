@@ -626,6 +626,7 @@
       "WebFetch(domain:pub.njleg.state.nj.us)",
       "WebFetch(domain:public-inspection.federalregister.gov)",
       "WebFetch(domain:public.courts.in.gov)",
+      "WebFetch(domain:public.data.illinois.gov)",
       "WebFetch(domain:public2.waterboards.ca.gov)",
       "WebFetch(domain:publications.tnsosfiles.com)",
       "WebFetch(domain:qa.udo.raleighnc.gov)",

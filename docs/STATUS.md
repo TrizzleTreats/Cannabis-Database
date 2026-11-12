@@ -30,28 +30,37 @@ These are findings from the official sources themselves, not re-readings of the 
 
 ## Regions 3-9: what each of the 39 jurisdictions actually publishes
 
-Built so far — 7 states, and they are the large markets:
+Built so far — 10 of 39, and they include the large markets:
 
 | State | Rows | Source | What it gives |
 |---|---|---|---|
-| CA | 20,984 | DCC Cannabis Unified License Search API | The whole licence universe across 7 statuses, with county, owner names, coordinates, licensing authority and the Adult-Use/Medicinal designation |
-| TX | 12,853 | DSHS consumable-hemp and retail-hemp lists | Hemp licences with county; Texas licenses no adult-use or broad medical cannabis |
-| OR | 3,701 | OLCC Socrata dataset q32u-cmam | County, tier, canopy type and endorsements on every row |
-| CO | 1,832 | MED's nine public Google Sheets | Medical AND retail across all nine categories; no county published |
-| WA | 1,226 | LCB Frequently Requested Lists | Retail only, with county. Producers and processors are not in it |
-| NV | 345 | CCB Cannabis Establishment List | Type, status and county; no premises address |
-| AL | 85 | ABC Board consumable hemp list | Hemp retail only; medical (AMCC) licences are litigation-delayed |
+| CA | 20,984 | DCC Cannabis Unified License Search API | Whole universe, 7 statuses, county, owners, coordinates, Adult-Use/Medicinal designation |
+| TX | 12,853 | DSHS consumable-hemp and retail-hemp lists | Hemp licences with county; Texas licenses no adult-use or broad medical |
+| OR | 3,701 | OLCC Socrata dataset q32u-cmam | County, tier, canopy type, endorsements |
+| CO | 1,832 | MED's nine public Google Sheets, all 18 tabs | Medical AND retail across every category; no county published |
+| WA | 1,226 | LCB Frequently Requested Lists | Retail only, with county; producers and processors not included |
+| NV | 345 | CCB Cannabis Establishment List | Type, status, county; no premises address |
+| IL | 463 | Tableau view behind the Dispensary Locations map | 289 dispensaries with coordinates; no licence number, status or county |
+| FL | 289 | FDACS hemp cultivation licence list (PDF) | Licence number, issue date, responsible person, county on the 2025 records |
+| VA | 26 | VDACS hemp processors and approved labs (PDFs) | Firm, address, county |
+| AL | 85 | ABC Board consumable hemp list | Hemp retail only; medical (AMCC) is litigation-delayed |
 
-### Why the other 32 are not built yet
+Pennsylvania also improved: its dispensary source is now the DOH PDF (197 rows, product availability as of 10 Nov 2026) instead of the PASDA layer's 181 rows from Jan 2025. PASDA stays in data/raw/ for its coordinates.
+
+### Why the other 29 are not built yet
 
 The audited reports cite landing pages, not files. Across all 39 reports only **9** machine-readable URLs appear, against **117 xlsx** and **2,219 PDFs** one hop deeper (scripts/discover_sources.py, logged in data/raw/discovered_sources.csv). A second hop was then run against the nine biggest remaining states — Michigan, Illinois, Ohio, Oklahoma, Arizona, Florida, Missouri, Minnesota and Colorado — and only Colorado yielded a licensee list. Michigan's hits were inspection checklists; Missouri's and Oklahoma's were product-recall lists. So for those eight there is **no downloadable licensee list reachable from the pages the reports cite**, and their data lives in interactive search portals, PDFs, or behind bot checks.
 
 Two concrete blockers now stand in the way, and both have a known fix:
 
-1. **No PDF text extraction.** pypdf, pdfplumber, PyMuPDF and pdfminer are all absent, and 2,219 of the discovered files are PDFs. Page counts and titles come from Spotlight metadata; no PDF's *contents* have been read in this build. Installing one PDF library unlocks a large share of the remaining states.
+1. ~~No PDF text extraction.~~ **Resolved.** pypdf 7.0.1, openpyxl 3.1.5 and xlrd 2.0.2 are now installed. That immediately yielded Pennsylvania's current dispensary list, Florida's hemp licences and Virginia's processors and labs.
 2. **Portals and bot checks need the browser pane.** Colorado proved the route: sbg.colorado.gov and med.colorado.gov both return a Cloudflare interstitial to any scripted client, and the nine sheet links were only readable through the browser pane. The same approach should work for Michigan's CRA search, Illinois' IDFPR lists, Oklahoma's OMMA search, Arizona's ADHS list, Florida's OMMU pages, Missouri's DCR search and Minnesota's OCM list.
 
-The remaining 24 states (AK, AR, GA, HI, ID, IN, IA, KS, KY, LA, MS, MT, NE, NM, NC, ND, SC, SD, TN, UT, VA, WV, WI, WY) have not been probed state by state through the browser pane yet. Most are small or medical-only programmes; several (ID, KS, NE, WY) license no cannabis at all beyond hemp, so their licence universe is hemp registrations.
+Hawaii's hemp registry PDF is captured in data/raw/ but not yet parsed into a spec — its first pages are prohibition notices and the table needs more structure work.
+
+**Michigan is a special case worth recording.** Its CRA publishes monthly "Licensing Reports" as files named .doc that are actually RTF produced by Crystal Reports, and they parse cleanly. But they are *activity* reports — prequalifications, approvals and denials for that month, with name, licence id, address, date and determination — not a roster of current licensees. Building a Michigan roster from them would mean accumulating every month since 2019 and replaying the state changes, which is a different job from reading a list.
+
+The remaining 22 states (AK, AR, GA, ID, IN, IA, KS, KY, LA, MS, MT, NE, NM, NC, ND, SC, SD, TN, UT, WV, WI, WY) have not been probed state by state through the browser pane yet. Most are small or medical-only programmes; several (ID, KS, NE, WY) license no cannabis at all beyond hemp, so their licence universe is hemp registrations.
 
 ### What the build corrected or found in regions 3-9
 
@@ -62,6 +71,9 @@ The remaining 24 states (AK, AR, GA, HI, ID, IN, IA, KS, KY, LA, MS, MT, NE, NM,
 - **CA**: the DCC returns the literal string "Data Not Available" for both names on 5 licences and "Not Published" for some premises. An earlier pass wrote "Data Not Available" into the town column; those are now blank and flagged.
 - **CA**: the provisional-licence programme has wound down — 5,333 provisional licences are Expired and only 9 are both Active and provisional-term.
 - **TX**: one hemp registration covers many outlets (a chain registers once and lists each store), so 12,217 source rows are 9,695 licences.
+- **PA**: the DOH dispensary PDF carries the same King of Prussia ZIP of 19706 that the audit flagged in PASDA — so it is DOH's own error, not a PASDA transcription slip. Its two sibling King of Prussia rows carry 19406, and 19706 is a Delaware ZIP. Recorded as published and flagged, not rewritten.
+- **FL**: FDACS leaves the county column blank on its 2026 records while populating it on the 2025 ones — 174 of 289 rows have no county.
+- **IL**: the Tableau export repeats the "Dispensary Name" column twice and mixes 'Yes' with 'yes' in the medical-patients flag.
 - **Schema gaps surfaced by real data.** HANDOFF's 14 standard licence types have no entry for California's "Event Organizer" (193 rows) or Colorado's "Operator" (8). Its 7 standard statuses have no entry for California's "Canceled" (1,622) or "Limited Operations" (156), or OLCC's "Inactive" (796). Those rows carry the nearest standard value plus `standard_status_approximate=yes` in extra_details, so an approximation is never mistaken for the regulator's own word. **These need a schema decision.**
 
 ## Mid-Atlantic counts: what this table says vs what the reports say

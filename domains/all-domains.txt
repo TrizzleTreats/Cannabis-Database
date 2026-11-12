@@ -620,6 +620,7 @@ pub.njleg.gov
 pub.njleg.state.nj.us
 public-inspection.federalregister.gov
 public.courts.in.gov
+public.data.illinois.gov
 public2.waterboards.ca.gov
 publications.tnsosfiles.com
 qa.udo.raleighnc.gov

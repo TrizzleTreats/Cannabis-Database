@@ -25,6 +25,7 @@ TODAY = "2026-11-12"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 STANDARD = {"Active", "Provisional", "Pending", "Suspended", "Expired", "Surrendered", "Revoked"}
+LOCAL_ID = "licence_id assigned locally — the regulator publishes no licence number in this source"
 
 
 def iso(d):
@@ -550,8 +551,167 @@ def build_co(blank, warn):
     return rows
 
 
-BUILDERS = {"CA": build_ca, "OR": build_or, "WA": build_wa,
-            "NV": build_nv, "TX": build_tx, "AL": build_al, "CO": build_co}
+# ========================================================================= FLORIDA
+def build_fl(blank, warn):
+    """FDACS hemp cultivation licences. Florida's MEDICAL marijuana licensees
+    (MMTCs) are published by OMMU as per-MMTC web pages, not as a list file, so
+    they are not in this table yet."""
+    from pypdf import PdfReader
+    reader = PdfReader(RAW / "florida/fdacs_active_hemp_cultivation_licences_2026-09-10.pdf")
+    text = "\n".join(pg.extract_text() or "" for pg in reader.pages)
+    text = re.sub(r"[\u00a0\u2000-\u200b\u202f\u205f\u3000]", " ", text)
+    row_re = re.compile(r"^(\d+_\d+)\s+(\d{1,2}/\d{1,2}/\d{4})\s+(.+?)\s+"
+                        r"(\d+[\w\-]*\s+.+?)\s+([A-Z][A-Z .'\-]*?)\s+(\d{5}(?:-\d{4})?)\s+"
+                        r"FLORIDA\s*([A-Z][A-Z .'\-]*)?$")
+    rows, unparsed = [], 0
+    for line in (re.sub(r"[ \t]+", " ", l).strip() for l in text.splitlines()):
+        m = row_re.match(line)
+        if not m:
+            if re.match(r"^\d+_\d+\s", line):
+                unparsed += 1
+            continue
+        num, issued, rest, street, city, zipc, county = m.groups()
+        county = (county or "").strip()   # FDACS leaves county blank on its 2026 records
+        # `rest` is "<responsible person> <business name>"; FDACS writes the
+        # person in caps and the business name mixed-case, so split on the
+        # first token that is not all-caps.
+        toks = rest.split()
+        cut = next((i for i, w in enumerate(toks) if w != w.upper()), len(toks))
+        person, business = " ".join(toks[:cut]).strip(), " ".join(toks[cut:]).strip()
+        row = dict(blank)
+        row.update({
+            "licence_id": num, "state": "FL", "program": "Hemp", "category": "Hemp Grower",
+            "licence_type": "Hemp Cultivation Licence",
+            "legal_name": business or person, "holder_is_individual": "Y" if not business else "N",
+            "status": "Active (FDACS publishes active licences only)", "standard_status": "Active",
+            "issue_date": iso(issued),
+            "street_address": ", ".join(x for x in (street, title(city), "FL", zipc) if x),
+            "town": title(city), "town_as_listed": city,
+            "county": title(county), "county_source": "FDACS COUNTY column" if county else "",
+            "location_basis": "Licensed premises",
+            "owners": person, "owner_count": "1" if person else "",
+            "source": "FL FDACS Current List of Hemp Cultivation Licenses (10 Sept 2026)",
+            "source_url": "https://www.fdacs.gov/Divisions-Offices/Plant-Industry/Hemp-Program",
+            "data_as_of": "2026-09-10",
+            "extra_details": "note=Florida's medical marijuana treatment centres (MMTCs) are published by "
+                             "OMMU as individual web pages rather than a list, so they are not in this "
+                             "table yet. FDACS names a Primary Responsible Person per licence; that is "
+                             "kept in `owners`.",
+        })
+        rows.append(row)
+    if unparsed:
+        print(f"  FL: {unparsed} licence-number-leading lines did not match the row pattern")
+        warn.append(("FL rows unparsed", str(unparsed)))
+    return rows
+
+
+# ======================================================================== VIRGINIA
+def build_va(blank, warn):
+    from pypdf import PdfReader
+    rows = []
+    # Registered industrial hemp processors under food-safety inspection
+    txt = "\n".join(pg.extract_text() or "" for pg in
+                    PdfReader(RAW / "virginia/vdacs_industrial_hemp_processors.pdf").pages)
+    txt = re.sub(r"[\u00a0\u2000-\u200b\u202f\u205f\u3000]", " ", txt)
+    proc = re.compile(r"^(.+?)\s+(\d+[\w\-]*\s+.+?)\s+([A-Za-z .'\-]+?)\s+VA\s+(\d{5})\s+(.+)$")
+    for line in (re.sub(r"[ \t]+", " ", l).strip() for l in txt.splitlines()):
+        m = proc.match(line)
+        if not m:
+            continue
+        who, street, city, zipc, county = m.groups()
+        # VDACS writes "Surname, Forename" then the firm name with no separator.
+        mm = re.match(r"^([A-Z][a-z]+,\s*[A-Z][a-z]+)(.*)$", who)
+        person, firm = (mm.group(1).strip(), mm.group(2).strip()) if mm else ("", who.strip())
+        row = dict(blank)
+        row.update({
+            "licence_id": f"VA-HEMP-PROC-{len(rows) + 1:03d}", "state": "VA", "program": "Hemp",
+            "category": "Hemp Processor", "licence_type": "Registered Industrial Hemp Processor",
+            "legal_name": firm or person, "holder_is_individual": "N" if firm else "Y",
+            "status": "Under VDACS food-safety inspection", "standard_status": "Active",
+            "street_address": ", ".join(x for x in (street, title(city), "VA", zipc) if x),
+            "town": title(city), "town_as_listed": city,
+            "county": title(county), "county_source": "VDACS County column",
+            "location_basis": "Licensed premises", "owners": person, "owner_count": "1" if person else "",
+            "source": "VA VDACS Industrial Hemp Processors Under Food Safety Inspection (8 Oct 2026)",
+            "source_url": "https://www.vdacs.virginia.gov/food-industrial-hemp.shtml",
+            "data_as_of": "2026-10-08",
+            "extra_details": f"{LOCAL_ID}; note=Virginia licenses no adult-use cannabis retail; its "
+                             "pharmaceutical processors are a separate Board of Pharmacy programme not "
+                             "in this table yet",
+        })
+        rows.append(row)
+    # Approved hemp testing laboratories
+    txt2 = "\n".join(pg.extract_text() or "" for pg in
+                     PdfReader(RAW / "virginia/vdacs_hemp_approved_test_labs.pdf").pages)
+    lab = re.compile(r"^(.+?)\s+(www\.[\w\.\-]+)\s+([\d\-\(\) ]{7,})$")
+    for line in (re.sub(r"[ \t]+", " ", l).strip() for l in txt2.splitlines()):
+        m = lab.match(line)
+        if not m:
+            continue
+        name, site, phone = m.groups()
+        row = dict(blank)
+        row.update({
+            "licence_id": f"VA-HEMP-LAB-{len(rows) + 1:03d}", "state": "VA", "program": "Hemp",
+            "category": "Testing Lab", "licence_type": "VDACS-Approved Hemp Testing Laboratory",
+            "legal_name": name.strip(), "holder_is_individual": "N",
+            "status": "Approved", "standard_status": "Active",
+            "location_basis": "No premises address published",
+            "website": f"https://{site}", "contact_phone": phone.strip(), "contact_is_law_firm": "N",
+            "source": "VA VDACS approved hemp testing laboratories",
+            "source_url": "https://www.vdacs.virginia.gov/pdf/hemp-approved-test-labs.pdf",
+            "data_as_of": TODAY,
+            "extra_details": f"{LOCAL_ID}; note=VDACS publishes only lab name, website and phone",
+        })
+        rows.append(row)
+    return rows
+
+
+# ======================================================================== ILLINOIS
+def build_il(blank, warn):
+    """Illinois publishes no dispensary file — the page embeds a Tableau view,
+    and this is that view's CSV export. IDOA's cultivation centres, craft
+    growers, infusers and transporters are behind a separate portal that
+    publishes only aggregate counts, so they are not in this table yet."""
+    rows = []
+    with open(RAW / "illinois/il_dispensary_locations_2026-11-10.csv", encoding="utf-8-sig") as f:
+        for i, r in enumerate(csv.DictReader(f), 1):
+            name = clean(r.get("Dispensary Name"))
+            if not name:
+                continue
+            med = clean(r.get("Serves Medical Patients")).lower()   # the source mixes 'Yes' and 'yes'
+            row = dict(blank)
+            row.update({
+                "licence_id": f"IL-DISP-{i:04d}", "state": "IL",
+                "program": "Adult Use; Medical" if med == "yes" else "Adult Use",
+                "category": "Retail Store", "licence_type": "Dispensary",
+                "legal_name": name, "holder_is_individual": "N",
+                "status": "Listed as an operating dispensary (no status column published)",
+                "standard_status": "Active",
+                "street_address": ", ".join(x for x in (clean(r.get("Street Address")),
+                                                        title(r.get("City")), "IL") if x),
+                "town": title(r.get("City")), "town_as_listed": clean(r.get("City")),
+                "location_basis": "Licensed premises",
+                "source": f"IL Dispensary Locations, Tableau view on public.data.illinois.gov — {LOCAL_ID}",
+                "source_url": "https://cannabis.illinois.gov/about/locations.html",
+                "data_as_of": "2026-11-10",
+                "extra_details": "; ".join(x for x in (
+                    f"bls region={clean(r.get('BLS Region'))}" if clean(r.get("BLS Region")) else "",
+                    f"latitude={clean(r.get('Latitude'))}" if clean(r.get("Latitude")) else "",
+                    f"longitude={clean(r.get('Longitude'))}" if clean(r.get("Longitude")) else "",
+                    f"serves medical patients={clean(r.get('Serves Medical Patients'))}",
+                    "note=no licence number, status or county is published; the source gives a BLS "
+                    "region rather than a county, and repeats the dispensary-name column twice. "
+                    "Cultivation centres, craft growers, infusers and transporters are not in this file") if x),
+            })
+            rows.append(row)
+    return rows
+
+
+BUILDERS = {"CA": build_ca, "OR": build_or, "WA": build_wa, "NV": build_nv,
+            "TX": build_tx, "AL": build_al, "CO": build_co, "FL": build_fl,
+            "VA": build_va, "IL": build_il}
+
+
 
 
 

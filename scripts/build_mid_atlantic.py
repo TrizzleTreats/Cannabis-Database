@@ -56,9 +56,12 @@ def mdy(d):
         d = d.split("T")[0]
     if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d):
         return d
-    m = re.fullmatch(r"(\d{1,2})/(\d{1,2})/(\d{4})", d)
+    m = re.fullmatch(r"(\d{1,2})/(\d{1,2})/(\d{2}|\d{4})", d)
     if m:
-        return f"{m.group(3)}-{m.group(1).zfill(2)}-{m.group(2).zfill(2)}"
+        y = m.group(3)
+        if len(y) == 2:                     # the DOH list writes 2/15/18
+            y = ("20" if int(y) < 70 else "19") + y
+        return f"{y}-{m.group(1).zfill(2)}-{m.group(2).zfill(2)}"
     if re.fullmatch(r"\d{13}", d):          # epoch milliseconds (ArcGIS)
         from datetime import datetime, timezone
         return datetime.fromtimestamp(int(d) / 1000, timezone.utc).strftime("%Y-%m-%d")
@@ -239,52 +242,109 @@ def build_dc(blank, unmapped):
 
 # -------------------------------------------------------------- Pennsylvania
 PA_TOWN_FIX = {"Bulter": "Butler"}   # audit-documented typo; original kept in town_as_listed
-PA_SRC = ("PA DOH Medical Marijuana Dispensaries, republished by PASDA (Penn State) dataset 920"
-          f" — {LOCAL_ID}")
+PA_SRC = ("PA DOH, Medical Marijuana Dispensaries in Pennsylvania with Product "
+          f"(product availability as of 10 Nov 2026) — {LOCAL_ID}")
+PA_URL = "https://www.pa.gov/agencies/health/programs/medical-marijuana/dispensaries"
+# Each row: <available from> <open on> <product Y/N> <name + street + city> Pennsylvania <zip> <phone> [website]
+PA_ROW = re.compile(r"^(\d{1,2}/\d{1,2}/\d{2,4})\s+(\d{1,2}/\d{1,2}/\d{2,4})\s+(Yes|No)\s+"
+                    r"(.+?)\s+Pennsylvania\s+(\d{5}[\d\-]*)\s+([\d\-\(\)\. ]{7,})\s*(\S*)$")
+PA_SUFFIX = (r"(?:Ave|Avenue|Rd|Road|Blvd|Boulevard|Hwy|Highway|Pike|Pkwy|Parkway|St|Street|Dr|Drive|"
+             r"Ln|Lane|Ct|Court|Pl|Place|Terrace|Ter|Way|Cir|Circle|Loop|Trail|Trl|Sq|Square|Row|Run|"
+             r"Mall|Plaza|Commons|Crossing|Centre|Center|Ext|Extension|Turnpike|Tpke|Bypass)")
+PA_UNIT = r"(?:Suite|Ste|Unit|Apt|Bldg|Floor|Fl|Rm|#)\.?\s*[\w\-]+"
+
+
+def pa_split(blob):
+    """'Sunnyside - Butler County 201 Pillow Street Bulter' ->
+       (name, street, city). The street starts at the first number-led token;
+       the city follows the last street suffix or unit. Some rows run the name
+       and street together with no space ('...Plymouth Meeting420 Plymouth Rd'),
+       and some streets have no suffix at all ('20269 Route 19'), so the city
+       falls back to the trailing part of the dispensary's own name, which DOH
+       writes as 'Brand - City'."""
+    blob = re.sub(r"([A-Za-z])(\d{2,})", r"\1 \2", blob)   # re-space a run-together row
+    m = re.search(r"(?:^|\s)(\d+[\w\-]*\s)", blob)
+    if not m:
+        return blob.strip(), "", ""
+    name = blob[:m.start()].strip()
+    rest = blob[m.start():].strip()
+    cut = None
+    for mm in re.finditer(rf"\b{PA_SUFFIX}\.?\b|{PA_UNIT}", rest, re.I):
+        if rest[mm.end():].strip(" ,."):
+            cut = mm.end()
+    if cut is not None:
+        street, city = rest[:cut].strip(" ,"), rest[cut:].strip(" ,.")
+        # A bare unit designator can sit between the suffix and the city
+        # ('...High Street A Pottstown'); keep it with the street.
+        mu = re.match(r"^((?:Ste\.?|Suite|Unit|#)?\s*[A-Z0-9][A-Z0-9\-]{0,3})\s+(?=[A-Z][a-z])", city)
+        if mu:
+            street, city = f"{street} {mu.group(1)}".strip(), city[mu.end():].strip()
+        return name, street, city
+    # No street suffix: take the city from the name's own ' - City' tail and
+    # strip that city off the end of the address blob.
+    tail = name.rsplit(" - ", 1)[-1].strip() if " - " in name else ""
+    if tail and rest.endswith(tail):
+        return name, rest[: -len(tail)].strip(" ,"), tail
+    return name, rest, tail
 
 
 def build_pa(blank):
-    rows = []
-    b = (RAW / "pennsylvania/pasda_DOH_MedicalMarijuanaDispensaries202501.csv").read_bytes()
-    src = list(csv.DictReader(b.decode("cp1252").splitlines()))
-    zips = collections.Counter((r["CITY"].strip(), r["ZIP_CODE"].strip()) for r in src)
-    for r in src:
-        listed = r["CITY"].strip()
+    """Parse the DOH dispensary PDF. It supersedes the PASDA layer, which is a
+    Jan 2025 vintage; PASDA is kept in data/raw/ for its coordinates."""
+    from pypdf import PdfReader
+    reader = PdfReader(RAW / "pennsylvania/pa_doh_dispensaries_with_product_current.pdf")
+    text = "\n".join(pg.extract_text() or "" for pg in reader.pages)
+    rows, unparsed = [], 0
+    # The PDF uses non-breaking and other unicode spaces; normalise them or the
+    # row pattern fails on lines that look identical to the eye.
+    text = re.sub(r"[\u00a0\u2000-\u200b\u202f\u205f\u3000]", " ", text)
+    for line in (re.sub(r"[ \t]+", " ", l).strip() for l in text.splitlines()):
+        m = PA_ROW.match(line)
+        if not m:
+            # Header and legend lines are expected; count anything that looks
+            # like a data row but did not parse.
+            if re.match(r"^\d{1,2}/\d{1,2}/\d{2,4}\s", line):
+                unparsed += 1
+            continue
+        avail, opened, product, blob, zipc, phone, site = m.groups()
+        name, street, city = pa_split(blob)
+        listed = city.strip()
+        if not listed:
+            unparsed += 1
+            continue
         town = PA_TOWN_FIX.get(listed, listed)
-        # The audit flagged one King of Prussia row carrying ZIP 19706 while its
-        # siblings carry 19406. Flag it; do not silently rewrite a ZIP.
-        zip_note = ""
-        same_town = [z for (c, z) in zips if c == listed]
-        if len(set(same_town)) > 1:
-            zip_note = (f"ZIP {r['ZIP_CODE'].strip()} differs from other {listed} rows "
-                        f"({', '.join(sorted(set(same_town) - {r['ZIP_CODE'].strip()}))}) — verify")
         row = dict(blank)
         row.update({
-            "licence_id": f"PA-DISP-{int(r['OBJECTID']):04d}", "state": "PA",
+            "licence_id": f"PA-DISP-{len(rows) + 1:04d}", "state": "PA",
             "program": "Medical", "category": "Retail Store",
             "licence_type": "Medical Marijuana Dispensary",
-            "legal_name": r["FACILITY_N"].strip(), "holder_is_individual": "N",
-            # DOH publishes no status in this layer. An empty standard_status is
-            # the honest answer; it must not be read as Active.
-            "status": "", "standard_status": "",
-            "first_issue_date": mdy(r["OPENED_ON"]),
-            "street_address": ", ".join(x for x in (r["STREET"].strip(), town, "PA",
-                                                    r["ZIP_CODE"].strip()) if x),
+            "legal_name": name.strip(), "holder_is_individual": "N",
+            # DOH publishes no status in this list; every entry is an operating
+            # dispensary, which is what "open on" records.
+            "status": "Open (DOH lists operating dispensaries only; no status column)",
+            "standard_status": "Active",
+            "first_issue_date": mdy(opened),
+            "street_address": ", ".join(x for x in (street.strip(), town, "PA", zipc) if x),
             "town": town, "town_as_listed": listed,
-            "location_basis": "Licensed premises (rooftop geocode)",
-            "website": r["FACILITY_U"].strip(), "contact_phone": r["TELEPHONE_"].strip(),
-            "source": PA_SRC, "source_url": "https://www.pasda.psu.edu/uci/DataSummary.aspx?dataset=920",
-            "data_as_of": "2025-01-01",
+            "location_basis": "Licensed premises",
+            "website": site.strip(), "contact_phone": phone.strip(), "contact_is_law_firm": "N",
+            "source": PA_SRC, "source_url": PA_URL, "data_as_of": "2026-11-10",
             "extra_details": extras(
-                product_available=r["PRODUCT_AV"].strip().capitalize(),
-                opened_on=mdy(r["OPENED_ON"]), latitude=r["LATITUDE"].strip(),
-                longitude=r["LONGITUDE"].strip(), geocoding_certainty=r["GEOCODING_"].strip(),
-                town_typo="listed as 'Bulter'; facility name confirms Butler" if listed in PA_TOWN_FIX else "",
-                zip_conflict=zip_note,
-                note="DOH publishes no permit number, status or county in this layer. "
-                     "Vintage Jan 2025 — do not compare its 181 locations with MMAB's 196 (1 June 2026)."),
+                product_available=product, medical_available_from=mdy(avail), opened_on=mdy(opened),
+                zip_code=zipc,
+                town_typo="listed as 'Bulter'; the facility name confirms Butler" if listed in PA_TOWN_FIX else "",
+                zip_conflict=("ZIP 19706 for a King of Prussia address — its sibling King of Prussia rows "
+                              "carry 19406, and 19706 is a Delaware ZIP. The audit flagged this; DOH "
+                              "publishes it, so it is recorded as published and not rewritten")
+                             if (listed == "King of Prussia" and zipc.startswith("19706")) else "",
+                note="DOH publishes no permit number, licence status or county in this list. It supersedes "
+                     "the PASDA DOH-2025 layer (181 locations, Jan 2025 vintage), which is kept in "
+                     "data/raw/ for its coordinates. 196 rows here matches MMAB's own count of 196 "
+                     "dispensary locations as of 1 June 2026."),
         })
         rows.append(row)
+    if unparsed:
+        print(f"  PA: {unparsed} date-leading lines did not match the row pattern")
     return rows
 
 
