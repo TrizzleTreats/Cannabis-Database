@@ -345,6 +345,75 @@ def parse_entry_directory(stem, region, prefix, warn):
     return rows
 
 
+def parse_california(warn):
+    """California's audit table is the complete business list — 371 rows, the
+    figure HANDOFF records. Its category column is a number, and the tally
+    table above it maps each number to a standard category name. The prose
+    detail further down the report is the rewritten directory; it is not merged
+    here, so website, phone and address stay empty for California for now."""
+    s = (SRC / "california-businesses-audited.html").read_text(errors="replace")
+    tables = re.findall(r"<table.*?</table>", s, re.S | re.I)
+    cat_map = {}
+    for tb in tables:
+        rs = [cells(tr) for tr in re.findall(r"<tr.*?</tr>", tb, re.S | re.I)]
+        if not rs or "Standard category" not in rs[0]:
+            continue
+        ci, si = rs[0].index("Category"), rs[0].index("Standard category")
+        for r in rs[1:]:
+            if len(r) > si:
+                num = re.match(r"\s*(\d+)", r[ci])
+                if num:
+                    cat_map[num.group(1)] = r[si].strip()
+        break
+    rows = []
+    for tb in tables:
+        trs = re.findall(r"<tr.*?</tr>", tb, re.S | re.I)
+        if not trs:
+            continue
+        hdr = cells(trs[0])
+        if "Business" not in hdr or "Verdict" not in hdr:
+            continue
+        ix = {h: i for i, h in enumerate(hdr)}
+        for tr in trs[1:]:
+            raw = re.findall(r"<t[dh].*?</t[dh]>", tr, re.S | re.I)
+            c = [txt(x) for x in raw]
+            get = lambda h: c[ix[h]] if h in ix and ix[h] < len(c) else ""
+            name = get("Business")
+            if not name:
+                continue
+            verdict = get("Verdict")
+            if re.match(r"(?i)^(removed|moved out|already listed)", verdict):
+                continue
+            cat_no = re.match(r"\s*(\d+)", get("Category"))
+            scope = ""
+            # "Cultiva Law, PLLC — National" carries the scope in the name
+            if " — " in name:
+                head, _, tail = name.rpartition(" — ")
+                if re.match(r"(?i)^(national|regional|local)\b", tail):
+                    name, scope = head.strip(), tail.strip()
+            rows.append({
+                "business_id": f"CA-{len(rows) + 1:03d}", "region": "California",
+                "scope": scope, "home_state": "CA",
+                "category_no": cat_no.group(1) if cat_no else "",
+                "category": cat_map.get(cat_no.group(1), "") if cat_no else "",
+                "entry_no": "", "business_name": name,
+                "needs_verify": "True" if re.search(r"(?i)unverified", verdict) else "False",
+                "audit_verdict": verdict, "sub_type": "", "cannabis_focus": "",
+                "description": "", "website": "", "phone": "", "email": "", "address": "",
+                "contact_as_published": "", "states_served": get("Sub-region"),
+                "states_served_codes": "", "key_people_private": "",
+                "evidence_of_cannabis_work": get("Corrections"),
+                "evidence_links": "; ".join(dict.fromkeys(
+                    html.unescape(u) for x in raw for u in
+                    re.findall(r'href="(https?://[^"]+)"', x, re.I)))[:900],
+                "credentials": "", "audit_note": get("Corrections")[:600],
+                "sources": get("What was checked (URL)")[:600], "last_checked": TODAY,
+            })
+    if not rows:
+        warn.append(("california", "no audit table found"))
+    return rows
+
+
 # HANDOFF's 17 standard business categories.
 STANDARD_CATEGORIES = ["Legal", "Accounting and Tax", "Insurance", "Real Estate",
                        "Construction and Facilities", "Security", "Cash Management",
@@ -457,6 +526,11 @@ def main():
             continue
         got = parse_entry_directory(stem, region, prefix, warn)
         print(f"  {region:24} {len(got):>4} businesses")
+        added.extend(got)
+
+    if "California" not in have and not (a.only and "calif" not in a.only):
+        got = parse_california(warn)
+        print(f"  {'California':24} {len(got):>4} businesses")
         added.extend(got)
 
     print(f"\nparsed {len(added)} new businesses")
