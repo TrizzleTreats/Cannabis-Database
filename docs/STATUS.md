@@ -69,7 +69,15 @@ Two concrete blockers now stand in the way, and both have a known fix:
 
 **Michigan is a special case worth recording.** Its CRA publishes monthly "Licensing Reports" as files named .doc that are actually RTF produced by Crystal Reports, and they parse cleanly. But they are *activity* reports — prequalifications, approvals and denials for that month, with name, licence id, address, date and determination — not a roster of current licensees. Building a Michigan roster from them would mean accumulating every month since 2019 and replaying the state changes, which is a different job from reading a list.
 
-The remaining 22 states (AK, AR, GA, ID, IN, IA, KS, KY, LA, MS, MT, NE, NM, NC, ND, SC, SD, TN, UT, WV, WI, WY) have not been probed state by state through the browser pane yet. Most are small or medical-only programmes; several (ID, KS, NE, WY) license no cannabis at all beyond hemp, so their licence universe is hemp registrations.
+### The remaining 26 states: a systematic negative result
+
+Every remaining state was swept directly: for each one, its report-cited regulator pages whose path names a cannabis, marijuana or hemp programme were fetched and scanned both for list-shaped data files and for ArcGIS, Tableau and PowerBI embeds — the three routes that worked for Ohio, Missouri and Illinois.
+
+**Across all 26, the sweep found zero licensee list files and no cannabis map embed.** 128 of 150 pages fetched successfully, so this is not a fetch failure. The one cannabis map embed that did turn up, in Michigan, belongs to the **City of Grand Rapids** (owner `mrojas@grand_rapids.mi.us`), not the state CRA. New Mexico's embeds are water-resource maps from the Office of the State Engineer, and its 52 spreadsheets are all monthly **excise-tax** files, not licensee lists.
+
+What that means concretely: these states publish licensee data only through per-record lookup portals — eLicense, Accela, "Verify a License" — which answer one query at a time and cannot be enumerated. Getting them needs either a data request to each regulator or a per-licensee crawl driven by a known list of licence numbers, which is a different and much slower job from reading a published list. That is the honest state of it, not a tooling gap.
+
+Grand Rapids' layer is kept in data/raw/michigan-local-grand-rapids/ anyway: 110 records with licence number, type, status, expiry, address and coordinates, plus the same app's sensitive-use buffers, allowed zone districts and 1000ft/2000ft licence buffers. That is exactly the local-rules material HANDOFF's city pages need. It is NOT in the state licence table — it covers one city, and whether its `LIC-C-…` numbers are state licence numbers or city permit numbers is unverified. Most are small or medical-only programmes; several (ID, KS, NE, WY) license no cannabis at all beyond hemp, so their licence universe is hemp registrations.
 
 ### What the build corrected or found in regions 3-9
 

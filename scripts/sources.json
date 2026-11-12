@@ -670,5 +670,21 @@
     "filename": "mo_dcr_verified_dispensaries.geojson",
     "format": "geojson",
     "note": "Missouri publishes no dispensary file. The DCR's Verified Dispensary Locator is an ArcGIS Experience app; its config names this feature service, resolved through the ArcGIS sharing API rather than guessed. Missouri's cultivation, manufacturing and testing licensees are not in this layer \u2014 the xlsx files on health.mo.gov are product-recall lists, not licensee rosters."
+  },
+  {
+    "id": "mi-grand-rapids-cannabis-locations",
+    "state": "michigan-local-grand-rapids",
+    "part5_ref": "MI 5 \u2014 City of Grand Rapids 'Cannabis Licensed Locations' ArcGIS Experience app",
+    "url": "https://maps.grcity.us/arcgis/rest/services/ArcGIS_Online/CannabisLicenses/MapServer/0/query",
+    "params": {
+      "where": "1=1",
+      "outFields": "*",
+      "outSR": "4326",
+      "f": "geojson",
+      "resultRecordCount": "4000"
+    },
+    "filename": "grand_rapids_cannabis_licensed_locations.geojson",
+    "format": "geojson",
+    "note": "CITY DATA, NOT A STATE ROSTER. The one cannabis map embed found across the 26 remaining states turned out to be owned by mrojas@grand_rapids.mi.us \u2014 the City of Grand Rapids, not Michigan's CRA. It covers Grand Rapids only, so it must NOT be presented as Michigan's licence list. Kept because HANDOFF's site plan wants local pages: the same app carries sensitive-use buffers, allowed zone districts and 1000ft/2000ft licence buffers, which is exactly the local-rules material the city pages need. Michigan's state roster is still only in its eLicense portal."
   }
 ]
