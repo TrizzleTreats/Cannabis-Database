@@ -245,5 +245,101 @@
     "filename": "pasda_DOH_MedicalMarijuanaDispensaries202501.csv",
     "format": "csv",
     "note": "The only machine-readable PA dispensary list. Part 5 left the exact file URL as VERIFY; it is resolved here from the PASDA dataset page's own Spreadsheet link. VINTAGE DOH 2025-01, so it is older than the Sept 2026 dispensary PDF and will not match it. Geocoding certainty is in its own field: 00=rooftop, 01=street, 04=zip centroid, 99=not geocoded. PASDA is Penn State republishing state data, not the regulator."
+  },
+  {
+    "id": "ca-dcc-licences",
+    "state": "california",
+    "part5_ref": "CA 5 \u2014 DCC Cannabis Unified License Search (the API behind it, resolved from the app's own config.js)",
+    "url": "https://as-dcc-pub-cann-w-p-002.azurewebsites.net/licenses/AdvancedSearch",
+    "paged": {
+      "iterate_param": "licenseStatus",
+      "iterate": [
+        "Active",
+        "Canceled",
+        "Expired",
+        "Revoked",
+        "Suspended",
+        "Surrendered",
+        "Limited Operations"
+      ],
+      "page_param": "pageNumber",
+      "size_param": "pageSize",
+      "page_size": 1000,
+      "total_path": "metadata.totalCount",
+      "data_path": "data",
+      "referer": "https://search.cannabis.ca.gov/",
+      "delay": 0.4,
+      "max_pages": 60
+    },
+    "filename": "dcc_unified_licence_search_2026-11-12.csv",
+    "format": "csv",
+    "timeout": 120,
+    "note": "California's entire DCC licence universe: 20,984 records across the 7 statuses (Active 7,527; Expired 9,141; Surrendered 2,151; Canceled 1,622; Revoked 340; Limited Operations 156; Suspended 47). data.ca.gov carries NO DCC licence dataset, and the DCC publishes no bulk file, so this API \u2014 named in search.cannabis.ca.gov's own config.js as CANNA_API \u2014 is the official source. The host is an azurewebsites.net name rather than a .ca.gov one; it is official by virtue of being the DCC app's declared backend, not by its hostname. Carries premiseCounty, owner names, coordinates, licensing authority and the Adult-Use/Medicinal designation. Requires at least one search criterion, hence iterating the status list; the totals are summed and checked."
+  },
+  {
+    "id": "or-olcc-licences",
+    "state": "oregon",
+    "part5_ref": "OR 5 \u2014 OLCC Cannabis Business Licenses & Endorsements (data.oregon.gov q32u-cmam)",
+    "url": "https://data.oregon.gov/api/views/q32u-cmam/rows.csv",
+    "params": {
+      "accessType": "DOWNLOAD"
+    },
+    "filename": "olcc_cannabis_licences_q32u-cmam_2026-11-12.csv",
+    "format": "csv",
+    "note": "5,040 rows, last updated 2026-10-05 per the dataset metadata. Carries licence number, business name, licence type and status, county, tier, canopy type and endorsements \u2014 one of the few states that publishes a complete, clean licence table with a county on every row. Found by scoping the Socrata catalog to data.oregon.gov: the unscoped /api/catalog/v1 federates across every Socrata domain and returns other states' datasets as false positives."
+  },
+  {
+    "id": "wa-cannabis-applicants",
+    "state": "washington",
+    "part5_ref": "WA 5 \u2014 LCB Frequently Requested Lists, 'Cannabis License Applicants'",
+    "url": "https://lcb.wa.gov/sites/default/files/2026-11/CannabisApplicants11102026.xlsx",
+    "filename": "lcb_cannabis_applicants_2026-11-10.xlsx",
+    "format": "xlsx",
+    "note": "Dated 10 Nov 2026. The LCB's Frequently Requested Lists page carries cannabis applicants, medically endorsed stores, labs, violations and enforcement, but NO separate active-licensee list was found there \u2014 the On/Off Premise Licensees files on the same page are liquor. Parsed with scripts/xlsx_reader.py (openpyxl is not installed)."
+  },
+  {
+    "id": "wa-cannabis-labs",
+    "state": "washington",
+    "part5_ref": "WA 5 \u2014 LCB Frequently Requested Lists, 'Cannabis Approved Testing Labs'",
+    "url": "https://lcb.wa.gov/sites/default/files/2026-10/Lab-List-10-29-2026.xlsx",
+    "filename": "lcb_cannabis_labs_2026-10-29.xlsx",
+    "format": "xlsx",
+    "note": "Approved cannabis testing laboratories, dated 29 Oct 2026."
+  },
+  {
+    "id": "nv-ccb-establishments",
+    "state": "nevada",
+    "part5_ref": "NV 5 \u2014 CCB Cannabis Establishment List",
+    "url": "https://ccb.nv.gov/wp-content/uploads/2026/10/Cannabis-Establishment-List-10.02.26_V.2.xlsx",
+    "filename": "ccb_cannabis_establishment_list_2026-10-02.xlsx",
+    "format": "xlsx",
+    "note": "Nevada CCB's licensed cannabis establishment list, version 2 dated 2 Oct 2026."
+  },
+  {
+    "id": "tx-consumable-hemp-licensees",
+    "state": "texas",
+    "part5_ref": "TX 5 \u2014 DSHS Consumable Hemp Product Licensees",
+    "url": "https://www.dshs.texas.gov/sites/default/files/hemp/License%20Lists/consumable-hemp-product-licensees-11.2.26.xlsx",
+    "filename": "dshs_consumable_hemp_product_licensees_2026-11-02.xlsx",
+    "format": "xlsx",
+    "note": "Texas has no adult-use or broad medical cannabis licensing beyond the Compassionate Use Programme, so its licence universe is largely hemp. DSHS consumable hemp product licensees, dated 2 Nov 2026."
+  },
+  {
+    "id": "tx-retail-hemp-registrations",
+    "state": "texas",
+    "part5_ref": "TX 5 \u2014 DSHS Retail Hemp Registrations",
+    "url": "https://www.dshs.texas.gov/sites/default/files/hemp/License%20Lists/retail-hemp-registrations-11.2.26.xlsx",
+    "filename": "dshs_retail_hemp_registrations_2026-11-02.xlsx",
+    "format": "xlsx",
+    "note": "Retail hemp registrations, dated 2 Nov 2026. CLAUDE.md treats plain state-registered hemp retail shops (Texas DSHS among them) as licence data rather than business-directory entries."
+  },
+  {
+    "id": "al-consumable-hemp-licensees",
+    "state": "alabama",
+    "part5_ref": "AL 5 \u2014 ABC Board Active Consumable Hemp Licensee Listing",
+    "url": "https://alabcboard.gov/sites/default/files/inline-files/Active%20Consumable%20Hemp%20Licenses%20%284%29_0.xlsx",
+    "filename": "alabc_active_consumable_hemp_licences.xlsx",
+    "format": "xlsx",
+    "note": "Alabama ABC Board active consumable hemp licences. Alabama's medical cannabis licences (AMCC) are litigation-delayed and are not in this file."
   }
 ]

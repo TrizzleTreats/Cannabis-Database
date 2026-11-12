@@ -78,6 +78,7 @@ archive.regulations.delaware.gov
 arkansasag.gov
 arkleg.state.ar.us
 ars.apps.lara.state.mi.us
+as-dcc-pub-cann-w-p-002.azurewebsites.net
 atc.dps.mo.gov
 atc.louisiana.gov
 atcc.maryland.gov
@@ -321,6 +322,7 @@ excise-tax-div.wyo.gov
 extension.rutgers.edu
 extension.umaine.edu
 extension.unh.edu
+fa-dcc-pub-vip-cann-ww-p-001.azurewebsites.net
 files.dfm.idaho.gov
 files.gao.gov
 files.hawaii.gov

@@ -102,6 +102,60 @@ def sniff(fmt, body, text):
     return None
 
 
+def fetch_paged_json(src):
+    """Walk a paged JSON API and concatenate its records into one CSV.
+
+    Some regulators publish no file at all — their public licence search is a
+    single-page app talking to an API. That API is the official source, but it
+    serves a page at a time, so the pages are stitched here and the stitched
+    row count is checked against the API's own totalCount.
+    """
+    cfg = src["paged"]
+    rows, reported = [], 0
+    for value in cfg.get("iterate", [None]):
+        page = 1
+        while True:
+            params = dict(src.get("params") or {})
+            if value is not None:
+                params[cfg["iterate_param"]] = value
+            params[cfg["page_param"]] = page
+            params[cfg["size_param"]] = cfg.get("page_size", 1000)
+            url = src["url"] + "?" + urllib.parse.urlencode(params)
+            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json",
+                                                       "Referer": cfg.get("referer", "")})
+            with urllib.request.urlopen(req, timeout=src.get("timeout", 120), context=CTX) as r:
+                payload = json.loads(r.read().decode("utf-8", "replace"))
+            batch = payload
+            for key in cfg.get("data_path", "data").split("."):
+                batch = batch[key] if key else batch
+            if page == 1:
+                meta = payload
+                for key in cfg.get("total_path", "metadata.totalCount").split("."):
+                    meta = meta[key]
+                reported += int(meta)
+            rows.extend(batch)
+            if not batch or len(rows) >= reported or page >= cfg.get("max_pages", 500):
+                break
+            page += 1
+            time.sleep(cfg.get("delay", 0.4))
+    if not rows:
+        return b"", "no rows returned"
+    fields, seen = [], set()
+    for r in rows:
+        for k in r:
+            if k not in seen:
+                seen.add(k); fields.append(k)
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=fields)
+    w.writeheader()
+    for r in rows:
+        w.writerow({k: ("" if r.get(k) is None else r.get(k)) for k in fields})
+    problem = ""
+    if reported and len(rows) != reported:
+        problem = f"stitched {len(rows)} rows but the API reported {reported}"
+    return buf.getvalue().encode("utf-8"), problem
+
+
 def fetch(src, dry_run=False):
     url = build_url(src)
     state_dir = ROOT / "data" / "raw" / src["state"]
@@ -118,6 +172,24 @@ def fetch(src, dry_run=False):
         row["status"] = "skipped: already on disk"
         row["bytes"] = str(dest.stat().st_size)
         print(f"  = {src['id']:28} already on disk, left untouched")
+        return row
+
+    if src.get("paged"):
+        try:
+            body, paged_problem = fetch_paged_json(src)
+        except Exception as exc:
+            row["status"] = f"failed: {type(exc).__name__}: {exc}"
+            print(f"  x {src['id']:28} {type(exc).__name__}: {exc}")
+            return row
+        row["bytes"] = str(len(body))
+        row["sha256"] = hashlib.sha256(body).hexdigest()
+        state_dir.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(body)
+        n = max(0, len(body.decode("utf-8", "replace").splitlines()) - 1)
+        row["status"] = f"suspect: {paged_problem}" if paged_problem else "ok"
+        mark = "!" if paged_problem else "+"
+        print(f"  {mark} {src['id']:28} saved {len(body):>10,} B  {n} rows"
+              + (f"  SUSPECT: {paged_problem}" if paged_problem else ""))
         return row
 
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
