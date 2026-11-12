@@ -197,6 +197,154 @@ def parse_table_directory(stem, region, prefix, warn):
     return rows
 
 
+ENTRY_DIRS = {
+    "mid-atlantic-businesses-audited": ("Mid-Atlantic", "MA2"),
+    "southeast-businesses-audited": ("Southeast", "SE"),
+}
+# <strong>Label:</strong> value  ->  schema field
+LABEL_MAP = {
+    "standard category": "category", "sub-type": "sub_type", "subtype": "sub_type",
+    "scale": "scope", "tag": "scope", "scope": "scope",
+    "cannabis / hemp tag": "cannabis_focus", "cannabis-only/general": "cannabis_focus",
+    "cannabis/hemp tag": "cannabis_focus",
+    "description": "description", "what it is": "description",
+    "website": "website", "phone": "phone", "email": "email", "address": "address",
+    "social": "address", "states served & scope": "states_served",
+    "states served": "states_served", "owners/key people": "key_people_private",
+    "key people": "key_people_private", "evidence of cannabis work": "evidence_of_cannabis_work",
+    "credentials": "credentials", "source link": "sources", "verdict": "audit_verdict",
+    "verdict in audit": "audit_verdict", "licence number": "credentials",
+    "name/dba": "dba_note", "state cannabis-operator licence": "credentials",
+    "parent": "parent_note", "category note": "audit_note", "entity-name note": "audit_note",
+    "original category": "category", "what to do with it": "audit_note",
+    "owners/key people": "key_people_private", "cannabis-only/general": "cannabis_focus",
+}
+# A bare <strong>Unverified</strong> is a verdict, not a label.
+BARE_VERDICT = re.compile(r"(?i)^(confirmed|corrected|unverified|removed|moved out)\b")
+
+
+# Southeast writes its detail as running prose with plain-text labels rather
+# than <strong> ones: "Website: ... Phone: ... Key people: ... Evidence: ...".
+PLAIN_LABELS = {
+    "website": "website", "phone": "phone", "email": "email", "address": "address",
+    "socials": "address", "phone/email/address/socials": "contact_as_published",
+    "states served": "states_served", "states": "states_served",
+    "key people": "key_people_private", "evidence": "evidence_of_cannabis_work",
+    "credentials": "credentials", "flags": "audit_note", "scale": "scope", "tag": "cannabis_focus",
+    "standard category": "category",
+}
+PLAIN_RE = re.compile(r"(?i)\b(" + "|".join(sorted((re.escape(k) for k in PLAIN_LABELS),
+                                                   key=len, reverse=True)) + r")\s*:\s*")
+
+
+def plain_labelled(text_blob):
+    """Pull 'Label: value' pairs out of running prose, each value ending where
+    the next known label begins."""
+    out = collections.defaultdict(list)
+    hits = list(PLAIN_RE.finditer(text_blob))
+    for i, m in enumerate(hits):
+        end = hits[i + 1].start() if i + 1 < len(hits) else len(text_blob)
+        val = text_blob[m.end():end].strip(" .;|")
+        field = PLAIN_LABELS.get(m.group(1).lower())
+        if field and val and not re.match(r"(?i)^not published", val):
+            out[field].append(val)
+    return out
+
+
+def parse_entry_directory(stem, region, prefix, warn):
+    """Directories built as one block per business: <div|article class="entry">
+    with an <h3> name, a meta line, and <strong>Label:</strong> value paragraphs."""
+    s = (SRC / f"{stem}.html").read_text(errors="replace")
+    blocks = re.findall(r'<(?:div|article) class="entry[^"]*">(.*?)</(?:div|article)>',
+                        s, re.S | re.I)
+    rows, unmapped, moved_out = [], collections.Counter(), []
+    for i, b in enumerate(blocks, 1):
+        hm = re.search(r"<h[34][^>]*>(.*?)</h[34]>", b, re.S | re.I)
+        if not hm:
+            continue
+        name = txt(hm.group(1))
+        # the heading sometimes carries the verdict: "Talaria — MOVED OUT"
+        heading_note = ""
+        if " — " in name:
+            head, _, tail = name.rpartition(" — ")
+            if tail.isupper() or re.match(r"(?i)^(moved out|removed|closed)", tail):
+                name, heading_note = head.strip(), tail.strip()
+        vals = collections.defaultdict(list)
+        body = b[hm.end():]          # the heading itself can contain <strong>
+        for m in re.finditer(r"<strong>(.*?)</strong>\s*(.*?)(?=<strong>|</p>|$)", body, re.S | re.I):
+            lab = txt(m.group(1)).rstrip(":").lower()
+            lab = re.sub(r"\s*/\s*", "/", lab)       # "name / dba" -> "name/dba"
+            if BARE_VERDICT.match(lab) and lab not in LABEL_MAP:
+                vals["audit_verdict"].append(txt(m.group(1)).rstrip("."))
+                continue
+            val = txt(m.group(2)).lstrip(": ").strip(" |")
+            field = LABEL_MAP.get(lab)
+            if not field:
+                # "Verdict: Unverified." style, where the verdict is in the label
+                vm = re.match(r"(?i)verdict\s*:?\s*(.+)", lab)
+                if vm:
+                    field, val = "audit_verdict", vm.group(1)
+                else:
+                    unmapped[lab[:34]] += 1
+                    continue
+            if val:
+                vals[field].append(val)
+        # Fill anything the <strong> labels did not carry from the prose.
+        for field, vs in plain_labelled(txt(body)).items():
+            if not vals.get(field):
+                vals[field] = vs
+        if not vals and not name:
+            continue
+        g = lambda f: "; ".join(dict.fromkeys(vals.get(f, [])))[:900]
+        # Most entries carry the verdict as a badge span rather than a label:
+        # <span class="badge badge-Confirmed">Confirmed</span>
+        # Scope the badge to the entry's own meta line: a block can contain
+        # further badges deeper down that belong to sub-items, not the entry.
+        meta = re.search(r'<p class="meta">(.*?)</p>', b, re.S | re.I)
+        scope_html = meta.group(1) if meta else b
+        badge = (re.search(r'class="[^"]*badge-([A-Za-z]+)"', scope_html)
+                 or re.search(r'class="badge\s+(?!badge)([A-Za-z]+)"', scope_html)
+                 or re.search(r'class="[^"]*badge-([A-Za-z]+)"', b))
+        verdict = g("audit_verdict") or (badge.group(1).title() if badge else "") or heading_note
+        extra = "; ".join(x for x in (
+            f"parent: {g('parent_note')}" if g("parent_note") else "",
+            f"name/DBA note: {g('dba_note')}" if g("dba_note") else "",
+            g("audit_note")) if x)
+        # HANDOFF: a business holding a state or tribal cannabis licence belongs
+        # in the licence database, not the directory. The audits mark those
+        # "MOVED OUT"; keeping them here would double-count them.
+        if re.match(r"(?i)^(moved out|removed)\b", verdict.strip()):
+            moved_out.append((name, verdict))
+            continue
+        all_links = [html.unescape(u) for u in re.findall(r'href="(https?://[^"]+)"', b, re.I)]
+        rows.append({
+            "business_id": f"{prefix}-{i:03d}", "region": region, "scope": g("scope"),
+            "home_state": "", "category_no": "", "category": g("category"), "entry_no": "",
+            "business_name": name,
+            "needs_verify": "True" if re.search(r"(?i)unverified", verdict) else "False",
+            "audit_verdict": verdict, "sub_type": g("sub_type"),
+            "cannabis_focus": g("cannabis_focus"), "description": g("description"),
+            "website": g("website"), "phone": g("phone"), "email": g("email"),
+            "address": g("address"), "contact_as_published": "",
+            "states_served": g("states_served"), "states_served_codes": "",
+            "key_people_private": g("key_people_private"),
+            "evidence_of_cannabis_work": g("evidence_of_cannabis_work"),
+            "evidence_links": "; ".join(dict.fromkeys(all_links))[:900],
+            "credentials": g("credentials"),
+            "audit_note": "; ".join(x for x in (extra, heading_note if verdict != heading_note else "") if x),
+            "sources": g("sources"), "last_checked": TODAY,
+        })
+    if moved_out:
+        print(f"    {len(moved_out)} moved out of the directory as licensed operators: "
+              + "; ".join(f"{n} ({v})" for n, v in moved_out[:3]))
+        warn.append((f"{stem}: moved out as licensed operators",
+                     "; ".join(n for n, _ in moved_out)))
+    if unmapped:
+        warn.append((f"{stem}: labels not mapped",
+                     "; ".join(f"{k}({v})" for k, v in unmapped.most_common(6))))
+    return rows
+
+
 # HANDOFF's 17 standard business categories.
 STANDARD_CATEGORIES = ["Legal", "Accounting and Tax", "Insurance", "Real Estate",
                        "Construction and Facilities", "Security", "Cash Management",
@@ -298,6 +446,16 @@ def main():
             print(f"  {region}: already in the file, skipped")
             continue
         got = parse_table_directory(stem, region, prefix, warn)
+        print(f"  {region:24} {len(got):>4} businesses")
+        added.extend(got)
+
+    for stem, (region, prefix) in ENTRY_DIRS.items():
+        if a.only and a.only not in stem:
+            continue
+        if region in have:
+            print(f"  {region}: already in the file, skipped")
+            continue
+        got = parse_entry_directory(stem, region, prefix, warn)
         print(f"  {region:24} {len(got):>4} businesses")
         added.extend(got)
 
