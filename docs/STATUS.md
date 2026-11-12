@@ -8,15 +8,17 @@
 - New England licence table rebuilt from data/raw/ on 12 Nov 2026 (scripts/build_new_england.py): 3,917 to 4,267 rows. CT 253 to 498, MA 967 to 1,072; ME, VT, RI and NH carried forward unchanged because their raw files hold nothing the table did not already have. A `standard_status` column was added so one search spans all six states.
 - Mid-Atlantic raw licence data captured for all six jurisdictions (scripts/fetch_raw.py, declared in scripts/sources.json, logged in data/raw/manifest.csv). 23 of 24 declared sources fetched.
 - Mid-Atlantic clean table built: data/clean/mid_atlantic_licences.csv, 4,067 rows (scripts/build_mid_atlantic.py). NY 3,056, NJ 586, PA 181, MD 130, DC 100, DE 14. Same 41 columns as the New England table, in the same order, so the two union cleanly (8,334 rows combined).
+- Regions 3-9 started: data/clean/regions_3_to_9_licences.csv, 41,026 rows across 7 of 39 jurisdictions (scripts/build_states.py). CA 20,984, TX 12,853, OR 3,701, CO 1,832, WA 1,226, NV 345, AL 85. Same 41 columns as the other two tables, so all three union to 49,360 rows.
 - USDA hemp list (May 2026) parsed.
 
 ## Next
 1. Post-election re-checks: Idaho HJR 4 (3 Nov 2026 ballot) and any other state with a 2026 cannabis measure; update Part 0 and Part 9 of those reports once results are certified.
 2. Fill the counties the regulators do not publish: PA 181, NJ 586, DE 14 rows have none at all, plus NY 306, CT 84, ME 23, MA 19, MD 3, RI 2. CLAUDE.md requires a county for every town; all are left empty rather than guessed. A town-to-county gazetteer per state is the missing piece.
 3. Resolve the licence numbers PA, NJ, MD and DE do not publish in their public lists. NJ's are in per-facility licence PDFs linked from the CRC page (e.g. RE000900); the other three publish none anywhere found so far.
-4. Extend the download pattern to Regions 3-9 (44 states). scripts/sources.json is the template.
-5. Build the business table from all directories; de-duplicate across directories and merge national firms under parent profiles.
-6. Build the site.
+4. Finish Regions 3-9: 32 of 39 jurisdictions remain. The two blockers are a PDF text extractor (none installed; 2,219 discovered files are PDFs) and browser-pane runs for the portal and bot-checked states. scripts/sources.json plus a spec in scripts/build_states.py is the pattern — adding a state is adding a spec.
+5. Decide the schema gaps the real data surfaced: licence types "Event Organizer" and "Operator", and statuses "Canceled", "Limited Operations" and "Inactive".
+6. Build the business table from all directories; de-duplicate across directories and merge national firms under parent profiles.
+7. Build the site.
 
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
@@ -25,6 +27,42 @@ These are findings from the official sources themselves, not re-readings of the 
 - **DC**: the retailer GIS layer Part 5 said not to guess is layer 31 of the Health_WebMercator MapServer — 79 retailers, 77 Active, 1 Safekeeping with Location, 1 Emergency Closure, with a ward for each. The non-retailer layer 33 gives the by-type counts Part 5 had to leave as VERIFY: 9 cultivation, 10 manufacturers, 1 courier, 1 testing lab, all Active.
 - **PA**: a 23 Sept 2026 MMAB presentation exists. The audit recorded that the page listed a Sept agenda but no presentation, so its 24 June 2026 metrics are no longer the latest. The DOH growers-processors page carries no permittee-list PDF at all — only guidance forms.
 - **MA**: licence MP281798 is Suspended as of 27 Oct 2026 but the old table showed it "Active; Final License; operating". Two further suspended licences were absent entirely. The rebuild represents all three.
+
+## Regions 3-9: what each of the 39 jurisdictions actually publishes
+
+Built so far — 7 states, and they are the large markets:
+
+| State | Rows | Source | What it gives |
+|---|---|---|---|
+| CA | 20,984 | DCC Cannabis Unified License Search API | The whole licence universe across 7 statuses, with county, owner names, coordinates, licensing authority and the Adult-Use/Medicinal designation |
+| TX | 12,853 | DSHS consumable-hemp and retail-hemp lists | Hemp licences with county; Texas licenses no adult-use or broad medical cannabis |
+| OR | 3,701 | OLCC Socrata dataset q32u-cmam | County, tier, canopy type and endorsements on every row |
+| CO | 1,832 | MED's nine public Google Sheets | Medical AND retail across all nine categories; no county published |
+| WA | 1,226 | LCB Frequently Requested Lists | Retail only, with county. Producers and processors are not in it |
+| NV | 345 | CCB Cannabis Establishment List | Type, status and county; no premises address |
+| AL | 85 | ABC Board consumable hemp list | Hemp retail only; medical (AMCC) licences are litigation-delayed |
+
+### Why the other 32 are not built yet
+
+The audited reports cite landing pages, not files. Across all 39 reports only **9** machine-readable URLs appear, against **117 xlsx** and **2,219 PDFs** one hop deeper (scripts/discover_sources.py, logged in data/raw/discovered_sources.csv). A second hop was then run against the nine biggest remaining states — Michigan, Illinois, Ohio, Oklahoma, Arizona, Florida, Missouri, Minnesota and Colorado — and only Colorado yielded a licensee list. Michigan's hits were inspection checklists; Missouri's and Oklahoma's were product-recall lists. So for those eight there is **no downloadable licensee list reachable from the pages the reports cite**, and their data lives in interactive search portals, PDFs, or behind bot checks.
+
+Two concrete blockers now stand in the way, and both have a known fix:
+
+1. **No PDF text extraction.** pypdf, pdfplumber, PyMuPDF and pdfminer are all absent, and 2,219 of the discovered files are PDFs. Page counts and titles come from Spotlight metadata; no PDF's *contents* have been read in this build. Installing one PDF library unlocks a large share of the remaining states.
+2. **Portals and bot checks need the browser pane.** Colorado proved the route: sbg.colorado.gov and med.colorado.gov both return a Cloudflare interstitial to any scripted client, and the nine sheet links were only readable through the browser pane. The same approach should work for Michigan's CRA search, Illinois' IDFPR lists, Oklahoma's OMMA search, Arizona's ADHS list, Florida's OMMU pages, Missouri's DCR search and Minnesota's OCM list.
+
+The remaining 24 states (AK, AR, GA, HI, ID, IN, IA, KS, KY, LA, MS, MT, NE, NM, NC, ND, SC, SD, TN, UT, VA, WV, WI, WY) have not been probed state by state through the browser pane yet. Most are small or medical-only programmes; several (ID, KS, NE, WY) license no cannabis at all beyond hemp, so their licence universe is hemp registrations.
+
+### What the build corrected or found in regions 3-9
+
+- **CO**: each of the MED's nine sheets has **two tabs, one medical and one retail**, and a Google Sheets CSV export without an explicit `gid` silently returns only the first. The first pass therefore produced a medical-only Colorado; declaring every tab by gid added 1,257 retail licences, including 636 retail stores.
+- **OR**: OLCC withholds the premises address of producers, processors and wholesalers — 2,771 of 3,795 source rows say "Exempt from Public Disclosure". Only retailers and laboratories have public addresses.
+- **OR**: OLCC publishes one row per licence *term*, so a renewed licence appears more than once (94 licences). Collapsed to the latest term with the earliest effective date kept as first_issue_date.
+- **WA**: an LCB licence number belongs to the premises and survives an ownership transfer, so one number can carry both a closed and an active holder. The LCB file also holds near-duplicate rows differing only in ZIP+4 and phone.
+- **CA**: the DCC returns the literal string "Data Not Available" for both names on 5 licences and "Not Published" for some premises. An earlier pass wrote "Data Not Available" into the town column; those are now blank and flagged.
+- **CA**: the provisional-licence programme has wound down — 5,333 provisional licences are Expired and only 9 are both Active and provisional-term.
+- **TX**: one hemp registration covers many outlets (a chain registers once and lists each store), so 12,217 source rows are 9,695 licences.
+- **Schema gaps surfaced by real data.** HANDOFF's 14 standard licence types have no entry for California's "Event Organizer" (193 rows) or Colorado's "Operator" (8). Its 7 standard statuses have no entry for California's "Canceled" (1,622) or "Limited Operations" (156), or OLCC's "Inactive" (796). Those rows carry the nearest standard value plus `standard_status_approximate=yes` in extra_details, so an approximation is never mistaken for the regulator's own word. **These need a schema decision.**
 
 ## Mid-Atlantic counts: what this table says vs what the reports say
 

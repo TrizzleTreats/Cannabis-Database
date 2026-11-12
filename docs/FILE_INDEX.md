@@ -109,6 +109,10 @@ Notes:
 | scripts/sources.json | Source declarations: Part 5 reference, URL, expected format and the limitation the audit recorded for each |
 | scripts/build_new_england.py | Rebuilds data/clean/new_england_licences.csv from data/raw/, carrying forward enrichment raw cannot supply |
 | scripts/build_mid_atlantic.py | Builds data/clean/mid_atlantic_licences.csv from data/raw/ for NY, PA, NJ, DE, MD and DC |
+| scripts/build_states.py | Spec-driven builder for data/clean/regions_3_to_9_licences.csv — one declarative spec per state |
+| scripts/discover_sources.py | Walks the licensee pages the reports cite and records the data files they link to |
+| scripts/xlsx_reader.py | Reads .xlsx without openpyxl (shared strings, inline strings, 1900-epoch date serials) |
+| data/raw/discovered_sources.csv | What the discovery crawl found: 2,615 rows of candidate data files per state |
 | scripts/verify.py | Re-runnable check: private data not tracked, allowlist matches the domain list, every raw file hashes and opens, master table integrity, NY row-vs-licence reconciliation |
 | data/raw/manifest.csv | Append-only provenance log: one row per fetch attempt with bytes, sha256, status and reason. The LAST row for an id is its current state |
 | .claude/settings.json | WebFetch allow rules for all 1,242 official hosts, plus the two build scripts |

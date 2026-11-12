@@ -177,6 +177,7 @@ code.wvlegislature.gov
 codelibrary.amlegal.com
 codeofarrules.arkansas.gov
 codes.ohio.gov
+codor.mylicense.com
 coloradosprings.gov
 coloradosprings.legistar.com
 com.ohio.gov
@@ -259,6 +260,7 @@ dnr.alaska.gov
 dnrec.delaware.gov
 doa.wi.gov
 dob.dc.gov
+docs.google.com
 docs.legis.wisconsin.gov
 docs.marysvillewa.gov
 docs.plymouthmn.gov
@@ -290,6 +292,7 @@ dph.sc.gov
 dps.alaska.gov
 dps.mn.gov
 dps.vermont.gov
+drive.google.com
 dsd.maryland.gov
 dshs.delaware.gov
 dsps.wi.gov

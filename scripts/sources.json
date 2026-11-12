@@ -341,5 +341,239 @@
     "filename": "alabc_active_consumable_hemp_licences.xlsx",
     "format": "xlsx",
     "note": "Alabama ABC Board active consumable hemp licences. Alabama's medical cannabis licences (AMCC) are litigation-delayed and are not in this file."
+  },
+  {
+    "id": "co-med-cultivations-tab1",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: cultivations (tab 1, gid 0)",
+    "url": "https://docs.google.com/spreadsheets/d/170ZEhmBncg8SSIu-uB50wS5-tylgG7p0fRTB1mZhaTU/export",
+    "params": {
+      "format": "csv",
+      "gid": "0"
+    },
+    "filename": "med_licensed_cultivations_gid0.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-cultivations-tab2",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: cultivations (tab 2, gid 932521964)",
+    "url": "https://docs.google.com/spreadsheets/d/170ZEhmBncg8SSIu-uB50wS5-tylgG7p0fRTB1mZhaTU/export",
+    "params": {
+      "format": "csv",
+      "gid": "932521964"
+    },
+    "filename": "med_licensed_cultivations_gid932521964.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-delivery-tab1",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: delivery (tab 1, gid 0)",
+    "url": "https://docs.google.com/spreadsheets/d/1sAbR53Au-k6fQQcPkrXbFUu1YkK68ypS-VXlKEM5RGk/export",
+    "params": {
+      "format": "csv",
+      "gid": "0"
+    },
+    "filename": "med_licensed_delivery_gid0.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-delivery-tab2",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: delivery (tab 2, gid 1977875011)",
+    "url": "https://docs.google.com/spreadsheets/d/1sAbR53Au-k6fQQcPkrXbFUu1YkK68ypS-VXlKEM5RGk/export",
+    "params": {
+      "format": "csv",
+      "gid": "1977875011"
+    },
+    "filename": "med_licensed_delivery_gid1977875011.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-hospitality-tab1",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: hospitality (tab 1, gid 603649298)",
+    "url": "https://docs.google.com/spreadsheets/d/1FF0Cd-XW13BQC1rvo-YlUYAHYVMlpRfdl5XyqZ9hCng/export",
+    "params": {
+      "format": "csv",
+      "gid": "603649298"
+    },
+    "filename": "med_licensed_hospitality_gid603649298.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-hospitality-tab2",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: hospitality (tab 2, gid 612158757)",
+    "url": "https://docs.google.com/spreadsheets/d/1FF0Cd-XW13BQC1rvo-YlUYAHYVMlpRfdl5XyqZ9hCng/export",
+    "params": {
+      "format": "csv",
+      "gid": "612158757"
+    },
+    "filename": "med_licensed_hospitality_gid612158757.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-operators-tab1",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: operators (tab 1, gid 0)",
+    "url": "https://docs.google.com/spreadsheets/d/1F2-QIDf9BUQZsQMixkV66i51ecHHgkh64CfHCWAQpbM/export",
+    "params": {
+      "format": "csv",
+      "gid": "0"
+    },
+    "filename": "med_licensed_operators_gid0.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-operators-tab2",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: operators (tab 2, gid 2133747041)",
+    "url": "https://docs.google.com/spreadsheets/d/1F2-QIDf9BUQZsQMixkV66i51ecHHgkh64CfHCWAQpbM/export",
+    "params": {
+      "format": "csv",
+      "gid": "2133747041"
+    },
+    "filename": "med_licensed_operators_gid2133747041.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-product-manufacturers-tab1",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: product manufacturers (tab 1, gid 0)",
+    "url": "https://docs.google.com/spreadsheets/d/11GnunWsPn3t72v7BUzJVQbcXyYymX51QWChRZr9TXMw/export",
+    "params": {
+      "format": "csv",
+      "gid": "0"
+    },
+    "filename": "med_licensed_product_manufacturers_gid0.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-product-manufacturers-tab2",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: product manufacturers (tab 2, gid 1918993238)",
+    "url": "https://docs.google.com/spreadsheets/d/11GnunWsPn3t72v7BUzJVQbcXyYymX51QWChRZr9TXMw/export",
+    "params": {
+      "format": "csv",
+      "gid": "1918993238"
+    },
+    "filename": "med_licensed_product_manufacturers_gid1918993238.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-rd-cultivators-tab1",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: rd cultivators (tab 1, gid 0)",
+    "url": "https://docs.google.com/spreadsheets/d/1udRrK72zt1KzgFqctOawwR26Z9ZUuW2-jaTfbhaIHVY/export",
+    "params": {
+      "format": "csv",
+      "gid": "0"
+    },
+    "filename": "med_licensed_rd_cultivators_gid0.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-rd-cultivators-tab2",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: rd cultivators (tab 2, gid 1589509634)",
+    "url": "https://docs.google.com/spreadsheets/d/1udRrK72zt1KzgFqctOawwR26Z9ZUuW2-jaTfbhaIHVY/export",
+    "params": {
+      "format": "csv",
+      "gid": "1589509634"
+    },
+    "filename": "med_licensed_rd_cultivators_gid1589509634.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-stores-tab1",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: stores (tab 1, gid 0)",
+    "url": "https://docs.google.com/spreadsheets/d/1PqYThJJwGEsrwWvciu9vXosuC0BzAw4YtD03RvlSKzE/export",
+    "params": {
+      "format": "csv",
+      "gid": "0"
+    },
+    "filename": "med_licensed_stores_gid0.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-stores-tab2",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: stores (tab 2, gid 1679153291)",
+    "url": "https://docs.google.com/spreadsheets/d/1PqYThJJwGEsrwWvciu9vXosuC0BzAw4YtD03RvlSKzE/export",
+    "params": {
+      "format": "csv",
+      "gid": "1679153291"
+    },
+    "filename": "med_licensed_stores_gid1679153291.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-testing-facilities-tab1",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: testing facilities (tab 1, gid 1397113750)",
+    "url": "https://docs.google.com/spreadsheets/d/1ZuxyHg-5Apy4pHrNQNndBZPP8ulzCfOz4fzlHvs1Xxc/export",
+    "params": {
+      "format": "csv",
+      "gid": "1397113750"
+    },
+    "filename": "med_licensed_testing_facilities_gid1397113750.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-testing-facilities-tab2",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: testing facilities (tab 2, gid 617130488)",
+    "url": "https://docs.google.com/spreadsheets/d/1ZuxyHg-5Apy4pHrNQNndBZPP8ulzCfOz4fzlHvs1Xxc/export",
+    "params": {
+      "format": "csv",
+      "gid": "617130488"
+    },
+    "filename": "med_licensed_testing_facilities_gid617130488.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-transporters-tab1",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: transporters (tab 1, gid 0)",
+    "url": "https://docs.google.com/spreadsheets/d/133AB9z-MUN9hgGAalhH9i_T18zy6VO_4dsPz6AEqaSA/export",
+    "params": {
+      "format": "csv",
+      "gid": "0"
+    },
+    "filename": "med_licensed_transporters_gid0.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+  },
+  {
+    "id": "co-med-transporters-tab2",
+    "state": "colorado",
+    "part5_ref": "CO 5 \u2014 MED List of Licensed Facilities: transporters (tab 2, gid 359172124)",
+    "url": "https://docs.google.com/spreadsheets/d/133AB9z-MUN9hgGAalhH9i_T18zy6VO_4dsPz6AEqaSA/export",
+    "params": {
+      "format": "csv",
+      "gid": "359172124"
+    },
+    "filename": "med_licensed_transporters_gid359172124.csv",
+    "format": "csv",
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
   }
 ]

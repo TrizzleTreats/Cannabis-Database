@@ -58,9 +58,19 @@ check(not any("einpresswire" in a for a in allow), "no secondary news host in th
 
 # -------------------------------------------------------- raw provenance
 head("Every captured raw file exists, hashes match and opens as declared")
-latest = {}
+declared = {s["id"] for s in json.loads((ROOT / "scripts/sources.json").read_text())}
+latest, retired = {}, set()
 for r in csv.DictReader(open(ROOT / "data/raw/manifest.csv")):
-    latest[r["id"]] = r   # append-only log: the last row for an id is current
+    # The manifest is an append-only log. An id that is no longer declared in
+    # sources.json was superseded (a source redefined, e.g. Colorado's sheets
+    # re-declared per tab), so its rows describe files that no longer exist.
+    if r["id"] in declared:
+        latest[r["id"]] = r
+    else:
+        retired.add(r["id"])
+if retired:
+    print(f"  -- {len(retired)} superseded source ids in the log, no longer declared: "
+          f"{', '.join(sorted(retired)[:4])}{' …' if len(retired) > 4 else ''}")
 captured = missing = 0
 for r in sorted(latest.values(), key=lambda x: (x["state"], x["id"])):
     if not r["status"].startswith(("ok", "skipped")):

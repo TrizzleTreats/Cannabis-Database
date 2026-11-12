@@ -486,8 +486,73 @@ def build_al(blank, warn):
     return rows
 
 
+# ======================================================================= COLORADO
+CO_CAT = [(r"Store", "Retail Store"), (r"Cultivation Facility|Marijuana Cultivation", "Cultivation"),
+          (r"Products Mfg", "Manufacturing"), (r"Delivery", "Delivery"),
+          (r"Transporter", "Transport & Distribution"), (r"Hospitality", "Consumption Lounge"),
+          (r"R&D Cultivation", "Research"), (r"Operator", "Operator"),
+          (r"Optional Premises", "Cultivation")]
+
+
+def build_co(blank, warn):
+    import glob
+    rows = []
+    for path in sorted(glob.glob(str(RAW / "colorado/*.csv"))):
+        with open(path, encoding="utf-8-sig") as f:
+            recs = list(csv.DictReader(f))
+        if not recs:
+            continue
+        cols = set(recs[0])
+        testing = "Facility Type" not in cols          # the labs sheet has its own layout
+        for r in recs:
+            num = clean(r.get("License Number"))
+            if not num:
+                continue                               # the labs sheet carries a second header row
+            if testing:
+                ftype, cat = "Marijuana Testing Facility", "Testing Lab"
+                name = clean(r.get("Licensee Name"))
+                street = clean(r.get("Address"))
+            else:
+                ftype = clean(r.get("Facility Type"))
+                cat = next((c for pat, c in CO_CAT if re.search(pat, ftype, re.I)), "")
+                if not cat:
+                    warn.append(("CO Facility Type", ftype))
+                if cat == "Operator":
+                    warn.append(("CO category outside HANDOFF's 14 standard types", "Operator"))
+                name = clean(r.get("Facility Name"))
+                street = clean(r.get("Street"))
+            program = "Medical" if re.search(r"Medical|MMJ", ftype, re.I) else "Adult Use"
+            town = title(r.get("City"))
+            row = dict(blank)
+            row.update({
+                "licence_id": num, "state": "CO", "program": program, "category": cat,
+                "licence_type": ftype, "legal_name": name, "dba": clean(r.get("DBA")),
+                "holder_is_individual": "N",
+                # These sheets are lists of CURRENTLY licensed facilities; the MED
+                # publishes no status column, so every row in them is licensed.
+                "status": "Licensed (the MED publishes current licensees only; no status column)",
+                "standard_status": "Active",
+                "expiry_date": iso(r.get("Expiration Date")),
+                "street_address": ", ".join(x for x in (street, town, "CO", clean(r.get("ZIP Code"))) if x),
+                "town": town, "town_as_listed": clean(r.get("City")),
+                "location_basis": "Licensed premises",
+                "source": "CO MED List of Licensed Facilities (public Google Sheets linked from med.colorado.gov)",
+                "source_url": "https://med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities",
+                "data_as_of": TODAY,
+                "extra_details": "; ".join(x for x in (
+                    f"elemental impurities certified until={clean(r.get('Elemental Impurities'))}"
+                    if testing and clean(r.get("Elemental Impurities")) else "",
+                    "note=the MED publishes no county in these lists, and each sheet has a medical tab "
+                    "and a retail tab — both are included here",
+                    "note=Denver and Broomfield are consolidated city-counties") if x),
+            })
+            rows.append(row)
+    return rows
+
+
 BUILDERS = {"CA": build_ca, "OR": build_or, "WA": build_wa,
-            "NV": build_nv, "TX": build_tx, "AL": build_al}
+            "NV": build_nv, "TX": build_tx, "AL": build_al, "CO": build_co}
+
 
 
 
