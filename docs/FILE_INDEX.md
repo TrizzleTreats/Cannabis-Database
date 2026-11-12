@@ -82,9 +82,9 @@ Every report copied into this folder, with the name it had on my phone. All pass
 ## Data files (rebuilt 12 November 2026 from official sources unless noted)
 | File | What it is |
 |---|---|
-| data/clean/new_england_licences.csv | All six New England states in one schema, 3,917 licences — built 24 Oct 2026 (older than the files below; rebuild from data/raw) |
+| data/clean/new_england_licences.csv | All six New England states in one schema, 4,267 licences — rebuilt from data/raw/ on 12 Nov 2026 by scripts/build_new_england.py. CT 498, MA 1,072, ME 1,903, VT 524, RI 263, NH 7. Has a `standard_status` column (40 columns) beside each state's own status wording |
 | data/clean/ma_licences.csv | Massachusetts CCC licences, 944 (EIN/TIN column removed) |
-| data/clean/ct_licences.csv | Connecticut DCP cannabis business credentials, 683 records (all statuses; employee badges and product registrations excluded) |
+| data/clean/ct_licences.csv | Connecticut DCP cannabis business credentials, 683 records (all statuses; employee badges and product registrations excluded). SUPERSEDED as the master's input by data/raw/connecticut/ngch-56tr_business_credentials_2026-11-12.csv (963 rows), which also carries the 280 hemp and THC-beverage credentials this file omits |
 | data/clean/ri_licences.csv | Rhode Island CCC: 9 compassion centres, 55 cultivators, 10 industrial hemp, 189 hemp-consumable licences (263) |
 | data/clean/vt_licences.csv | Vermont CCB active licences, 520 |
 | data/clean/ma_towns.csv | Massachusetts CCC municipal zoning tracker, all 351 towns |
@@ -100,3 +100,27 @@ Notes:
 - Maine's official files are in data/raw/maine/ (adult-use establishments and contacts, medical establishments, medical caregivers, all dated 31 Oct 2026). They replace Maine_Cannabis_Licensees.xlsx from the earlier chat. Maine's opt-in town list is a Power BI map with no download.
 - Rhode Island's lists are web pages, not files, and sit behind a bot check; a headless browser is needed to fetch them.
 - Business files have a key_people_private column (names and published work contacts of individuals) — private only.
+
+## Added by the Claude Code build (12 November 2026)
+
+| File | What it is |
+|---|---|
+| scripts/fetch_raw.py | Downloads every source declared in scripts/sources.json into data/raw/<state>/ and logs each attempt |
+| scripts/sources.json | Source declarations: Part 5 reference, URL, expected format and the limitation the audit recorded for each |
+| scripts/build_new_england.py | Rebuilds data/clean/new_england_licences.csv from data/raw/, carrying forward enrichment raw cannot supply |
+| data/raw/manifest.csv | Append-only provenance log: one row per fetch attempt with bytes, sha256, status and reason. The LAST row for an id is its current state |
+| .claude/settings.json | WebFetch allow rules for all 1,242 official hosts, plus the two build scripts |
+
+### Raw files captured, by jurisdiction
+
+| Jurisdiction | Files | Notes |
+|---|---|---|
+| connecticut | 1 | ngch-56tr filtered to 19 business credential names across both programmes — 963 rows (683 cannabis + 280 hemp/THC-beverage) |
+| delaware | 1 | OMC dispensaries page — 5 operator brands, addresses only. No licence numbers, types or statuses are published anywhere |
+| district-of-columbia | 3 | ABCA Aug 2026 programme report, plus GIS layers 33 (non-retailer, 21 facilities) and 31 (retailer, 79) |
+| maryland | 6 | MCA home, Industry Licensees, Dispensary Locator (130-row table with counties), Data Dashboard and its Sept 2026 XLSX extract, plus OSE licensing |
+| new-jersey | 2 | CRC permitted-businesses page (519 table rows) and the government-relations municipality table (234 rows) — both are static HTML, no CSV exists |
+| new-york | 1 | OCM licences (3,056 rows, 2,286 distinct licence numbers, 385 rows with no licence number = proximity-protected applicants). Hemp producer list could not be fetched: HTTP 403 |
+| pennsylvania | 8 | Auditor General audit, dispensary PDF, 2024 biennial report, MMAB presentations for June and Sept 2026, and the three DOH index pages |
+
+Nothing has been written to data/clean/ for the Mid-Atlantic — this was raw capture only.
