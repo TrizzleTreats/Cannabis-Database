@@ -94,7 +94,8 @@ Grand Rapids' layer is kept in data/raw/michigan-local-grand-rapids/ anyway: 110
 - **MO**: the DCR layer packs the licensee and its trading name into one semicolon-separated `Dispensary` value.
 - **OH**: the DCC layer spells its own licence type three ways (Dual, Dual Use, Dual Use Dispensary) and its state two ways (Ohio, OH).
 - **HI**: 19 of 94 registrants are online-only with no premises address at all, and 6 are registered from outside Hawaii (CA, TN, LA). DOH publishes no county, which is correct — Hawaii has no municipal government below county level.
-- **Schema gaps surfaced by real data.** HANDOFF's 14 standard licence types have no entry for California's "Event Organizer" (193 rows) or Colorado's "Operator" (8). Its 7 standard statuses have no entry for California's "Canceled" (1,622) or "Limited Operations" (156), or OLCC's "Inactive" (796). Those rows carry the nearest standard value plus `standard_status_approximate=yes` in extra_details, so an approximation is never mistaken for the regulator's own word. **These need a schema decision.**
+- **Schema gaps surfaced by real data — now settled.** The standard licence types went from 14 to **16** (Event Organizer, Operator) and the standard statuses from 7 to **10** (Limited Operations, Inactive, Canceled), decided on 12 Nov 2026 and recorded in HANDOFF.md with the reasoning. Every regulator word that still has no standard of its own now has a fixed, documented mapping there rather than an improvised one. That took the rows carrying an approximated status from **3,358 down to 1** — Oregon's single "NOT APPROVED", which is a refused application rather than a licence and stays visible and flagged.
+- 144 rows have a deliberately EMPTY standard_status: Maryland's 130 dispensaries and Delaware's 14, because neither regulator publishes a status at all. Empty must never be read as Active.
 
 ## Mid-Atlantic counts: what this table says vs what the reports say
 

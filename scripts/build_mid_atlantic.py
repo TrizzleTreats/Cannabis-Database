@@ -88,7 +88,7 @@ NY_MAP = {
 # The status CODE is more specific than the label: "Inactive" covers expired,
 # surrendered, suspended and cancelled, which must never be merged.
 NY_STATUS = {"LICACT": "Active", "Pending": "Pending", "LICEXP": "Expired",
-             "LICSURR": "Surrendered", "LICSUSPEN": "Suspended", "LICCAN": "Revoked"}
+             "LICSURR": "Surrendered", "LICSUSPEN": "Suspended", "LICCAN": "Canceled"}
 NY_SRC = "NY OCM, Current OCM Licenses (data.ny.gov jskf-tt3q)"
 NY_URL = "https://data.ny.gov/d/jskf-tt3q"
 

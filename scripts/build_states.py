@@ -7,7 +7,7 @@ maps — rather than its own parser. Adding a state means adding a spec.
 
 Two rules run through every spec:
   * A value that does not map is left empty and reported, never guessed.
-  * HANDOFF defines 7 standard statuses. Several states use words that do not
+  * HANDOFF defines 10 standard statuses. Several states use words that do not
     fit any of them (California's "Canceled" and "Limited Operations", Oregon's
     "Inactive"). Those get the nearest standard status AND an explicit
     `standard_status_approximate=yes` in extra_details, so an approximation can
@@ -24,7 +24,8 @@ NE = ROOT / "data" / "clean" / "new_england_licences.csv"
 TODAY = "2026-11-12"
 sys.path.insert(0, str(ROOT / "scripts"))
 
-STANDARD = {"Active", "Provisional", "Pending", "Suspended", "Expired", "Surrendered", "Revoked"}
+STANDARD = {"Active", "Provisional", "Limited Operations", "Pending", "Suspended",
+            "Expired", "Inactive", "Surrendered", "Canceled", "Revoked"}
 LOCAL_ID = "licence_id assigned locally — the regulator publishes no licence number in this source"
 
 
@@ -119,7 +120,7 @@ CA_PROGRAM = {"Adult-Use": "Adult Use", "Medicinal": "Medical",
 CA_STATUS = {"Active": ("Active", False), "Expired": ("Expired", False),
              "Surrendered": ("Surrendered", False), "Revoked": ("Revoked", False),
              "Suspended": ("Suspended", False),
-             "Canceled": ("Surrendered", True), "Limited Operations": ("Active", True)}
+             "Canceled": ("Canceled", False), "Limited Operations": ("Limited Operations", False)}
 
 
 def build_ca(blank, warn):
@@ -130,8 +131,6 @@ def build_ca(blank, warn):
             cat = next((c for pat, c in CA_CAT if re.match(pat, ltype)), "")
             if not cat:
                 warn.append(("CA licenseType", ltype))
-            if cat == "Event Organizer":
-                warn.append(("CA category outside HANDOFF's 14 standard types", "Event Organizer"))
             std, approx = CA_STATUS.get(clean(r["licenseStatus"]), ("", True))
             if not std:
                 warn.append(("CA licenseStatus", clean(r["licenseStatus"])))
@@ -175,7 +174,7 @@ def build_ca(blank, warn):
                     "premises address not published=the DCC withholds it for this licence"
                     if not na(r["premiseStreetAddress"]) else "",
                     "standard_status_approximate=yes — the DCC's own word is in `status`; it has no "
-                    "exact match among HANDOFF's 7 standard statuses" if approx else "") if x),
+                    "exact match among HANDOFF's 10 standard statuses" if approx else "") if x),
             })
             rows.append(row)
     return rows
@@ -188,8 +187,9 @@ OR_CAT = {"RECREATIONAL PRODUCER": "Cultivation", "RECREATIONAL RETAILER": "Reta
           "HEMP HANDLER CERTIFICATE": "Hemp Processor", "HEMP GROWER CERTIFICATE": "Hemp Grower",
           "RESEARCH CERTIFICATE": "Research", "MARIJUANA PROMOTIONAL EVENT": "Event Organizer"}
 OR_STATUS = {"ACTIVE": ("Active", False), "EXPIRED": ("Expired", False),
-             "CANCELLED": ("Surrendered", True), "REVOKED": ("Revoked", False),
-             "SUSPENDED": ("Suspended", False), "INACTIVE": ("Expired", True),
+             "CANCELLED": ("Canceled", False), "REVOKED": ("Revoked", False),
+             "SUSPENDED": ("Suspended", False), "INACTIVE": ("Inactive", False),
+             # A refused application is not a licence; kept visible and flagged.
              "NOT APPROVED": ("Pending", True)}
 
 
@@ -258,17 +258,19 @@ def build_or(blank, warn):
                     "address withheld=OLCC marks this premises 'Exempt from Public Disclosure'; "
                     "only retailer and laboratory addresses are public" if exempt else "",
                     "standard_status_approximate=yes — OLCC's own word is in `status`; it has no exact "
-                    "match among HANDOFF's 7 standard statuses" if approx else "") if x),
+                    "match among HANDOFF's 10 standard statuses" if approx else "") if x),
             })
             rows.append(row)
     return rows
 
 
 # ===================================================================== WASHINGTON
-WA_STATUS = {"ACTIVE (ISSUED)": ("Active", False), "ACTIVE TITLE CERTIFICATE": ("Active", True),
-             "CLOSED (PERMANENT)": ("Surrendered", True), "CLOSED (TEMPORARY)": ("Suspended", True),
-             "EXPIRED": ("Expired", False), "ON HOLD": ("Suspended", True),
-             "FORMER TITLE CERTIFICATE": ("Expired", True)}
+# Mappings fixed in HANDOFF: a title certificate is a licence-adjacent
+# instrument, and "closed" is permanent or temporary rather than its own state.
+WA_STATUS = {"ACTIVE (ISSUED)": ("Active", False), "ACTIVE TITLE CERTIFICATE": ("Active", False),
+             "CLOSED (PERMANENT)": ("Surrendered", False), "CLOSED (TEMPORARY)": ("Suspended", False),
+             "EXPIRED": ("Expired", False), "ON HOLD": ("Suspended", False),
+             "FORMER TITLE CERTIFICATE": ("Expired", False)}
 
 
 def build_wa(blank, warn):
@@ -339,7 +341,7 @@ def build_wa(blank, warn):
                 "scope=RETAIL ONLY — this LCB file covers cannabis retailers and retail certificate "
                 "holders; producer, processor and transport licences are NOT in it",
                 "standard_status_approximate=yes — the LCB's own word is in `status`; it has no exact "
-                "match among HANDOFF's 7 standard statuses" if approx else "") if x),
+                "match among HANDOFF's 10 standard statuses" if approx else "") if x),
         })
         rows.append(row)
     return rows
@@ -518,8 +520,6 @@ def build_co(blank, warn):
                 cat = next((c for pat, c in CO_CAT if re.search(pat, ftype, re.I)), "")
                 if not cat:
                     warn.append(("CO Facility Type", ftype))
-                if cat == "Operator":
-                    warn.append(("CO category outside HANDOFF's 14 standard types", "Operator"))
                 name = clean(r.get("Facility Name"))
                 street = clean(r.get("Street"))
             program = "Medical" if re.search(r"Medical|MMJ", ftype, re.I) else "Adult Use"
