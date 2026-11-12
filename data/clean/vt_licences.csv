@@ -1,0 +1,521 @@
+state,licence_number,business_name,location_type,licence_type,tier,town,expiration_date,source_url,data_as_of
+VT,CLTV0014,"Family Tree, LLC",Mixed,Cultivator,Tier 3,Sheldon,2027-06-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0022,Forest City Cannabis LLC,Indoor,Cultivator,Tier 3,Essex,2027-06-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0032,"Green Mountain Ganja Guys, LLC",Outdoor,Cultivator,Tier 4,Rutland,2027-07-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0049,Rebel East VT LLC DBA Rebel Grown,Mixed,Cultivator,Tier 5,Craftsbury,2027-07-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0054,Green Mountain Scientific Corp,Outdoor,Cultivator,Tier 3,Saint Albans,2027-08-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0056,"The Cannabis Collective LLC, The Cannabis Collective",Outdoor,Cultivator,Tier 3,Morristown,2027-08-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0058,"Old Growth Organics, S Corp; DBA Old Growth Vermont",Outdoor,Cultivator,Tier 3,Danville,2027-07-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0061,"Flower First, LLC",Outdoor,Cultivator,Tier 5,Topsham,2027-09-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0062,Stone Leaf Grow LLC,Mixed,Cultivator,Tier 2,Marshfield,2027-09-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0064,"BOREAS VENTURES LLC, dba LUKAS GREENE",Outdoor,Cultivator,Tier 3,Charlotte,2027-09-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0065,Mend Botanical LLC,Mixed,Cultivator,Tier 2,East Calais,2027-09-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0067,Satori VT LLC,Indoor,Cultivator,Tier 5,MIDDLEBURY,2027-09-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0068,"AIC Cultivators, LLC d/b/a Demeters DG",Indoor,Cultivator,Tier 3,Brattleboro,2027-09-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0070,Jeezum Crow Bud Company LLC,Outdoor,Cultivator,Tier 4,Bridport,2027-09-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0076,Farmers Underground LLC,Mixed,Cultivator,Tier 4,West Glover,2027-10-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0077,"Pinnacle Valley Farms, Inc.",Indoor,Cultivator,Tier 3,Randolph,2027-10-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0079,"Faustini Farms, Faustini",Indoor,Cultivator,Tier 2,Rutland City,2027-01-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0081,"Vermont Select, LLC",Mixed,Cultivator,Tier 2,Hyde Park,2027-10-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0083,Green Mountain Cannabis North,Indoor,Cultivator,Tier 2,St. Albans,2027-10-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0084,Arden's Gardens LLP,Mixed,Cultivator,Tier 2,Wolcott,2027-10-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0086,Mr. Z Craft Cannabis Inc.,Indoor,Cultivator,Tier 3,MIDDLEBURY,2027-10-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0088,Wolf Creek Farm LLC,Mixed,Cultivator,Tier 3,East Calais,2026-11-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0089,"Bern Living Organics, LLC; Bern Living Organics",Indoor,Cultivator,Tier 2,Ferrisburgh,2026-11-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0090,The Clean Cannabis Company,Indoor,Cultivator,Tier 3,Hardwick,2026-11-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0091,Green Mountain Synergy FARM LLC,Mixed,Cultivator,Tier 3,Brandon,2026-11-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0092,Four Clover Corp,Mixed,Cultivator,Tier 2,Eden,2026-11-22 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0094,"First Branch Cannabis, LLC d/b/a First Branch Cannabis",Mixed,Cultivator,Tier 2,Chelsea,2026-11-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0099,Clovis LLC,Mixed,Cultivator,Tier 2,Hyde Park,2027-03-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0100,"Horticultural Professionals 2 LLC, dba Erva",Outdoor,Cultivator,Tier 2,Fairfax,2027-01-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0102,Rainbows End Cannabis LLC  DBA Tangleweed Farm,Mixed,Cultivator,Tier 2,Westminster,2027-01-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0103,Birdseye Botanicals,Outdoor,Cultivator,Tier 2,Castleton,2027-02-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0105,"Medi Leaf Farms, LLC DBA Bushy Beard Cultivation",Indoor,Cultivator,Tier 3,Derby,2027-03-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0107,"Burrington Hill Co., LLC",Mixed,Cultivator,Tier 2,Whitingham,2027-03-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0108,TROMBLY HOUSE OF CANNABIS LLC,Mixed,Cultivator,Tier 3,Chelsea,2027-08-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0109,The Flying Cactus LLC,Indoor,Cultivator,Tier 2,Fair Haven,2027-03-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0233,Great Hill Growers LLC,Outdoor,Cultivator,Tier 3,Groton,2027-04-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0235,"Birdland LLC, Birdland",Outdoor,Cultivator,Tier 2,Athens,2027-06-22 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0239,Superkind Farms LLC,Outdoor,Cultivator,Tier 2,Swanton,2027-07-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0242,Tao Labs LTD CO.,Indoor,Cultivator,Tier 2,Brattleboro,2027-05-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0245,Sunkissed Farm Inc.,Outdoor,Cultivator,Tier 5,Windsor,2027-06-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0247,Sunset Lake Cannabis LLC,Outdoor,Cultivator,Tier 5,South Hero,2027-06-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0249,Treetop Alliance,Outdoor,Cultivator,Tier 2,Elmore,2027-06-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0250,"Full Circle Farm, LLC",Outdoor,Cultivator,Tier 3,Underhill,2027-06-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0252,Pilin’ It Higher Farms LLC,Outdoor,Cultivator,Tier 2,Duxbury,2027-06-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0254,"Urban Herbn, LLC dba Sugar House Solventless",Outdoor,Cultivator,Tier 3,West Charleston,2027-06-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0257,Little River Farms,Outdoor,Cultivator,Tier 2,Johnson,2027-07-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0259,"Next Level Mountain Gardens, LLC",Outdoor,Cultivator,Tier 2,Elmore,2027-07-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0261,Shindig & G's Craft Cannabis LLC,Outdoor,Cultivator,Tier 3,Irasburg,2027-07-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0262,Meadow Lark Farm,Outdoor,Cultivator,Tier 2,Monkton,2027-07-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0265,"Dalen Ltd., dba Blue Sage",Mixed,Cultivator,Tier 3,Starksboro,2026-11-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0291,Midnight Farm,Mixed,Cultivator,Tier 3,St Johnsbury,2027-09-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0293,"Bernis Dobis, LLC DBA The Hashstead",Mixed,Cultivator,Tier 2,Colchester,2027-08-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0294,"Cann Able Farms, LLC dba Veracious Cultivation",Indoor,Cultivator,Tier 2,Alburgh,2027-09-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0299,Horseshoe Farms Limited Liability Company DBA Rambler Cannabis Supply,Outdoor,Cultivator,Tier 2,Pownal,2027-10-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0305,Vermont Kind Cultivation,Mixed,Cultivator,Tier 3,Barton,2026-11-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0309,"Kingdom Boyz, LLC",Indoor,Cultivator,Tier 2,West Charleston,2027-02-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0310,High Brix Cannabis Vermont,Mixed,Cultivator,Tier 2,Hyde Park,2027-02-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0354,Permaganix LLC d/b/a Permaganix,Indoor,Cultivator,Tier 2,Mount Holly,2027-03-27 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0356,"Strange Kloudz, LLC",Indoor,Cultivator,Tier 3,Bradford,2027-04-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0357,Vermont Label LLC,Indoor,Cultivator,Tier 4,West Pawlet,2027-04-22 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0358,Apollo Legacy LLC,Outdoor,Cultivator,Tier 2,Berlin,2027-04-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0359,Blondie's Bud Company,Outdoor,Cultivator,Tier 3,Brandon,2027-05-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0360,Last Minute Farm,Outdoor,Cultivator,Tier 2,Weybridge,2027-07-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0361,Vermont Greenery LLC,Outdoor,Cultivator,Tier 2,Fairfax,2027-08-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0362,Up & Up Farm LLC,Outdoor,Cultivator,Tier 2,North Ferrisburgh,2027-05-22 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0363,"1958, LLC",Outdoor,Cultivator,Tier 2,Windsor,2027-07-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0364,MR TREE LLC,Indoor,Cultivator,Tier 2,South Burlington,2027-09-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0365,Sun Valley Herbcraft,Outdoor,Cultivator,Tier 2,Brandon,2027-06-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0366,Test - CLTV0366,Indoor,Cultivator,Tier 2,Montpelier,2027-07-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0367,"Magic Mann Cultivation & Processing, LLC",Indoor,Cultivator,Tier 2,Essex Junction,2027-08-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0368,Monty Vermont LLC,Indoor,Cultivator,Tier 2,West haven,2027-09-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0370,"Ticino Bardwell Enterprise, LLC; DBA, Grateful Grow",Indoor,Cultivator,Tier 2,West Dover,2027-10-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0371,Big House Cultivation,Indoor,Cultivator,Tier 2,Randolph,2026-11-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0372,Batchworth LLC  DBA Depot Cultivators,Indoor,Cultivator,Tier 2,Windsor,2026-11-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0373,Natures gift,Indoor,Cultivator,Tier 2,Hyde Park,2026-11-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0374,"HVA Farms, LLC",Indoor,Cultivator,Tier 2,Bennington,2026-11-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0376,"Green Mountain Boys, LLC",Outdoor,Cultivator,Tier 2,North Westminster,2027-10-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0377,Armetra Wilcox LLC DBA Boujee Bones,Outdoor,Cultivator,Tier 2,Whitingham,2027-06-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0378,"Green Mountain Sativa, LLC",Outdoor,Cultivator,Tier 2,Stockbridge,2027-04-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0379,"Mountain Girl Cannabis, Inc.",Mixed,Cultivator,Tier 2,West Rutland,2027-02-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0380,Haldeman Farm LLC,Outdoor,Cultivator,Tier 2,Danville,2027-03-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0381,Rusted Roots LLC,Mixed,Cultivator,Tier 2,Charlotte,2027-03-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0382,Burlington Kush Factory,Mixed,Cultivator,Tier 4,Townshend,2027-08-23 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0385,"Vermont Patients Alliance, Inc",Indoor,Cultivator,Tier 5,Middlesex,2026-12-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0386,"New England Cannabis Partners, LLC.",Indoor,Cultivator,Tier 2,Saint Albans,2027-08-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0387,Warm Green,Outdoor,Cultivator,Tier 2,South Royalton,2027-07-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0388,Moon Lite Cultivation LLC,Outdoor,Cultivator,Tier 2,Morrisville,2027-07-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,CLTV0389,Octogenarian Enterprises LLC D/B/A Addison Pure,Outdoor,Cultivator,Tier 2,Addison,2027-10-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,INTG0002,Vermont Patients Alliance,Integrated,Integrated,No Tier,Middlesex,2027-06-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,INTG0003,"FWR, Inc. DBA Grassroots Vermont DBA HelloHi",Integrated,Integrated,No Tier,Brandon,2027-08-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0001,Fog Valley Farm LLC,Manufacturer,Manufacturer,Tier 2,MIDDLEBURY,2027-09-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0002,"Family Tree, LLC",Manufacturer,Manufacturer,Tier 2,Sheldon,2027-09-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0003,"Dalen Ltd., d.b.a. Blue Sage",Manufacturer,Manufacturer,Tier 2,Starksboro,2027-09-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0004,"The Cannabis Collective, LLC",Manufacturer,Manufacturer,Tier 2,Morristown,2027-10-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0007,"Glocanna, LLC",Manufacturer,Manufacturer,Tier 2,South Burlington,2027-10-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0008,X-Tract Vermont Inc,Manufacturer,Manufacturer,Tier 3,St. Albans,2027-10-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0011,Satori VT,Manufacturer,Manufacturer,Tier 3,MIDDLEBURY,2027-11-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0012,Tilia Processing LLC,Manufacturer,Manufacturer,Tier 3,Hardwick,2026-11-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0017,Altitude Drops,Manufacturer,Manufacturer,Tier 2,Brownington,2026-11-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0018,"Trichome Ranch, LLC",Manufacturer,Manufacturer,Tier 2,Rochester,2027-03-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0019,Green Mountain Scientific Corp.,Manufacturer,Manufacturer,Tier 3,Hardwick,2027-08-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0020,Highly Rooted,Manufacturer,Manufacturer,Tier 2,Morristown,2026-12-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0023,"Tir Na Nog Edibles, LLC",Manufacturer,Manufacturer,Tier 2,Waitsfield,2026-12-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0026,"Vermont Herbal Essentials, LLC (DBA: Vermont Rosin)",Manufacturer,Manufacturer,Tier 2,Morrisville,2027-01-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0027,"Vermont Kind Manufacturing, LLC",Manufacturer,Manufacturer,Tier 3,Barton,2027-01-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0028,Bordertown Apothecary LLC,Manufacturer,Manufacturer,Tier 1,Putney,2027-01-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0031,"Stone Leaf Process, LLC",Manufacturer,Manufacturer,Tier 2,Windsor,2027-02-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0032,Freedom Flower llc,Manufacturer,Manufacturer,Tier 2,Morrisville,2027-02-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0034,"Sunset Lake Cannabis, LLC",Manufacturer,Manufacturer,Tier 2,South Hero,2027-02-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0035,Formulation Station Vt LLC        dba-  Formulation Station,Manufacturer,Manufacturer,Tier 2,Colchester,2027-02-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0036,"Drink Taunik, LLC / TCo.",Manufacturer,Manufacturer,Tier 2,Hinesburg VT,2027-02-23 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0037,Flower First,Manufacturer,Manufacturer,Tier 2,Topsham,2027-02-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0039,"Bear Mother Cannabis, LLC",Manufacturer,Manufacturer,Tier 2,Shelburne,2027-02-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0041,Somewhere On The Mountain,Manufacturer,Manufacturer,Tier 2,Brandon,2027-03-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0042,"Vermont Select, LLC",Manufacturer,Manufacturer,Tier 2,Jeffersonville,2027-03-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0043,AIC Cultivators LLC,Manufacturer,Manufacturer,Tier 2,Brattleboro,2027-03-22 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0044,Carp & Sing Inc. dba Gaston Weed,Manufacturer,Manufacturer,Tier 3,Williston,2027-03-31 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0045,The Clean Cannabis Company DBA Nectar,Manufacturer,Manufacturer,Tier 2,Hardwick,2027-04-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0052,SA Cultivation LLC d/b/a/ First Chair Farms,Manufacturer,Manufacturer,Tier 2,Plymouth,2027-05-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0054,"Theory Wellness of VT Retail, LLC.",Manufacturer,Manufacturer,Tier 2,Brattleboro,2027-05-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0056,Valley Organics LLC - DBA - The Evidence Room,Manufacturer,Manufacturer,Tier 2,Jeffersonville,2027-06-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0057,Tao Labs LTD CO.,Manufacturer,Manufacturer,Tier 2,Brattleboro,2027-06-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0059,"Urban Herbn, LLC dba Sugar House Solventless",Manufacturer,Manufacturer,Tier 2,West Charleston,2027-07-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0061,Moon Rise Alchemy LLC,Manufacturer,Manufacturer,Tier 1,Jeffersonville,2027-07-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0062,"Last Minute Farm, LLC",Manufacturer,Manufacturer,Tier 2,Weybridge,2027-07-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0064,"Craft Cannabis Co. Manufacturing, LLC",Manufacturer,Manufacturer,Tier 2,Morristown,2027-07-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0065,"Rhize Cannabis Company, LLC",Manufacturer,Manufacturer,Tier 2,Fairfax,2027-07-27 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0066,"Vermont Essentials Manufacturing, LLC d/b/a Vermont Essentials",Manufacturer,Manufacturer,Tier 2,Colchester,2027-08-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0067,RootLand Cannabis LLC,Manufacturer,Manufacturer,Tier 1,Danby,2027-08-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0068,"Bern Living Organics, LLC",Manufacturer,Manufacturer,Tier 2,Burlington,2027-08-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0070,"Tumbleweed Sugar Co., LLC",Manufacturer,Manufacturer,Tier 2,Colchester,2027-09-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0072,"Vermont Terps Cannabis, LLC",Manufacturer,Manufacturer,Tier 2,Proctor,2027-09-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0073,High Society - Test - Manufacturing,Manufacturer,Manufacturer,Tier 1,Montpelier,2027-05-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0075,"Sun Valley Herbcraft, LLC; Sun Valley Herbcraft; The Hashery",Manufacturer,Manufacturer,Tier 2,Brandon,2027-10-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0079,"Green Mountain Boys, LLC",Manufacturer,Manufacturer,Tier 2,North Westminster,2027-10-23 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0080,VherBio Labs LLC,Manufacturer,Manufacturer,Tier 2,Randolph,2026-11-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0083,"Ridgetopfarm,LLC",Manufacturer,Manufacturer,Tier 2,Springfield,2026-12-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0086,Mood Food LLC,Manufacturer,Manufacturer,Tier 2,Vernon,2026-12-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0088,"New England Cannabis Partners, LLC d/b/a MothaPlant",Manufacturer,Manufacturer,Tier 2,St. Albans,2027-01-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0094,Dirigo Cannabis VT,Manufacturer,Manufacturer,Tier 3,MIDDLEBURY,2027-09-27 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0095,"Armetra Wilcox LLC, DBA Boujee Bones",Manufacturer,Manufacturer,Tier 1,Whitingham,2027-05-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0096,Treetop Alchemy,Manufacturer,Manufacturer,Tier 2,Wolcott,2027-06-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0097,Monarch Cultivation LLC DBA. Nug Nectar,Manufacturer,Manufacturer,Tier 1,East Haven,2027-06-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0098,Garden's Gold LLC DBA Garden's Gold,Manufacturer,Manufacturer,Tier 2,Chester,2027-06-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0099,"Strange Kloudz, LLC",Manufacturer,Manufacturer,Tier 2,Bradford,2027-07-17 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0101,Clovis LLC,Manufacturer,Manufacturer,Tier 2,Morrisville,2027-07-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0103,Birdseye Botanicals,Manufacturer,Manufacturer,Tier 2,Castleton,2027-08-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0104,"Magic Mann Cultivation & Processing, LLC",Manufacturer,Manufacturer,Tier 3,Essex Junction,2027-08-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0105,Sunkissed Farm Inc.,Manufacturer,Manufacturer,Tier 2,Windsor,2027-08-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0106,Resin Head Extraction LLC,Manufacturer,Manufacturer,Tier 2,Wolcott,2027-08-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0113,Caledonia Cannabis,Manufacturer,Manufacturer,Tier 1,Stannard,2026-11-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0114,Permaganix LLC d/b/a Permaganix,Manufacturer,Manufacturer,Tier 2,Mount Holly,2026-11-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0115,"Verdiggity Living Organics, LLC; Verdiggity Living Organics",Manufacturer,Manufacturer,Tier 2,Manchester,2026-11-27 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0117,Haute & Heady LLC DBA Haute and Heady,Manufacturer,Manufacturer,Tier 2,Winooski,2026-12-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0118,"The Dank Closet Cannabis Company, LLC",Manufacturer,Manufacturer,Tier 2,Barton,2026-12-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0120,"Mountain Girl Cannabis, Inc.",Manufacturer,Manufacturer,Tier 2,West Rutland,2026-12-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0123,Test - MANU0123,Manufacturer,Manufacturer,Tier 1,Montpelier,2027-02-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0124,"Modern Day Kannabis, Cannasations Pre-Rolls",Manufacturer,Manufacturer,Tier 2,Morristown,2027-03-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0125,Inti's Fire,Manufacturer,Manufacturer,Tier 2,Woodbury,2027-04-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0126,Weed Connections LLC,Manufacturer,Manufacturer,Tier 1,mendon,2027-05-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0127,Trichome VT,Manufacturer,Manufacturer,Tier 1,Essex Junction,2027-05-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0128,Weeping Willow Corp,Manufacturer,Manufacturer,Tier 2,New Haven,2027-05-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0129,High Priestess,Manufacturer,Manufacturer,Tier 1,Brattleboro,2027-06-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0130,"Lee Lynn Prerolls, LLC",Manufacturer,Manufacturer,Tier 2,Danville,2027-06-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0132,"FWR, Inc. DBA Grassroots Vermont DBA HelloHi",Manufacturer,Manufacturer,Tier 2,South Burlington,2027-05-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0133,"Apple Soup, LLC",Manufacturer,Manufacturer,Tier 1,Barre,2027-10-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0134,Turkey Hollow Cannabis,Manufacturer,Manufacturer,Tier 2,Barnard,2027-11-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0135,"HVA Farms, LLC",Manufacturer,Manufacturer,Tier 2,Bennington,2026-12-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0136,"Vermont Patients Alliance, Inc",Manufacturer,Manufacturer,Tier 3,Middlesex,2026-12-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0137,"Swift Hawk Canna, LLC.",Manufacturer,Manufacturer,Tier 1,Lincoln,2026-12-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0138,Tall Grass Farm Ltd. CO. dba Green Mountain High Goods,Manufacturer,Manufacturer,Tier 1,Charlotte,2027-02-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0139,"Small Family Craft Cannabis, LLC and as d/b/a Dark.Souls' T.H.C.",Manufacturer,Manufacturer,Tier 1,EAST BURKE,2027-02-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0140,"Kingdom Boyz, LLC",Manufacturer,Manufacturer,Tier 2,Derby,2027-02-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0141,Batchworth LLC DBA Depot Cultivators,Manufacturer,Manufacturer,Tier 2,Windsor,2027-03-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0142,Burlington Kush Factory LLC DBA Constellate,Manufacturer,Manufacturer,Tier 2,Townshend,2027-04-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0143,"Vermont Alter-Native, LLC",Manufacturer,Manufacturer,Tier 2,Alburgh,2027-04-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0144,"ALICEBEDIBLES ,LLC",Manufacturer,Manufacturer,Tier 2,Town of St. Albans,2027-04-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0145,Apex Arboretum dba Upstate Elevator,Manufacturer,Manufacturer,Tier 2,Burlington,2027-05-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0146,"EMCEE TEA, LLC d/b/a Adaptive Manufacturing",Manufacturer,Manufacturer,Tier 3,White River Junction,2027-05-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0147,Green Mountain Cure LLC,Manufacturer,Manufacturer,Tier 1,Jacksonville,2027-05-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0148,"Cold Smoke, LLC; Cold Smoke Cannabis",Manufacturer,Manufacturer,Tier 2,grafton,2027-07-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0149,Moonblazer,Manufacturer,Manufacturer,Tier 2,Chester,2027-08-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,MANU0150,Wicked Windy Farms LLC,Manufacturer,Manufacturer,Tier 1,Addison,2027-09-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,PROP0001,"Rebel East VT, Rebel Grown",Unknown Location,Propagator,No Tier,Craftsbury,2027-05-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,PROP0002,Few True Seeds LLC DBA High Pines Cultivation,Unknown Location,Propagator,No Tier,Brandon,2027-06-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,PROP0003,"Emerald Visions LLC, Emerald Visions",Unknown Location,Propagator,No Tier,Alburgh,2027-06-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,PROP0004,Birdseye Botanicals,Unknown Location,Propagator,No Tier,Castleton,2027-07-31 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,PROP0005,Ember Ridge Cannabis Cultivation,Unknown Location,Propagator,No Tier,Saxtons river,2026-12-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0001,"Mountain Girl Cannabis, Inc.",Retailer,Retailer,No Tier,Rutland,2027-09-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0002,Park Rec LLC d/b/a/ FLORA Cannabis,Retailer,Retailer,No Tier,MIDDLEBURY,2027-09-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0003,"Vermont Bud Barn, LLC - DBA VT Bud Barn - Brattleboro Weed Dispensary",Retailer,Retailer,No Tier,Brattleboro,2027-10-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0004,Apex Arboretum Inc. dba Upstate Elevator Dispensary; dba Upstate Elevator Operators,Retailer,Retailer,No Tier,Burlington,2027-10-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0007,"Gram Central, LLC",Retailer,Retailer,No Tier,Montpelier,2027-10-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0008,"The Green Man, LLC",Retailer,Retailer,No Tier,Saint Johnsbury Center,2027-10-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0009,"Native East, LLC DBA Winooski Organics",Retailer,Retailer,No Tier,Winooski,2027-10-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0010,Capital Cannabis Company Inc.,Retailer,Retailer,No Tier,Montpelier,2027-10-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0011,Kingdom Kind,Retailer,Retailer,No Tier,Barton,2027-10-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0012,Juniper Lane LLC dba Juniper Lane,Retailer,Retailer,No Tier,Bennington,2027-10-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0013,Magic Mann Cannabis Inc. DBA Magic Mann,Retailer,Retailer,No Tier,Essex,2027-11-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0015,The High Country,Retailer,Retailer,No Tier,Derby,2027-11-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0016,"Higher Elevation, LLC",Retailer,Retailer,No Tier,Morrisville,2027-11-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0017,"Vermont Hemp Craft LLC, d.b.a. Green Leaf Central",Retailer,Retailer,No Tier,Burlington,2026-11-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0018,"Clover VT LLC, DBA Sunday Drive",Retailer,Retailer,No Tier,Woodstock,2026-11-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0020,Forbins Reserve Inc.,Retailer,Retailer,No Tier,Barre,2026-11-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0021,Emeraldrose Retail LLC,Retailer,Retailer,No Tier,Bristol,2026-11-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0022,Somewhere On The Mountain,Retailer,Retailer,No Tier,Rutland,2026-11-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0023,Northeast Kannabis LLC.,Retailer,Retailer,No Tier,Saint Johnsbury,2026-11-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0024,"Ratu's Cannabis Supply, LLC",Retailer,Retailer,No Tier,Wilmington,2026-11-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0026,Valley Meade Dispensary,Retailer,Retailer,No Tier,Waitsfield,2026-11-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0027,Pine Grove Organics LLC,Retailer,Retailer,No Tier,Brandon,2026-12-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0029,T.T.G LLC DBA Vermont Trap House,Retailer,Retailer,No Tier,Fair Haven,2026-12-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0030,Cannabis Caboose DBA De Pot Shop,Retailer,Retailer,No Tier,Windsor,2026-12-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0031,"Stone Leaf Cannabis, LLC d/b/a/ Stone Leaf Dispensary",Retailer,Retailer,No Tier,Windsor,2026-12-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0032,"Dalen Ltd.,  d.b.a. Blue Sage",Retailer,Retailer,No Tier,Waitsfield,2026-12-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0033,"The Tea House, LLC",Retailer,Retailer,No Tier,White River Junction,2026-12-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0034,Theory Wellness of VT Retail LLC,Retailer,Retailer,No Tier,Brattleboro,2026-12-27 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0035,Green Union LLC d/b/a Green Union Dispensary,Retailer,Retailer,No Tier,Plymouth,2026-12-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0036,"VherBio, LLC dba Polestar Cannabis",Retailer,Retailer,No Tier,Randolph,2026-12-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0037,"Mary Jane Mountain, LLC",Retailer,Retailer,No Tier,Montgomery,2026-12-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0038,"Big Intelligence Group, LLC  dba/ Wild Legacy Cannabis",Retailer,Retailer,No Tier,Morrisville,2027-02-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0039,"Bern Legacy Cannabis, LLC : dba Bern Gallery Dispensary",Retailer,Retailer,No Tier,Burlington,2027-02-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0040,"Cann Maxx, Inc.; Cann Maxx; Cannabis Maximus",Retailer,Retailer,No Tier,Brattleboro,2027-02-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0041,"Matterhorn Apothecary, LLC",Retailer,Retailer,No Tier,Wilmington,2027-02-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0042,"Silver Therapeutics of Bennington, LLC",Retailer,Retailer,No Tier,Bennington,2027-02-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0044,Sharp Family Farms d/b/a The Gas Station,Retailer,Retailer,No Tier,Rutland,2027-03-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0045,"New England Cannabis Partners, LLC, d/b/a MothaPlant",Retailer,Retailer,No Tier,St. Albans,2027-03-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0046,BB CANN Inc. DBA Float On,Retailer,Retailer,No Tier,Burlington,2027-03-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0047,The Herb Closet LLC,Retailer,Retailer,No Tier,Burlington,2027-03-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0048,"GoodFire, LLP DBA Vermont GoodFire Cannabis",Retailer,Retailer,No Tier,Waterbury Center,2027-03-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0049,802Apoth LLC d/b/a TRUE-802 Cannabis,Retailer,Retailer,No Tier,Burlington,2027-03-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0051,Cloud9 Cannabis LLC,Retailer,Retailer,No Tier,Fair Haven,2027-04-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0052,Mary Jane Junction VT LLC,Retailer,Retailer,No Tier,St. Albans City,2027-04-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0053,"Kingdom Boyz ,LLC",Retailer,Retailer,No Tier,Derby,2027-05-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0055,"Vermont Alter-Native, LLC d/b/a Vermont Alter-Native",Retailer,Retailer,No Tier,Alburgh,2027-05-31 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0056,31° North Holdings LLC,Retailer,Retailer,No Tier,Waterbury Center,2027-06-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0057,"TMM Dispensary, LLC",Retailer,Retailer,No Tier,Springfield,2027-06-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0058,Devils Den Cannabis Company,Retailer,Retailer,No Tier,Bradford,2027-06-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0060,"The Dank Closet Dispensary, LLC",Retailer,Retailer,No Tier,Barton,2027-07-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0061,Kushies LLC,Retailer,Retailer,No Tier,Derby,2027-07-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0062,Little City Greens,Retailer,Retailer,No Tier,Vergennes,2027-07-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0063,Timeline Products LLC DBA Rimeline Dispensary,Retailer,Retailer,No Tier,Rawsonville / Jamaica,2027-08-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0064,DP Holdings LLC DBA The Bud Stop,Retailer,Retailer,No Tier,Danville,2027-09-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0065,Green Mountain Cannabis Works LLC,Retailer,Retailer,No Tier,Manchester Center,2027-09-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0066,Vermont Terps Cannabis LLC,Retailer,Retailer,No Tier,Pittsford,2027-09-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0067,GoldMill Group Ltd. Co DBA Down to the Roots,Retailer,Retailer,No Tier,Chester,2027-09-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0068,High Society - Retail,Retailer,Retailer,No Tier,Montpelier,2027-10-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0069,"Carp & Sing, Inc d.b.a Gaston Weed Company",Retailer,Retailer,No Tier,Essex Junction,2027-10-17 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0070,"The Five Seasons Cannabis Company, LLC",Retailer,Retailer,No Tier,White River Junction,2027-10-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0071,"CRAFT CANNABIS CO. RETAIL, LLC",Retailer,Retailer,No Tier,Morrisville,2027-11-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0072,"Palatino Ronci LLC, DBA Garcia's Cannabis Collective",Retailer,Retailer,No Tier,Burlington,2027-11-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0073,Sunset Lake Cannabis LLC D.B.A Lake Effect VT,Retailer,Retailer,No Tier,South Hero,2026-11-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0074,"Sawyer Dog Retail, LLC d/b/a Milton Remedies",Retailer,Retailer,No Tier,Milton,2027-11-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0075,Something Wicked Cannabis Company,Retailer,Retailer,No Tier,Bethel,2026-12-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0076,802 420 LLC D/B/A Rolling Twenties,Retailer,Retailer,No Tier,Rockingham,2026-12-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0077,"High Fidelity, LLC DBA Lucky You",Retailer,Retailer,No Tier,Burlington,2026-12-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0078,BWell VT Inc. DBA: Poultney Cannabis Supply,Retailer,Retailer,No Tier,Poultney,2027-01-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0079,The Hidden Grove LLC,Retailer,Retailer,No Tier,White River Junction,2027-02-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0080,Heybud Collective Corp,Retailer,Retailer,No Tier,Burlington,2027-02-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0081,"Green Mountain Therapeutics, LLC  d/b/a Green Mountain Therapeutics",Retailer,Retailer,No Tier,Londonderry,2027-03-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0082,Mill 47 LLC d/b/a/ The Wick Cannabis Market,Retailer,Retailer,No Tier,Hardwick,2027-03-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0083,One Stop Weed Shop LLC DBA Vveeds,Retailer,Retailer,No Tier,Wolcott,2027-06-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0084,"Juana's Garden Cannabis Boutique, LLC",Retailer,Retailer,No Tier,Montpelier,2027-06-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0085,Judy's Holistic Solution LLC,Retailer,Retailer,No Tier,Burlington,2027-07-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0086,Test - RTLR0086,Retailer,Retailer,No Tier,Montpelier,2027-07-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0087,SATORI VT HOLDINGS LLC DBA THE HERBAL COLLECTIVE (WEED DISPENSARY),Retailer,Retailer,No Tier,MIDDLEBURY,2027-08-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0088,Simpson Brook Retail LLC DBA Bushy Beard Dispensary,Retailer,Retailer,No Tier,EAST BURKE,2027-08-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0089,Sweetspot Vermont LLC (DBA Sweetspot Farms/ DBA Sweetspot Dispensary),Retailer,Retailer,No Tier,Essex Junction,2027-08-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0090,Ninny Goat & Co.,Retailer,Retailer,No Tier,Fairlee,2027-08-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0091,"Clean Country Dispensary, LLC DBA Notch Nugs",Retailer,Retailer,No Tier,Cambridge,2027-09-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0092,"JGMJ, LLC DBA Green Peak Dispensary",Retailer,Retailer,No Tier,Newfane,2027-09-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0093,Nonna VT LLC DBA West Street Cannabis,Retailer,Retailer,No Tier,Rutland,2027-09-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0094,"VT Green Castle Reserve, LLC DBA: Castle Cannabis",Retailer,Retailer,No Tier,Johnson,2027-09-27 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0095,Freedom Flower Direct Inc,Retailer,Retailer,No Tier,Morrisville,2027-10-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0096,"Verdiggity Living Organics, LLC; Verdiggity Living Organics",Retailer,Retailer,No Tier,Manchester Center,2027-10-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0097,"Killington Mountain Dispensary, LLC",Retailer,Retailer,No Tier,Killington,2027-10-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0098,"Dames Inc, Dames",Retailer,Retailer,No Tier,Barre City,2027-10-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0099,"MSW LLC, DBA Best Buds Dispensary",Retailer,Retailer,No Tier,Morrisville,2027-11-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0100,Sunkissed Farm Inc.,Retailer,Retailer,No Tier,Woodstock,2027-11-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0101,Flower First LLC d/b/a/ Sonny's,Retailer,Retailer,No Tier,Groton,2027-11-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0102,"Craftsbury Cannabis, LLC",Retailer,Retailer,No Tier,Craftsbury,2026-11-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0103,Winterland Haze LLC,Retailer,Retailer,No Tier,Montpelier,2026-11-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0104,"Woolly Mammoth Cannabis, LLC",Retailer,Retailer,No Tier,Woodstock,2026-11-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0105,GREEN HAVEN HERBALS LLC,Retailer,Retailer,No Tier,Burlington,2026-11-22 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0106,"3 J's Cannabis, LLC",Retailer,Retailer,No Tier,Milton,2026-11-27 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0107,"Vermont Cannabis Cafe LLC, d/b/a Vermont  Cannabis Cafe Dispensary",Retailer,Retailer,No Tier,Rutland,2026-12-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0108,The Buddega LLC,Retailer,Retailer,No Tier,Springfield,2026-12-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0109,Little Amsterdam,Retailer,Retailer,No Tier,Rutland,2026-12-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0110,Lovely Cannabis LLC DBA The Greenhouse,Retailer,Retailer,No Tier,Springfield,2026-12-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0111,"VT Strong, LLC",Retailer,Retailer,No Tier,Barre,2026-12-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0112,Royal Bud LLC,Retailer,Retailer,No Tier,Pownal,2026-12-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0113,"Ravendel, LLC d/b/a The High Bar",Retailer,Retailer,No Tier,Essex Junction,2026-12-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0114,Lucky 7 LLC,Retailer,Retailer,No Tier,Brandon,2026-12-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0115,Happy Trees Co DBA Dome City,Retailer,Retailer,No Tier,Winooski,2026-12-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0116,"Herbmont Inc., Herbmont",Retailer,Retailer,No Tier,Burlington,2027-01-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0117,MontyVTStore LLC,Retailer,Retailer,No Tier,Pittsford,2027-01-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0118,AMT Retail LLC d/b/a/ iDeal Cannabis,Retailer,Retailer,No Tier,Sharon,2027-01-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0119,OTC VT LLC DBA The Leaf,Retailer,Retailer,No Tier,Brattleboro,2027-02-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0120,"FWR, Inc. DBA Grassroots Vermont DBA HelloHi",Retailer,Retailer,No Tier,Winooski,2027-05-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,RTLR0121,"Vermont Patients Alliance, Inc",Retailer,Retailer,No Tier,Waterbury Ctr,2026-12-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0008,Green Mountain Kana,Mixed,Cultivator,Tier 1,Chelsea,2027-06-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0009,"Clover Hill Cannabis, LLC",Indoor,Cultivator,Tier 1,South Strafford,2027-06-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0012,Green Mountain Grow Lab LLC DBA Edward's,Outdoor,Cultivator,Tier 1,Hartland,2027-06-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0019,GEEBEES LLC,Mixed,Cultivator,Tier 1,Irabsurg,2027-06-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0020,Emerald Rose Farms LLC,Indoor,Cultivator,Tier 1,Ripton,2027-06-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0023,"VT Green Castle Reserve, LLC, DBA Castle Cannabis",Indoor,Cultivator,Tier 1,Johnson,2027-06-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0024,Hella Gud LLC,Outdoor,Cultivator,Tier 1,Richford,2027-07-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0031,"Ben Wilcox Enterprises, LLC dba Off Piste Farm",Outdoor,Cultivator,Tier 1,Sutton,2027-07-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0034,Crystal Mountain LLC,Outdoor,Cultivator,Tier 1,Barton,2027-07-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0037,High Mountain Homegrown LLC,Outdoor,Cultivator,Tier 1,Townshend,2027-07-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0038,"Craft Cannabis of Vermont, LLC",Indoor,Cultivator,Tier 1,Vernon,2027-07-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0039,Ripple Communications,Outdoor,Cultivator,Tier 1,Jeffersonville,2027-07-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0043,Brookfield Buds LLC d/b/a Campfire Hash Co.,Outdoor,Cultivator,Tier 1,Brookfield,2027-07-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0045,Bizzee Beez Organics L.L.C,Outdoor,Cultivator,Tier 1,Bristol,2027-07-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0046,Bud Bird Farm,Outdoor,Cultivator,Tier 1,Sutton,2027-09-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0053,"Backwoods Farm, LLC",Outdoor,Cultivator,Tier 1,Bridgewater Corners,2027-07-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0055,TrichomeVT,Outdoor,Cultivator,Tier 1,Essex Junction,2027-10-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0056,Birdman inc. Birdman Vermont,Indoor,Cultivator,Tier 1,Braintree,2027-07-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0057,"OK Organix LLC, dba OK Farms",Outdoor,Cultivator,Tier 1,West haven,2027-08-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0061,BACKCOUNTRY BOTANICALS LLC.,Mixed,Cultivator,Tier 1,Montgomery Center,2027-08-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0064,Snowbird Botanicals LLC,Mixed,Cultivator,Tier 1,Barnet,2027-08-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0066,Montwood Hollow LLC,Outdoor,Cultivator,Tier 1,East Brookfield,2027-08-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0067,"Green Mountain Gold Farm, L.L.C.",Outdoor,Cultivator,Tier 1,Corinth,2027-08-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0073,Cavelion LC,Mixed,Cultivator,Tier 1,Woodstock,2027-08-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0075,Cloudy Day Farm LLC,Outdoor,Cultivator,Tier 1,White River Junction,2027-08-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0076,Life Arises Farm LLC,Outdoor,Cultivator,Tier 1,Wolcott,2027-08-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0083,"Hidden Leaf Homestead, LLC",Outdoor,Cultivator,Tier 1,South Londonderry,2027-08-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0086,Mad River Terps LLC,Indoor,Cultivator,Tier 1,Starksboro,2027-08-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0087,Mythic Gardens,Outdoor,Cultivator,Tier 1,East Corinth,2027-08-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0089,"“Hidden Valley Farm, LLC D.B.A. Kingdom Canna”",Mixed,Cultivator,Tier 1,Montgomery Center,2027-08-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0094,Sun Road Farms LLC; Sun Road Farms,Outdoor,Cultivator,Tier 1,Barnard,2027-09-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0096,"Flavorline Cannabis Company, LLC",Mixed,Cultivator,Tier 1,Jay,2027-09-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0103,Florist VT LLC,Mixed,Cultivator,Tier 1,Starksboro,2027-09-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0104,BIG Intelligence Group LLC DBA/ Wild Legacy Cannabis,Indoor,Cultivator,Tier 1,Worcester,2027-09-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0106,Tree Frog Farms LLC,Outdoor,Cultivator,Tier 1,Pownal,2027-09-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0108,RockLake,Indoor,Cultivator,Tier 1,Montgomery Center,2027-09-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0110,Green Mountain Gardens,Mixed,Cultivator,Tier 1,Bellows Falls,2027-09-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0113,Choice Terps LLC,Indoor,Cultivator,Tier 1,Highgate Center,2027-09-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0114,45 North Nurseries,Outdoor,Cultivator,Tier 1,Stowe,2027-09-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0115,Vermont Green Buds LLC,Outdoor,Cultivator,Tier 1,East Wallingford,2027-09-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0118,"Green Mountain Dreams, LLC; Green Mountain Dreams",Indoor,Cultivator,Tier 1,Franklin,2027-09-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0119,"Grease Line Cannabis, LLC",Indoor,Cultivator,Tier 1,Weathersfield,2027-09-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0121,"Fern's Flowers, LLC; Fern's Flowers",Indoor,Cultivator,Tier 1,Proctorsville,2027-09-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0124,Sugarleaf LLC,Mixed,Cultivator,Tier 1,Westford,2027-09-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0125,Cabot Cannabis Cooperative,Outdoor,Cultivator,Tier 1,Cabot,2027-09-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0126,"Honey Tree Farm, LLC",Mixed,Cultivator,Tier 1,Barre,2027-09-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0127,"JP EAMES LLC, DBA SUN DAY FARM",Outdoor,Cultivator,Tier 1,Sutton,2027-09-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0131,"Smoke Ranch, LLC. (dba Smoke Ranch and Smoke Ranch Redemption)",Mixed,Cultivator,Tier 1,Guilford,2027-09-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0132,Snug Farm L.L.C.,Outdoor,Cultivator,Tier 1,Ripton,2027-09-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0134,SA Cultivation LLC d/b/a/ First Chair Farms,Indoor,Cultivator,Tier 1,Plymouth,2027-09-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0135,RootLand Cannabis LLC,Mixed,Cultivator,Tier 1,Danby,2027-09-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0136,"The Dank Closet, LLC",Mixed,Cultivator,Tier 1,Barton,2027-09-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0137,Dedicated.,Indoor,Cultivator,Tier 1,Ferrisburgh,2027-09-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0142,Sunny View Farm llc,Indoor,Cultivator,Tier 1,Jericho,2027-10-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0145,"Green Fish Family Farm, LLC",Indoor,Cultivator,Tier 1,Huntington,2027-10-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0147,Valley Meade Farm,Mixed,Cultivator,Tier 1,Waitsfield,2027-10-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0149,VTGRN LLC,Indoor,Cultivator,Tier 1,Starksboro,2027-10-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0151,Crescent Moon Farm LLC,Indoor,Cultivator,Tier 1,Jeffersonville,2027-10-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0153,"Verdiggity Living Organics, LLC; Verdiggity Living Organics",Indoor,Cultivator,Tier 1,Manchester,2027-10-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0155,Smugglers Notch Cannabis Company,Mixed,Cultivator,Tier 1,Underhill,2027-10-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0156,Green Valley Cannabis LLC,Indoor,Cultivator,Tier 1,Starksboro,2027-10-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0158,Apex Arboretum Inc. dba Upstate Elevator Operators,Indoor,Cultivator,Tier 1,Burlington,2027-10-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0160,Turkey Hollow Cannabis,Indoor,Cultivator,Tier 1,Barnard,2027-10-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0161,King Cola LLC,Indoor,Cultivator,Tier 1,Williamstown,2027-10-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0162,DCB LLC. (dba High Altitude Cannabis),Indoor,Cultivator,Tier 1,Hardwick,2027-10-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0163,"GMT Genetix, LLC dba Fierce Cultivation",Mixed,Cultivator,Tier 1,Berkshire,2027-10-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0167,Tilia Hills LLC,Outdoor,Cultivator,Tier 1,Fairfield,2027-10-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0169,Weed Connections,Indoor,Cultivator,Tier 1,mendon,2027-10-27 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0172,Ammanana Growers LLC,Mixed,Cultivator,Tier 1,Worcester,2027-11-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0173,"Overton's View Farm, LLC",Mixed,Cultivator,Tier 1,Westmore,2027-11-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0175,"Little Garden, LLC; Little Garden",Mixed,Cultivator,Tier 1,Calais,2027-11-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0177,Burning Bush,Outdoor,Cultivator,Tier 1,Bellows Falls,2026-11-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0178,"Cannamentals, LLC dba Cannamentals",Outdoor,Cultivator,Tier 1,Brownington,2026-11-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0180,"Island Craft Cannabis, LLC; Island Craft Cannabis",Mixed,Cultivator,Tier 1,North Hero,2026-11-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0184,"Trichome Ranch, LLC d/b/a Trichome Ranch",Mixed,Cultivator,Tier 1,Rochester,2027-03-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0187,"Cognizant Sparks LLC, DBA Top Notch Headies",Indoor,Cultivator,Tier 1,Orange,2026-11-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0191,Humble Skunk,Indoor,Cultivator,Tier 1,Westford,2026-12-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0193,Monarch Cultivation LLC,Indoor,Cultivator,Tier 1,East Haven,2026-12-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0194,Northern Green,Indoor,Cultivator,Tier 1,Colchester,2026-12-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0195,"Vermont Medicine Man Botanicals, LLC",Mixed,Cultivator,Tier 1,Marshfield,2026-12-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0196,"T.K. House of Green, LLC DBA Stoney Storys Flowers",Mixed,Cultivator,Tier 1,Glover,2027-06-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0202,Bubbling Brook Botanicals LLC - DBA Bubbling Brook VT,Mixed,Cultivator,Tier 1,Plainfield,2026-12-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0203,"Cloud 9 THC, LLC",Indoor,Cultivator,Tier 1,Walden,2027-01-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0204,DRADIS - Fall Forward,Mixed,Cultivator,Tier 1,Stamford,2027-01-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0211,Hidden Door Cannabis LLC,Indoor,Cultivator,Tier 1,Castleton,2027-01-31 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0212,Alive Cannabis Company LLC,Mixed,Cultivator,Tier 1,Morristown,2027-02-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0213,The Higher Collective,Indoor,Cultivator,Tier 1,N. Middlesex,2027-02-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0216,Passion Fruit Farms llc,Indoor,Cultivator,Tier 1,Essex Junction,2027-02-23 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0220,Mojobliss Cannabis LLC,Mixed,Cultivator,Tier 1,Concord,2027-03-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0224,High Priestess,Indoor,Cultivator,Tier 1,Brattleboro,2027-03-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0226,"Fine Bud Farms, LLC",Outdoor,Cultivator,Tier 1,Randolph,2027-03-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0229,"Swift Hawk Canna, LLC. DBA SWIFT HAWK CANNABINOIDS",Mixed,Cultivator,Tier 1,Lincoln,2027-04-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0233,Yellowbird,Indoor,Cultivator,Tier 1,Jericho,2027-04-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0235,Wookberry Farm LLC,Indoor,Cultivator,Tier 1,Fairfax,2027-04-13 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0239,"Farmhouse Cannabis, LLC",Mixed,Cultivator,Tier 1,Ferrisburgh,2027-04-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0243,Decibel Forest LLC,Indoor,Cultivator,Tier 1,Plymouth,2027-04-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0244,Trufella LLC,Indoor,Cultivator,Tier 1,Ryegate,2027-04-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0246,Druid Flowers LLC,Indoor,Cultivator,Tier 1,St Albans,2027-05-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0250,"In The Weeds, LLC.",Indoor,Cultivator,Tier 1,Brattleboro,2027-05-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0252,"Starksboro Sativa & Seed Company, LLC",Outdoor,Cultivator,Tier 1,Starksboro,2027-05-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0256,"Pine Rock, LLC d/b/a Pine Rock Cultivation",Indoor,Cultivator,Tier 1,Island Pond,2027-05-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0257,Gnarly Tree Cannabis LLC,Indoor,Cultivator,Tier 1,Colchester,2027-05-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0259,Hornbeam Hill Farm LLC,Indoor,Cultivator,Tier 1,Plainfield,2027-05-17 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0264,J2 Rules LLC,Indoor,Cultivator,Tier 1,Williamstown,2027-05-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0267,Cold Hollow Cannabis LLC,Mixed,Cultivator,Tier 1,Bakersfield,2027-05-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0270,"Northern Slope LLC, DBA Samsara Farms",Outdoor,Cultivator,Tier 1,Washington,2027-06-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0271,Freedom Flower llc,Mixed,Cultivator,Tier 1,Eden Mills,2027-06-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0272,"High Hopes, LLC",Indoor,Cultivator,Tier 1,West Rutland,2027-06-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0275,"Parker Hill Cannabis, LLC",Indoor,Cultivator,Tier 1,Springfield,2027-06-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0280,"Guy's Greens, LLC",Outdoor,Cultivator,Tier 1,Wells,2027-06-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0288,Doh Yey Smokieez LLC d/b/a/ Green Mountain Exotics,Mixed,Cultivator,Tier 1,Bristol,2027-07-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0289,Jellymumbler LLC,Indoor,Cultivator,Tier 1,Bridgewater Corners,2027-07-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0291,The Farm at Bolton Dome LLC,Mixed,Cultivator,Tier 1,Bolton,2027-07-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0295,"Rhize Cannabis Company, LLC",Indoor,Cultivator,Tier 1,Fairfax,2027-07-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0300,"The Dog Run, LLC",Mixed,Cultivator,Tier 1,Cambridge,2027-07-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0301,Fraser Farm Co. LLC,Outdoor,Cultivator,Tier 1,Newbury,2027-07-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0302,Maple Rose Craft Cannabis LLC,Mixed,Cultivator,Tier 1,Leicester,2027-07-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0304,Up North Cannabis LLC,Indoor,Cultivator,Tier 1,Holland,2027-07-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0306,Elderberry Hill LLC,Mixed,Cultivator,Tier 1,Lyndonville,2027-07-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0307,Root to Vitality Cannabis LLC,Indoor,Cultivator,Tier 1,EAST HARDWICK,2027-07-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0308,Stillmore Farms LLC,Outdoor,Cultivator,Tier 1,Sharon,2027-07-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0309,TruCanna LLC,Mixed,Cultivator,Tier 1,Stockbridge,2027-07-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0313,"All Bliss Cannabis, LLC",Mixed,Cultivator,Tier 1,Hardwick,2027-07-27 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0314,Terpslurper Farms,Mixed,Cultivator,Tier 1,Bennington,2027-07-27 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0315,Friendly Farmers,Outdoor,Cultivator,Tier 1,Brandon,2027-08-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0316,Wicked Windy Farms LLC,Mixed,Cultivator,Tier 1,Addison,2027-08-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0325,Hyde Park Headies LLC,Mixed,Cultivator,Tier 1,Hyde Park,2027-08-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0327,Awella Gardens,Indoor,Cultivator,Tier 1,New Haven,2027-08-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0328,Jimmy Green Grass LLC,Indoor,Cultivator,Tier 1,Warren,2027-08-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0331,Pine Grove Gardens LLC,Indoor,Cultivator,Tier 1,Brandon,2027-08-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0334,Grasstender LLC,Indoor,Cultivator,Tier 1,Plymouth,2027-08-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0337,Highly Recommended Vermont LLC,Outdoor,Cultivator,Tier 1,Milton,2027-09-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0343,"Full Spectrum Botanics, LLC",Mixed,Cultivator,Tier 1,Wheelock,2027-09-22 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0345,Easy Green Genetix LLC,Indoor,Cultivator,Tier 1,White River Junction,2027-10-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0347,The Heady Reaper,Indoor,Cultivator,Tier 1,Duxbury,2027-10-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0352,"Wisdom Tree Cannabis, LLC",Mixed,Cultivator,Tier 1,Albany,2027-10-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0355,"Three Kings & A Joker, LLC DBA Royal Highness Farms",Indoor,Cultivator,Tier 1,Alburgh,2027-10-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0356,"Stash Farm, LLC; Stash Farm; Stash House; Stash Hash; Stash Snacks",Indoor,Cultivator,Tier 1,Burlington,2027-11-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0357,Lost Bittern Flower Co LLC,Indoor,Cultivator,Tier 1,Braintree,2026-11-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0358,"Kine Cannabis, LLC",Indoor,Cultivator,Tier 1,Belvidere,2026-12-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0359,Bog Brook Botanicals,Indoor,Cultivator,Tier 1,Lyndonville,2026-12-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0362,One Drop Farm LLC,Indoor,Cultivator,Tier 1,West Pawlet,2026-12-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0364,Atlas Cultivars,Indoor,Cultivator,Tier 1,Westford,2027-02-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0366,NightTime Land Productions LLC,Indoor,Cultivator,Tier 1,Wilmington,2027-03-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0367,Bright Valley Organics LLC,Indoor,Cultivator,Tier 1,Huntington,2027-03-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0371,"Chronic Creations, LLC",Outdoor,Cultivator,Tier 1,Roxbury,2027-04-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0373,Terrapin Gardens LLC dba Terrapin Wellness,Indoor,Cultivator,Tier 1,Barre,2027-04-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0378,Dr. Dank,Indoor,Cultivator,Tier 1,Warren,2027-05-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0379,Few True Seeds LLC DBA High Pines Cultivation,Outdoor,Cultivator,Tier 1,Brandon,2027-05-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0381,Tumbleweed Farms LLC,Indoor,Cultivator,Tier 1,Williston,2027-05-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0382,Golden Farms LLC,Outdoor,Cultivator,Tier 1,North Bennington,2027-05-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0384,Island Sun LLC,Outdoor,Cultivator,Tier 1,Grand Isle,2027-05-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0388,Green Star Hill LLC,Indoor,Cultivator,Tier 1,East Calais,2027-06-17 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0389,"Green Mountain Craft Cannabis, dba Green Mountain Ghetto Boyz",Indoor,Cultivator,Tier 1,Killington,2027-06-17 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0390,"Peak Foliage, LLC d/b/a Peak Foliage",Outdoor,Cultivator,Tier 1,Winhall,2027-06-17 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0391,"LC3 Incorporated, Loud Cloud Craft Cannabis",Outdoor,Cultivator,Tier 1,Charlotte,2027-06-17 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0395,Seven Leaf Genetics LLC,Indoor,Cultivator,Tier 1,Morrisville,2027-04-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0396,Little Dipper Cannabis Company LLC,Indoor,Cultivator,Tier 1,North Hero,2027-06-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0398,Naughty Chuck Cultivations LLC,Outdoor,Cultivator,Tier 1,Richford,2027-06-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0400,Oski cultivation LLC,Indoor,Cultivator,Tier 1,Hinesburg,2027-07-15 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0404,"North Node Gardens, LLC dba North Node Gardens",Indoor,Cultivator,Tier 1,Arlington,2027-08-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0405,"Happy Farm Cannabis Company, LLC",Indoor,Cultivator,Tier 1,Essex Junction,2027-09-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0407,Truth and Company LLC,Indoor,Cultivator,Tier 1,Windsor,2027-09-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0409,Sacred Leaf LLC,Indoor,Cultivator,Tier 1,East Calais,2027-09-16 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0410,"Kneu Cannabinoids, LLC, d/b/a Jamaica Genetics",Indoor,Cultivator,Tier 1,Jamaica,2027-09-17 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0411,3D LLC DBA Uncle Wayne's Finest,Indoor,Cultivator,Tier 1,Vernon,2027-09-27 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0413,"Three Sirens, LLC",Indoor,Cultivator,Tier 1,Halifax,2027-10-01 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0414,Calimont Farm LLC,Indoor,Cultivator,Tier 1,Rutland,2027-10-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0415,"Highview Hydroponics, LLC",Indoor,Cultivator,Tier 1,Morrisville,2027-10-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0418,Juniper Lane LLC dba Juniper Lane,Indoor,Cultivator,Tier 1,Bennington,2027-11-06 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0419,"Polar Bear, LLC",Indoor,Cultivator,Tier 1,Bloomfield,2026-11-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0420,Heirloom Herbals,Indoor,Cultivator,Tier 1,Wells River,2026-11-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0421,Cracked Skull Creations LLC,Indoor,Cultivator,Tier 1,Lyndon,2026-11-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0422,Greene's Canopy LLC,Indoor,Cultivator,Tier 1,mendon,2026-12-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0424,TeeBeeDee Farms,Indoor,Cultivator,Tier 1,Vershire,2027-01-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0425,"Grass Queen, Inc.",Mixed,Cultivator,Tier 1,Plainfield,2027-09-14 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0426,Subterra Cannabis LLC,Indoor,Cultivator,Tier 1,Brattleboro,2026-11-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0430,Wizards Bud LLC,Indoor,Cultivator,Tier 1,Saint Johnsbury,2027-02-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0432,"Small Family Craft Cannabis, LLC dba Dark Souls' T.H.C.",Indoor,Cultivator,Tier 1,EAST BURKE,2027-02-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0434,"Cavendish Hilltop Farm, LLC.",Outdoor,Cultivator,Tier 1,Cavendish,2027-02-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0435,"Honey Pie Gardens, LLC; Honey Pie Gardens",Indoor,Cultivator,Tier 1,South Ryegate,2027-02-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0437,As Above llc,Outdoor,Cultivator,Tier 1,Windham,2027-02-19 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0438,Puffin Joe,Outdoor,Cultivator,Tier 1,Bristol,2027-02-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0439,D&C Gardens,Indoor,Cultivator,Tier 1,Pittsford,2027-02-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0440,Enchanted Garden Botanicals LLC,Mixed,Cultivator,Tier 1,Essex,2027-02-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0441,"Apple Soup, LLC",Indoor,Cultivator,Tier 1,Barre,2027-02-26 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0442,High Born Frost,Indoor,Cultivator,Tier 1,Groton,2027-02-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0443,Nw corner consulting llc,Indoor,Cultivator,Tier 1,New Haven,2027-03-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0444,Goldfinch Farms LLC,Indoor,Cultivator,Tier 1,Whiting,2027-03-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0445,Emerald Peak Cultivation,Indoor,Cultivator,Tier 1,Barre,2027-03-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0446,Montgomery Farms LLC,Mixed,Cultivator,Tier 1,Montgomery Center,2027-03-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0447,"The Giggling Goat Farm, LLC",Outdoor,Cultivator,Tier 1,South Royalton,2027-03-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0449,Mountainside Naturals LLC,Outdoor,Cultivator,Tier 1,Bennington,2027-03-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0450,Budz of Paradise LLC,Mixed,Cultivator,Tier 1,Springfield,2027-03-17 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0451,"Moon Hill Farms, LLC",Indoor,Cultivator,Tier 1,Lunenburg,2027-03-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0453,Black Dog,Indoor,Cultivator,Tier 1,Randolph,2027-03-24 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0455,Back Pasture Cannabis LLC,Mixed,Cultivator,Tier 1,Worcester,2027-03-28 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0456,Sacred Earth Essentials/Goddess Grows,Outdoor,Cultivator,Tier 1,Morgan,2027-04-02 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0457,Fireweed Cannabis of Vermont,Mixed,Cultivator,Tier 1,Poultney,2027-04-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0458,"Ridgetopfarm,LLC",Mixed,Cultivator,Tier 1,Springfield,2027-05-05 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0459,Vail Farm Cannabis LLC,Outdoor,Cultivator,Tier 1,Bennington,2027-08-07 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0464,Emerald Visions LLC,Indoor,Cultivator,Tier 1,Alburgh,2027-06-30 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0465,"YBNRML, LLC",Mixed,Cultivator,Tier 1,Perkinville,2027-10-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0466,Mountain Grown Hemp llc DBA Mountain Grown of Vermont,Outdoor,Cultivator,Tier 1,Wolcott,2027-11-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0467,Cannabis Dream Nursery LLC,Outdoor,Cultivator,Tier 1,West Glover,2026-11-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0469,MG Enterprises LLC DBA I-89,Mixed,Cultivator,Tier 1,Cambridge,2027-01-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0470,Bordertown Apothecary LLC,Outdoor,Cultivator,Tier 1,Westminster west,2027-06-03 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0471,CANNA SUPREME LLC,Indoor,Cultivator,Tier 1,Townshend,2027-02-10 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0472,Island Pond Cannabis Company LLC,Indoor,Cultivator,Tier 1,Island Pond,2027-08-17 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,SCLT0473,Orleans Cannabis LLC,Indoor,Cultivator,Tier 1,Glover,2027-08-18 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,TLAB0029,"Bia Diagnostics, LLC",Testing,Testing,No Tier,Colchester,2027-07-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,TLAB0030,"SH Lab Holdings LLC, DBA: Onward Analytics",Testing,Testing,No Tier,Colchester,2027-10-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,WHSL0001,Park Rec LLC d/b/a/ FLŌRA Cannabis,Wholesaler,Wholesaler,No Tier,MIDDLEBURY,2027-09-08 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,WHSL0003,Northern Craft Cannabis,Wholesaler,Wholesaler,No Tier,Hyde Park,2027-10-12 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,WHSL0010,"Lavishly Sweet, LLC; Lavishly Sweet",Wholesaler,Wholesaler,No Tier,Saint Albans,2027-09-04 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,WHSL0011,Altius THC LLC,Wholesaler,Wholesaler,No Tier,Quechee,2027-08-09 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,WHSL0012,"Red Clover Select, LLC d/b/a Mechayeh",Wholesaler,Wholesaler,No Tier,Montpelier,2027-08-20 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,WHSL0016,Pinnacle Wholesale LLC,Wholesaler,Wholesaler,No Tier,Randolph,2026-11-25 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,WHSL0017,"Green Mountain Cannections, LLC dba Herbanna",Wholesaler,Wholesaler,No Tier,Worcester,2027-02-11 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,WHSL0018,NECANN 2026 Samples,Wholesaler,Wholesaler,No Tier,Montpelier,2027-04-21 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
+VT,WHSL0019,"Vermont Producers Joint, Inc.",Wholesaler,Wholesaler,No Tier,Brownington,2027-05-29 00:00:00,https://ccb.vermont.gov/sites/ccb/files/documents/Active_Licenses_Report.xlsx,2026-11-12
