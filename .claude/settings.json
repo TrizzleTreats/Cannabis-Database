@@ -493,6 +493,7 @@
       "WebFetch(domain:mainelegislature.org)",
       "WebFetch(domain:malegislature.gov)",
       "WebFetch(domain:maps2.dcgis.dc.gov)",
+      "WebFetch(domain:maryland.maps.arcgis.com)",
       "WebFetch(domain:mass.gov)",
       "WebFetch(domain:masscannabiscontrol.com)",
       "WebFetch(domain:matsu.gov)",

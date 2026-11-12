@@ -2,7 +2,7 @@
 
 Built 12 November 2026 from the official sources cited in the audited state reports (Regions 1–9) and the audited federal report, merged with the New England and Mid-Atlantic lists made in the earlier chat. These are the sites Claude Code needs access to for licence data, laws, rules and local codes. News sites, blogs, law firms, directories and unofficial law copies (Justia, FindLaw, LegiScan, Wikipedia) are deliberately left out.
 
-**Total unique sites:** 1241 (a plain one-per-line copy is in all-domains.txt).
+**Total unique sites:** 1242 (a plain one-per-line copy is in all-domains.txt).
 
 ## Federal
 ```
@@ -70,9 +70,9 @@ cedatareporting.pa.gov, data.pa.gov, legis.state.pa.us, pa.gov, paauditor.b-cdn.
 agriculture.delaware.gov, archive.regulations.delaware.gov, cheswold.delaware.gov, corp.delaware.gov, data.delaware.gov, date.delaware.gov, de-dshs.my.site.com, de.gov, delcode.delaware.gov, dhss.delaware.gov, dnrec.delaware.gov, dshs.delaware.gov, hartly.delaware.gov, housedems.delaware.gov, housegop.delaware.gov, legis.delaware.gov, newarkde.gov, news.delaware.gov, oabcc.delaware.gov, omc.delaware.gov, regulations.delaware.gov, revenue.delaware.gov, revenuefiles.delaware.gov, senatedems.delaware.gov, sussexcountyde.civicweb.net, sussexcountyde.gov, tax.delaware.gov, www.legis.delaware.gov, www.wilmingtoncitycouncil.com, www3.newcastlede.gov
 ```
 
-### Maryland (22)
+### Maryland (23)
 ```
-atcc.maryland.gov, cannabis.maryland.gov, commerce.maryland.gov, content.govdelivery.com, dbm.maryland.gov, dsd.maryland.gov, economicmobility.maryland.gov, elections.maryland.gov, frederickcountymd.gov, governor.maryland.gov, health.maryland.gov, mda.maryland.gov, mgaleg.maryland.gov, msa.maryland.gov, onestop.md.gov, opendata.maryland.gov, ose.maryland.gov, regs.maryland.gov, www.marylandcomptroller.gov, www.marylandtaxes.com, www.marylandtaxes.gov, www.washco-md.net
+atcc.maryland.gov, cannabis.maryland.gov, commerce.maryland.gov, content.govdelivery.com, dbm.maryland.gov, dsd.maryland.gov, economicmobility.maryland.gov, elections.maryland.gov, frederickcountymd.gov, governor.maryland.gov, health.maryland.gov, maryland.maps.arcgis.com, mda.maryland.gov, mgaleg.maryland.gov, msa.maryland.gov, onestop.md.gov, opendata.maryland.gov, ose.maryland.gov, regs.maryland.gov, www.marylandcomptroller.gov, www.marylandtaxes.com, www.marylandtaxes.gov, www.washco-md.net
 ```
 
 ### District of Columbia (25)

@@ -1,0 +1,240 @@
+[
+  {
+    "id": "ct-business-credentials",
+    "state": "connecticut",
+    "part5_ref": "CT 5 #21 \u2014 ngch-56tr State Licenses and Credentials (updated daily)",
+    "url": "https://data.ct.gov/resource/ngch-56tr.csv",
+    "params": {
+      "$where": "credential in ('CANNABIS RETAILER','MEDICAL CANNABIS HYBRID RETAILER','MEDICAL CANNABIS DISPENSARY FACILITY','CANNABIS CULTIVATOR','CANNABIS ACCE EXTENDED LOCATION','CANNABIS MICRO-CULTIVATOR','CANNABIS PRODUCT PACKAGER','CANNABIS DELIVERY SERVICE','CANNABIS FOOD AND BEVERAGE MANUFACTURER','CANNABIS PRODUCT MANUFACTURER','MEDICAL CANNABIS RESEARCH PROGRAM','CANNABIS TRANSPORTER','MEDICAL CANNABIS PRODUCER','CANNABIS TESTING LABORATORY','HEMP PRODUCER','MANUFACTURER OF HEMP CONSUMABLES','MANUFACTURER OF THC-INFUSED BEVERAGES','MODERATE-THC HEMP PRODUCT VENDOR','WHOLESALER OF THC-INFUSED BEVERAGES')",
+      "$order": "fullcredentialcode",
+      "$limit": "50000"
+    },
+    "filename": "ngch-56tr_business_credentials_2026-11-12.csv",
+    "format": "csv",
+    "note": "19 business credential NAMES across both programmes: 14 cannabis (683 rows) plus 5 hemp/THC-beverage (280 rows) the Oct snapshot omitted. Filtered on `credential`, NOT `credentialtype` - types CSM and CSW are shared with 'MANUFACTURER/WHOLESALER OF DRUGS, COSMETICS & MEDICAL DEVICES', which pulls in ~4,300 unrelated pharma licences. All statuses, incl. DENIED and EXPIRED APPLICATION, which are applications and not licences. Individual credentials (employee, key employee, backer), product registrations (MMBR) and labor unions (ACUN) are deliberately excluded."
+  },
+  {
+    "id": "ny-ocm-licences",
+    "state": "new-york",
+    "part5_ref": "NY 5 #1 \u2014 data.ny.gov jskf-tt3q Current OCM Licenses",
+    "url": "https://data.ny.gov/api/v3/views/jskf-tt3q/export.csv",
+    "params": {
+      "accessType": "DOWNLOAD"
+    },
+    "filename": "jskf-tt3q_ocm_licences_2026-11-12.csv",
+    "format": "csv",
+    "note": "INCLUDES APPLICANTS under proximity protection for proposed AU retail/medical dispensaries, so row count != licence count. Audit did not independently verify this export URL; it is the Socrata export pattern and is validated here by content. Dataset updated 2026-10-22 per data.ny.gov."
+  },
+  {
+    "id": "ny-hemp-producers",
+    "state": "new-york",
+    "part5_ref": "NY 5 \u2014 Ag & Markets Licensed Hemp Producers",
+    "url": "https://agriculture.ny.gov/system/files/documents/2025/12/licensed_hemp_producers.pdf",
+    "filename": "ny_licensed_hemp_producers_dec2025.pdf",
+    "format": "pdf",
+    "note": "PDF dated Dec 2025; its page count is not a current licence count. CONTAINS PERSONAL EMAILS \u2014 those fields belong in private columns only, never the public site."
+  },
+  {
+    "id": "dc-mcp-report-aug-2026",
+    "state": "district-of-columbia",
+    "part5_ref": "DC 5.1 \u2014 ABCA Medical Cannabis Program Report, August 2026",
+    "url": "https://abca.dc.gov/sites/default/files/2026-09/MCP%20Report%20-%20August%202026.pdf",
+    "filename": "abca_mcp_report_august_2026.pdf",
+    "format": "pdf",
+    "note": "Dated regulator figures; most authoritative for its month. 66 total retailers. No licence-holder names. Chart data in the PDF is partially garbled on text extraction \u2014 use the tabulated figures, not chart OCR. The September 2026 PDF URL was never retrieved and is not guessed here."
+  },
+  {
+    "id": "dc-nonretailer-facilities",
+    "state": "district-of-columbia",
+    "part5_ref": "DC 5.3 \u2014 Licensed Medical Cannabis Facilities (Non-Retailer), MapServer layer 33",
+    "url": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Health_WebMercator/MapServer/33/query",
+    "params": {
+      "where": "1=1",
+      "outFields": "*",
+      "outSR": "4326",
+      "f": "geojson",
+      "resultRecordCount": "2000"
+    },
+    "filename": "dc_licensed_medical_cannabis_facilities_non_retailer.geojson",
+    "format": "geojson",
+    "note": "Cultivation centres, manufacturers, testing labs, couriers \u2014 non-retailer only. Layer 33 is the sublayer confirmed by the ArcGIS item URL in Part 5. Metadata says data last modified 31 Oct 2025. STATUS distinguishes active (operating) from safekeeping (temporarily closed)."
+  },
+  {
+    "id": "pa-auditor-general-2026",
+    "state": "pennsylvania",
+    "part5_ref": "PA 5 \u2014 Auditor General Performance Audit, Sept 2026",
+    "url": "https://paauditor.b-cdn.net/wp-content/uploads/speDOHMMP090926.pdf",
+    "filename": "speDOHMMP090926.pdf",
+    "format": "pdf",
+    "note": "Audit period CY2024, updates through 19 Aug 2026, DOH counts as of 1 June 2026. Its 'actively' measure (29 G/Ps, 195 locations) must never be conflated with MMAB's 'operational' measure (33 G/Ps, 196 locations) for the same date. Sample-based, not a holder list."
+  },
+  {
+    "id": "pa-doh-dispensaries-page",
+    "state": "pennsylvania",
+    "part5_ref": "PA 5 \u2014 DOH Dispensaries page (index for the dispensary PDF)",
+    "url": "https://www.pa.gov/agencies/health/programs/medical-marijuana/dispensaries",
+    "filename": "doh_dispensaries_page_2026-11-12.html",
+    "format": "html",
+    "note": "Index page only. The linked dispensary PDF must be resolved from this page, not guessed. That PDF has known typos ('Bulter' for Butler; a King of Prussia row with ZIP 19706) \u2014 do not copy rows without checking."
+  },
+  {
+    "id": "pa-doh-growers-page",
+    "state": "pennsylvania",
+    "part5_ref": "PA 5 \u2014 DOH Growers-Processors page",
+    "url": "https://www.pa.gov/agencies/health/programs/medical-marijuana/growers-processors",
+    "filename": "doh_growers_processors_page_2026-11-12.html",
+    "format": "html",
+    "note": "Index page; linked permittee lists/PDFs were not enumerated in the research run and must be resolved from here."
+  },
+  {
+    "id": "pa-mmab-page",
+    "state": "pennsylvania",
+    "part5_ref": "PA 5 \u2014 DOH Medical Marijuana Advisory Board page",
+    "url": "https://www.pa.gov/agencies/health/programs/medical-marijuana/advisory-board",
+    "filename": "doh_mmab_page_2026-11-12.html",
+    "format": "html",
+    "note": "Index for MMAB metrics PDFs. Latest metrics extracted in the audit: 24 June 2026 presentation, data as of 1 June 2026. Aggregate only; price data lives in charts, not machine-readable text."
+  },
+  {
+    "id": "pa-biennial-report-2024",
+    "state": "pennsylvania",
+    "part5_ref": "PA 5 \u2014 DOH Medical Marijuana Biennial Report 2024",
+    "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/health/documents/topics/documents/programs/medical-marijuana/Medical%20Marijuana%20Biennial%20Report%202024.pdf",
+    "filename": "pa_medical_marijuana_biennial_report_2024.pdf",
+    "format": "pdf",
+    "note": "Data as of 1 Mar 2024. Narrative and tables, biennial cadence \u2014 not a current count."
+  },
+  {
+    "id": "nj-crc-permitted-businesses",
+    "state": "new-jersey",
+    "part5_ref": "NJ 5 \u2014 CRC Permitted & Licensed Businesses",
+    "url": "https://www.nj.gov/cannabis/businesses/permitted/",
+    "filename": "crc_permitted_businesses_2026-11-12.html",
+    "format": "html",
+    "note": "The only CRC licensee list, and it is interactive HTML \u2014 no CSV or XLSX exists. Separate Medicinal and Personal-Use tables; fields are Organisation, Business Types, Locations, Expiration Year. May need the browser pane if the tables are script-rendered."
+  },
+  {
+    "id": "nj-crc-government-relations",
+    "state": "new-jersey",
+    "part5_ref": "NJ 5 \u2014 CRC Government Relations municipality table",
+    "url": "https://www.nj.gov/cannabis/government-relations/index.shtml",
+    "filename": "crc_government_relations_2026-11-12.html",
+    "format": "html",
+    "note": "County / Municipality / Class 1-6 Yes-No. No download exists. Feeds town_allows_this_activity. CRC states its own accuracy caveat; the Frenchtown anomaly is noted in the report's section 3.3."
+  },
+  {
+    "id": "de-omc-dispensaries",
+    "state": "delaware",
+    "part5_ref": "DE 5 #1 \u2014 OMC Dispensaries page",
+    "url": "https://omc.delaware.gov/dispensaries/",
+    "filename": "omc_dispensaries_2026-11-12.html",
+    "format": "html",
+    "note": "Operator brand and street address only \u2014 no licence number, type, status, county, or medical-vs-adult-use flag. 13 addresses across 5 brands as read in Oct 2026. No searchable OMC licensee registry exists. Delaware hemp producer names are excluded from the public record by 29 Del.C. 10002(l) \u2014 UNAVAILABLE by statute, not for want of looking."
+  },
+  {
+    "id": "md-mca-home",
+    "state": "maryland",
+    "part5_ref": "MD 5.1 \u2014 MCA dispensary locator (exact path UNAVAILABLE; navigate from here)",
+    "url": "https://cannabis.maryland.gov",
+    "filename": "mca_home_2026-11-12.html",
+    "format": "html",
+    "note": "MCA publishes no registry CSV; licensee data is an interactive locator plus PDFs. The locator path was never captured, so it must be navigated to from this page. Do NOT use the stale 2021/2022 MCA licensee PDFs as a current list."
+  },
+  {
+    "id": "md-ose-licensing",
+    "state": "maryland",
+    "part5_ref": "MD 5.9 \u2014 OSE Licensing & Eligibility, Round 1 lottery results",
+    "url": "https://ose.maryland.gov/Pages/licensing-and-eligibilty.aspx",
+    "filename": "ose_licensing_eligibility_2026-11-12.html",
+    "format": "html",
+    "note": "Social-equity applicants; Round 1 lottery (174 licences, 14 Mar 2024; 1,708 applications). Ownership percentage on the page is stale (65% vs current 55%)."
+  },
+  {
+    "id": "md-industry-licensees",
+    "state": "maryland",
+    "part5_ref": "MD 5.1 \u2014 RESOLVED from the MCA home page nav (Part 5 recorded the path as UNAVAILABLE)",
+    "url": "https://cannabis.maryland.gov/Pages/Industry_Licensees_and_Registrants.aspx",
+    "filename": "mca_industry_licensees_2026-11-12.html",
+    "format": "html",
+    "note": "MCA 'Industry Licensees and Registrants' page. Path resolved from the MCA home page nav, not guessed. Part 5 could not locate a licensee path and marked it UNAVAILABLE."
+  },
+  {
+    "id": "md-dispensary-locator",
+    "state": "maryland",
+    "part5_ref": "MD 5.1 \u2014 RESOLVED from the MCA home page nav",
+    "url": "https://cannabis.maryland.gov/Pages/Dispensary-Locator.aspx",
+    "filename": "mca_dispensary_locator_2026-11-12.html",
+    "format": "html",
+    "note": "Interactive locator. Export capability unconfirmed; if the list is script-rendered this snapshot will be a shell and must be read through the browser pane instead."
+  },
+  {
+    "id": "md-data-dashboard",
+    "state": "maryland",
+    "part5_ref": "MD 5.6 \u2014 RESOLVED; Part 5 reported this dashboard 404 on 2026-10-24",
+    "url": "https://cannabis.maryland.gov/Pages/Data-Dashboard.aspx",
+    "filename": "mca_data_dashboard_2026-11-12.html",
+    "format": "html",
+    "note": "Re-test of the dashboard Part 5 reported as 404 on 2026-10-24. The path is present in the MCA nav as of 12 Nov 2026."
+  },
+  {
+    "id": "pa-dispensaries-pdf",
+    "state": "pennsylvania",
+    "part5_ref": "PA 5 \u2014 RESOLVED from the DOH Dispensaries page",
+    "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/health/documents/topics/documents/programs/medical-marijuana/Medical%20Marijuana%20Dispensaries%20in%20Pennsylvania%20with%20Product.pdf",
+    "filename": "pa_medical_marijuana_dispensaries_with_product.pdf",
+    "format": "pdf",
+    "note": "The dispensary list PDF, resolved from the DOH page rather than guessed. KNOWN TYPOS: 'Bulter' for Butler; a King of Prussia row with ZIP 19706. Do not copy rows without checking. Not a CSV or API."
+  },
+  {
+    "id": "pa-mmab-sept-2026",
+    "state": "pennsylvania",
+    "part5_ref": "PA 5 \u2014 CORRECTS the audit: a 23 Sept 2026 MMAB presentation does exist",
+    "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/health/documents/topics/documents/programs/medical-marijuana/Sept%2023%202026%20MMAB%20Mtg.pdf",
+    "filename": "pa_mmab_presentation_2026-09-23.pdf",
+    "format": "pdf",
+    "note": "The audit recorded that the MMAB page listed a 23 Sept 2026 agenda but no presentation. The presentation is on the page as of 12 Nov 2026, so it supersedes the 24 June 2026 metrics the audit used. Aggregate only; price data lives in charts."
+  },
+  {
+    "id": "pa-mmab-june-2026",
+    "state": "pennsylvania",
+    "part5_ref": "PA 5 \u2014 the metrics presentation the audit extracted (24 June 2026, data as of 1 June 2026)",
+    "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/health/documents/topics/documents/programs/medical-marijuana/June%2024%202026%20MMAB%20Mtg.pdf",
+    "filename": "pa_mmab_presentation_2026-06-24.pdf",
+    "format": "pdf",
+    "note": "Source of the 'operational' measure: 33 G/Ps, 196 dispensary locations as of 1 June 2026. Never conflate with the Auditor General's 'actively' measure (29 G/Ps, 195 locations) for the same date."
+  },
+  {
+    "id": "md-dashboard-extract-sep-2026",
+    "state": "maryland",
+    "part5_ref": "MD 5.6 \u2014 CORRECTS the audit: a downloadable dashboard extract does exist",
+    "url": "https://cannabis.maryland.gov/Documents/2026%20Data%20Dashboard/MCA%20Dashboard%20Data%20Download%20-%20SEP%202026.xlsx",
+    "filename": "mca_dashboard_data_download_sep_2026.xlsx",
+    "format": "xlsx",
+    "note": "Part 5 recorded the MCA dashboard as 404 with 'export button UNAVAILABLE / VERIFY' and concluded MCA publishes no downloadable registry. The dashboard page carries an 'Accessible Data Extract' XLSX dated Sept 2026, resolved from the page on 12 Nov 2026. Parsing it needs openpyxl, which is not installed."
+  },
+  {
+    "id": "dc-retailer-facilities",
+    "state": "district-of-columbia",
+    "part5_ref": "DC 5.4 \u2014 RESOLVED: MapServer layer 31 'Licensed Medical Cannabis Retailer'",
+    "url": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Health_WebMercator/MapServer/31/query",
+    "params": {
+      "where": "1=1",
+      "outFields": "*",
+      "outSR": "4326",
+      "f": "geojson",
+      "resultRecordCount": "2000"
+    },
+    "filename": "dc_licensed_medical_cannabis_retailer.geojson",
+    "format": "geojson",
+    "note": "Part 5 presumed a retailer layer existed alongside the non-retailer one but could not verify its layer number and said not to guess it. Layer 31 was read from the MapServer's own layer catalogue (f=json on the service root) on 12 Nov 2026."
+  },
+  {
+    "id": "ny-hemp-producers-page",
+    "state": "new-york",
+    "part5_ref": "NY 5 \u2014 Ag & Markets Licensed Hemp Producers (the HTML list; the PDF returns 403)",
+    "url": "https://agriculture.ny.gov/plant-industry/licensed-hemp-producers",
+    "filename": "ny_licensed_hemp_producers_page_2026-11-12.html",
+    "format": "html",
+    "note": "Part 5 describes this source as 'HTML list + PDF'. The PDF (licensed_hemp_producers.pdf) returns HTTP 403 to non-browser clients, with or without a Referer, so the HTML list is taken instead. CONTAINS PERSONAL EMAILS - those fields belong in private columns only."
+  }
+]
