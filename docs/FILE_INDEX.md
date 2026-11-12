@@ -108,6 +108,7 @@ Notes:
 | scripts/fetch_raw.py | Downloads every source declared in scripts/sources.json into data/raw/<state>/ and logs each attempt |
 | scripts/sources.json | Source declarations: Part 5 reference, URL, expected format and the limitation the audit recorded for each |
 | scripts/build_new_england.py | Rebuilds data/clean/new_england_licences.csv from data/raw/, carrying forward enrichment raw cannot supply |
+| scripts/verify.py | Re-runnable check: private data not tracked, allowlist matches the domain list, every raw file hashes and opens, master table integrity, NY row-vs-licence reconciliation |
 | data/raw/manifest.csv | Append-only provenance log: one row per fetch attempt with bytes, sha256, status and reason. The LAST row for an id is its current state |
 | .claude/settings.json | WebFetch allow rules for all 1,242 official hosts, plus the two build scripts |
 
