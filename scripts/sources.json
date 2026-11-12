@@ -638,5 +638,37 @@
     "filename": "pa_doh_dispensaries_with_product_current.pdf",
     "format": "pdf",
     "note": "Product availability as of 10 Nov 2026 \u2014 far more current than the PASDA layer's Jan 2025 vintage. Gives dispensary name, address, city, zip, phone, website, the date medical marijuana became available and the date the store opened. KNOWN TYPOS: 'Bulter' for Butler. This supersedes PASDA as Pennsylvania's dispensary source."
+  },
+  {
+    "id": "oh-dispensaries-gis",
+    "state": "ohio",
+    "part5_ref": "OH 5 \u2014 DCC Cannabis Dispensary Map (the ArcGIS feature service behind it)",
+    "url": "https://maps.ohio.gov/arcgis/rest/services/Hosted/Geocoded_Dispensaries_/FeatureServer/0/query",
+    "params": {
+      "where": "1=1",
+      "outFields": "*",
+      "outSR": "4326",
+      "f": "geojson",
+      "resultRecordCount": "4000"
+    },
+    "filename": "oh_dcc_dispensaries.geojson",
+    "format": "geojson",
+    "note": "Ohio publishes no dispensary file. The DCC dispensary-map page embeds an ArcGIS dashboard, whose config names a web map, whose operational layer is this feature service on maps.ohio.gov \u2014 resolved through the ArcGIS sharing API, not guessed. Ohio's full licensee roster (cultivators, processors, testing labs) is only in the DCC eLicense portal."
+  },
+  {
+    "id": "mo-verified-dispensaries",
+    "state": "missouri",
+    "part5_ref": "MO 5 \u2014 DCR Verified Dispensary Locator (the ArcGIS feature service behind it)",
+    "url": "https://services6.arcgis.com/Bd4MACzvEukoZ9mR/arcgis/rest/services/DCR_Verified_Dispensary_Map_layer/FeatureServer/0/query",
+    "params": {
+      "where": "1=1",
+      "outFields": "*",
+      "outSR": "4326",
+      "f": "geojson",
+      "resultRecordCount": "4000"
+    },
+    "filename": "mo_dcr_verified_dispensaries.geojson",
+    "format": "geojson",
+    "note": "Missouri publishes no dispensary file. The DCR's Verified Dispensary Locator is an ArcGIS Experience app; its config names this feature service, resolved through the ArcGIS sharing API rather than guessed. Missouri's cultivation, manufacturing and testing licensees are not in this layer \u2014 the xlsx files on health.mo.gov are product-recall lists, not licensee rosters."
   }
 ]

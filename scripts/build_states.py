@@ -15,7 +15,7 @@ Two rules run through every spec:
 
 Usage: python3 scripts/build_states.py [--state CA] [--dry-run]
 """
-import argparse, collections, csv, pathlib, re, sys
+import argparse, collections, csv, json, pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
@@ -707,9 +707,200 @@ def build_il(blank, warn):
     return rows
 
 
+# =========================================================================== OHIO
+def build_oh(blank, warn):
+    """DCC dispensaries from the ArcGIS feature service behind the dispensary
+    map. Ohio's cultivators, processors and testing labs are only in the DCC
+    eLicense portal, so they are not in this table yet."""
+    d = json.loads((RAW / "ohio/oh_dcc_dispensaries.geojson").read_text())
+    rows = []
+    for ft in d.get("features", []):
+        q = ft.get("properties", {})
+        num = clean(str(q.get("user_licen") or ""))
+        ltype = clean(str(q.get("user_type") or q.get("licensetype") or ""))
+        if ltype.lower() in ("none", ""):
+            ltype = ""
+            warn.append(("OH licence type blank", "(none)"))
+        g = ft.get("geometry") or {}
+        lon, lat = (g.get("coordinates") or ["", ""])[:2] if g.get("type") == "Point" else ("", "")
+        raw_status = clean(str(q.get("user_lic_1") or ""))
+        row = dict(blank)
+        row.update({
+            "licence_id": num or f"OH-DISP-OBJ{q.get('objectid')}", "state": "OH",
+            # "Dual Use" means the dispensary serves both medical patients and
+            # adult-use customers, which is Ohio's only dispensary form.
+            "program": "Adult Use; Medical" if "dual" in ltype.lower() else "Medical",
+            "category": "Retail Store", "licence_type": ltype or "Dispensary",
+            "legal_name": clean(str(q.get("user_busin") or "")),
+            "dba": clean(str(q.get("user_dispe") or "")), "holder_is_individual": "N",
+            "status": raw_status, "standard_status": "Active" if raw_status == "Active" else "",
+            "street_address": ", ".join(x for x in (clean(str(q.get("user_stree") or "")),
+                                                    title(str(q.get("user_city") or "")), "OH",
+                                                    clean(str(q.get("user_zip") or ""))) if x),
+            "town": title(str(q.get("user_city") or "")),
+            "town_as_listed": clean(str(q.get("user_city") or "")),
+            "county": title(str(q.get("user_count") or "")),
+            "county_source": "DCC GIS county field" if clean(str(q.get("user_count") or "")) else "",
+            "location_basis": "Licensed premises",
+            "contact_phone": clean(str(q.get("user_phone") or "")), "contact_is_law_firm": "N",
+            "source": "OH DCC Cannabis Dispensary Map, ArcGIS feature service on maps.ohio.gov",
+            "source_url": "https://maps.ohio.gov/arcgis/rest/services/Hosted/Geocoded_Dispensaries_/FeatureServer/0",
+            "data_as_of": TODAY,
+            "extra_details": "; ".join(x for x in (
+                f"latitude={lat}" if lat else "", f"longitude={lon}" if lon else "",
+                f"hours={clean(str(q.get('hours') or ''))}" if clean(str(q.get("hours") or "")) else "",
+                "note=the source spells its own licence type three ways (Dual, Dual Use, Dual Use "
+                "Dispensary) and its state two ways (Ohio, OH). Ohio's cultivators, processors and "
+                "testing labs are only in the DCC eLicense portal, not in this layer") if x),
+        })
+        rows.append(row)
+    return rows
+
+
+# ======================================================================= MISSOURI
+def build_mo(blank, warn):
+    """DCR verified dispensaries from the ArcGIS service behind the locator.
+    Missouri's cultivation, manufacturing and testing licensees are not in this
+    layer; the xlsx files on health.mo.gov are product-recall lists."""
+    d = json.loads((RAW / "missouri/mo_dcr_verified_dispensaries.geojson").read_text())
+    rows = []
+    for ft in d.get("features", []):
+        q = ft.get("properties", {})
+        num = clean(str(q.get("License") or ""))
+        names = [x.strip() for x in clean(str(q.get("Dispensary") or "")).split(";") if x.strip()]
+        g = ft.get("geometry") or {}
+        lon, lat = (g.get("coordinates") or ["", ""])[:2] if g.get("type") == "Point" else ("", "")
+        row = dict(blank)
+        row.update({
+            "licence_id": num or f"MO-DISP-OBJ{q.get('ObjectId')}", "state": "MO",
+            "program": "Adult Use; Medical", "category": "Retail Store",
+            "licence_type": "Comprehensive Dispensary",
+            "legal_name": names[0] if names else "", "dba": names[1] if len(names) > 1 else "",
+            "holder_is_individual": "N",
+            # DCR publishes this as a list of VERIFIED dispensaries; there is no
+            # status column, so every row in it is a verified licensed facility.
+            "status": "Verified (DCR publishes verified dispensaries only; no status column)",
+            "standard_status": "Active",
+            "street_address": ", ".join(x for x in (clean(str(q.get("Address") or "")),
+                                                    title(str(q.get("City") or "")), "MO",
+                                                    clean(str(q.get("Zip_code") or ""))) if x),
+            "town": title(str(q.get("City") or "")),
+            "town_as_listed": clean(str(q.get("City") or "")),
+            "county": title(str(q.get("County") or "")),
+            "county_source": "DCR GIS County field" if clean(str(q.get("County") or "")) else "",
+            "location_basis": "Licensed premises",
+            "website": clean(str(q.get("Website") or "")),
+            "contact_phone": clean(str(q.get("Phone_Number") or "")), "contact_is_law_firm": "N",
+            "source": "MO DCR Verified Dispensary Locator, ArcGIS feature service",
+            "source_url": "https://health.mo.gov/business-professionals/cannabis-regulation/licensee-compliance-guidance/licensed-facilities",
+            "data_as_of": TODAY,
+            "extra_details": "; ".join(x for x in (
+                f"latitude={lat}" if lat else "", f"longitude={lon}" if lon else "",
+                f"source last updated={clean(str(q.get('Last_updated') or ''))}"
+                if clean(str(q.get("Last_updated") or "")) else "",
+                "note=the Dispensary field packs the licensee and its trading name into one "
+                "semicolon-separated value; cultivation, manufacturing and testing licensees are "
+                "not in this layer") if x),
+        })
+        rows.append(row)
+    return rows
+
+
+# ========================================================================= HAWAII
+HI_REC = re.compile(
+    r"^(?P<n>\d+)\.\s+(?P<body>.+?)\s+(?P<city>[A-Z][A-Za-z'\- ]*?)\s+HI\s+(?P<zip>\d{5})\s+"
+    r"(?P<site>.+?)\s+(?P<reg>\d{2}-[0-9A-Za-z\-]+)\s+(?P<frm>\d{1,2}/\d{1,2}/\d{4})\s*-\s*"
+    r"(?P<to>\d{1,2}/\d{1,2}/\d{4})")
+
+
+# Online-only registrants have no street, city or zip — just a state and a site.
+HI_REC_NOADDR = re.compile(
+    r"^(?P<n>\d+)\.\s+(?P<body>.+?)\s+(?P<st>[A-Z]{2})\s+(?P<site>\S+)\s+"
+    r"(?P<reg>\d{2}-[0-9A-Za-z\-]+)\s+(?P<frm>\d{1,2}/\d{1,2}/\d{4})\s*-\s*"
+    r"(?P<to>\d{1,2}/\d{1,2}/\d{4})")
+
+
+def build_hi(blank, warn):
+    """DOH Manufactured Hemp Product retailer and distributor registry. The PDF
+    wraps each record over several lines but numbers them, so records are
+    reassembled on the numbering before parsing."""
+    from pypdf import PdfReader
+    text = "\n".join(pg.extract_text() or "" for pg in
+                     PdfReader(RAW / "hawaii/hi_hemp_registry_public_2026-10.pdf").pages)
+    text = re.sub(r"[\u00a0\u2000-\u200b\u202f\u205f\u3000]", " ", text)
+    lines = [re.sub(r"[ \t]+", " ", l).strip() for l in text.splitlines() if l.strip()]
+    # Reassemble: a record starts at "N." and runs until the next one.
+    recs, cur = [], None
+    for l in lines:
+        if re.match(r"^\d+\.\s", l):
+            if cur:
+                recs.append(" ".join(cur))
+            cur = [l]
+        elif cur is not None:
+            cur.append(l)
+    if cur:
+        recs.append(" ".join(cur))
+    rows, unparsed = [], 0
+    for rec in recs:
+        # Page footers get glued onto the record above them.
+        rec = re.split(r"Current as of", re.sub(r"\s+", " ", rec))[0].strip()
+        m = HI_REC.match(rec)
+        no_addr = False
+        if not m:
+            m = HI_REC_NOADDR.match(rec)
+            no_addr = bool(m)
+        if not m:
+            unparsed += 1
+            continue
+        body = m.group("body").strip()
+        # The address begins at the first number-led token; the name (and DBA,
+        # where DOH gives one) is everything before it.
+        if no_addr:
+            who, street, city, zipc = body, "", "", ""
+            home_state = m.group("st")
+        else:
+            am = re.search(r"(?:^|\s)(\d+[\w\-]*\s)", body)
+            who, street = (body[:am.start()].strip(), body[am.start():].strip()) if am else (body, "")
+            city, zipc, home_state = m.group("city"), m.group("zip"), "HI"
+        site = m.group("site").strip()
+        online = not re.search(r"(?i)not registered to sell\s*online", site)
+        row = dict(blank)
+        row.update({
+            "licence_id": m.group("reg"), "state": "HI", "program": "Hemp",
+            "category": "Hemp Retail", "licence_type": "MHP Retailer / Distributor Registration",
+            "legal_name": who, "holder_is_individual": "N",
+            "status": "Registered", "standard_status": "Active",
+            "issue_date": iso(m.group("frm")), "expiry_date": iso(m.group("to")),
+            "street_address": ", ".join(x for x in (street, title(city), home_state, zipc) if x),
+            "town": title(city), "town_as_listed": city,
+            "location_basis": "Online only — no premises address registered" if no_addr
+                              else "Registered premises",
+            "website": site if online else "",
+            "source": "HI DOH Manufactured Hemp Product Retailer and Distributor Registry "
+                      "(public list, current as of 26 Oct 2026)",
+            "source_url": "https://health.hawaii.gov/hempprogram/", "data_as_of": "2026-10-26",
+            "extra_details": "; ".join(x for x in (
+                "registered to sell online=no" if not online else "registered to sell online=yes",
+                f"registrant home state={home_state}" if home_state != "HI" else "",
+                "no premises address=DOH records only a state and a website for this registrant"
+                if no_addr else "",
+                "note=DOH publishes no county; Hawaii has no municipal government below county "
+                "level. This registry covers manufactured hemp product retailers and distributors, "
+                "not Hawaii's medical dispensary licences") if x),
+        })
+        rows.append(row)
+    if unparsed:
+        print(f"  HI: {unparsed} numbered records did not match the row pattern")
+        warn.append(("HI records unparsed", str(unparsed)))
+    return rows
+
+
 BUILDERS = {"CA": build_ca, "OR": build_or, "WA": build_wa, "NV": build_nv,
             "TX": build_tx, "AL": build_al, "CO": build_co, "FL": build_fl,
-            "VA": build_va, "IL": build_il}
+            "VA": build_va, "IL": build_il, "OH": build_oh, "MO": build_mo,
+            "HI": build_hi}
+
+
 
 
 

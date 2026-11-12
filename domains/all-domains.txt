@@ -322,6 +322,7 @@ eregulations.ct.gov
 eservices.scottsdaleaz.gov
 esmis.nal.usda.gov
 excise-tax-div.wyo.gov
+experience.arcgis.com
 extension.rutgers.edu
 extension.umaine.edu
 extension.unh.edu
@@ -491,6 +492,7 @@ madison.legistar.com
 maine.gov
 mainelegislature.org
 malegislature.gov
+maps.ohio.gov
 maps2.dcgis.dc.gov
 maryland.maps.arcgis.com
 mass.gov
@@ -690,6 +692,8 @@ senate.utah.gov
 senatedems.delaware.gov
 services.arcgis.com
 services.austintexas.gov
+services2.arcgis.com
+services6.arcgis.com
 sfa.senate.michigan.gov
 silverstateelection.nv.gov
 sla.ny.gov

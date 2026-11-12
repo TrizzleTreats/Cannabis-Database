@@ -30,7 +30,7 @@ These are findings from the official sources themselves, not re-readings of the 
 
 ## Regions 3-9: what each of the 39 jurisdictions actually publishes
 
-Built so far — 10 of 39, and they include the large markets:
+Built so far — 13 of 39, and they include the large markets:
 
 | State | Rows | Source | What it gives |
 |---|---|---|---|
@@ -40,14 +40,19 @@ Built so far — 10 of 39, and they include the large markets:
 | CO | 1,832 | MED's nine public Google Sheets, all 18 tabs | Medical AND retail across every category; no county published |
 | WA | 1,226 | LCB Frequently Requested Lists | Retail only, with county; producers and processors not included |
 | NV | 345 | CCB Cannabis Establishment List | Type, status, county; no premises address |
-| IL | 463 | Tableau view behind the Dispensary Locations map | 289 dispensaries with coordinates; no licence number, status or county |
-| FL | 289 | FDACS hemp cultivation licence list (PDF) | Licence number, issue date, responsible person, county on the 2025 records |
-| VA | 26 | VDACS hemp processors and approved labs (PDFs) | Firm, address, county |
+| FL | 289 | FDACS hemp cultivation licence list (PDF) | Licence number, issue date, responsible person; county on the 2025 records only |
+| IL | 289 | Tableau view behind the Dispensary Locations map | Dispensaries with coordinates; no licence number, status or county |
+| MO | 238 | DCR Verified Dispensary Locator (ArcGIS) | Licence number, county, website, coordinates |
+| OH | 232 | DCC dispensary map (ArcGIS on maps.ohio.gov) | Licence number, legal name, DBA, county, status |
+| HI | 94 | DOH Manufactured Hemp Product registry (PDF) | Registration number, validity dates; 19 online-only, 6 out-of-state registrants |
 | AL | 85 | ABC Board consumable hemp list | Hemp retail only; medical (AMCC) is litigation-delayed |
+| VA | 26 | VDACS hemp processors and approved labs (PDFs) | Firm, address, county |
 
 Pennsylvania also improved: its dispensary source is now the DOH PDF (197 rows, product availability as of 10 Nov 2026) instead of the PASDA layer's 181 rows from Jan 2025. PASDA stays in data/raw/ for its coordinates.
 
-### Why the other 29 are not built yet
+**The ArcGIS trick that unlocked Ohio and Missouri.** Neither publishes a dispensary file; both embed a map. The route is: read the embed's item id, fetch `arcgis.com/sharing/rest/content/items/<id>/data?f=json`, follow the itemId it names to the web map or app config, and take the operational layer's FeatureServer URL. Ohio's sits on maps.ohio.gov, Missouri's on services6.arcgis.com. Nothing is guessed — each hop is read from the previous response. Illinois was the same shape but Tableau rather than ArcGIS: its CSV is at `/t/Public/views/<workbook>/<view>.csv`.
+
+### Why the other 26 are not built yet
 
 The audited reports cite landing pages, not files. Across all 39 reports only **9** machine-readable URLs appear, against **117 xlsx** and **2,219 PDFs** one hop deeper (scripts/discover_sources.py, logged in data/raw/discovered_sources.csv). A second hop was then run against the nine biggest remaining states — Michigan, Illinois, Ohio, Oklahoma, Arizona, Florida, Missouri, Minnesota and Colorado — and only Colorado yielded a licensee list. Michigan's hits were inspection checklists; Missouri's and Oklahoma's were product-recall lists. So for those eight there is **no downloadable licensee list reachable from the pages the reports cite**, and their data lives in interactive search portals, PDFs, or behind bot checks.
 
@@ -56,7 +61,7 @@ Two concrete blockers now stand in the way, and both have a known fix:
 1. ~~No PDF text extraction.~~ **Resolved.** pypdf 7.0.1, openpyxl 3.1.5 and xlrd 2.0.2 are now installed. That immediately yielded Pennsylvania's current dispensary list, Florida's hemp licences and Virginia's processors and labs.
 2. **Portals and bot checks need the browser pane.** Colorado proved the route: sbg.colorado.gov and med.colorado.gov both return a Cloudflare interstitial to any scripted client, and the nine sheet links were only readable through the browser pane. The same approach should work for Michigan's CRA search, Illinois' IDFPR lists, Oklahoma's OMMA search, Arizona's ADHS list, Florida's OMMU pages, Missouri's DCR search and Minnesota's OCM list.
 
-Hawaii's hemp registry PDF is captured in data/raw/ but not yet parsed into a spec — its first pages are prohibition notices and the table needs more structure work.
+**Minnesota is blocked by a CAPTCHA.** Its OCM "Application and License Holder Data" page serves a Radware Bot Manager hCaptcha to the browser pane. Solving or bypassing a CAPTCHA is off limits, so Minnesota needs a person to fetch that page by hand.
 
 **Oklahoma publishes dated aggregate counts but no roster.** Its "Licensing and Tax Data" page carries a monthly table — as of 2 Nov 2026: 1,226 dispensaries, 1,582 growers, 545 processors, 42 transporters, 12 labs, 7 waste-disposal facilities, 1 education licence, 302,634 patients. Those are official, dated figures worth using for the Market tab and for reconciliation, but licensee-level data is only in OMMA's "Verify a License" portal. The table is in HTML accordions that need expanding before the rows exist in the DOM.
 
@@ -78,6 +83,9 @@ The remaining 22 states (AK, AR, GA, ID, IN, IA, KS, KY, LA, MS, MT, NE, NM, NC,
 - **PA**: the DOH dispensary PDF carries the same King of Prussia ZIP of 19706 that the audit flagged in PASDA — so it is DOH's own error, not a PASDA transcription slip. Its two sibling King of Prussia rows carry 19406, and 19706 is a Delaware ZIP. Recorded as published and flagged, not rewritten.
 - **FL**: FDACS leaves the county column blank on its 2026 records while populating it on the 2025 ones — 174 of 289 rows have no county.
 - **IL**: the Tableau export repeats the "Dispensary Name" column twice and mixes 'Yes' with 'yes' in the medical-patients flag.
+- **MO**: the DCR layer packs the licensee and its trading name into one semicolon-separated `Dispensary` value.
+- **OH**: the DCC layer spells its own licence type three ways (Dual, Dual Use, Dual Use Dispensary) and its state two ways (Ohio, OH).
+- **HI**: 19 of 94 registrants are online-only with no premises address at all, and 6 are registered from outside Hawaii (CA, TN, LA). DOH publishes no county, which is correct — Hawaii has no municipal government below county level.
 - **Schema gaps surfaced by real data.** HANDOFF's 14 standard licence types have no entry for California's "Event Organizer" (193 rows) or Colorado's "Operator" (8). Its 7 standard statuses have no entry for California's "Canceled" (1,622) or "Limited Operations" (156), or OLCC's "Inactive" (796). Those rows carry the nearest standard value plus `standard_status_approximate=yes` in extra_details, so an approximation is never mistaken for the regulator's own word. **These need a schema decision.**
 
 ## Mid-Atlantic counts: what this table says vs what the reports say
