@@ -13,7 +13,7 @@ Read docs/HANDOFF.md before any work. It is the master plan: data schema, site l
 - Private columns — strip before any deploy. `key_people_private` in businesses_master.csv, national_businesses.csv and new_england_businesses.csv; `contact_name`, `contact_phone`, `contact_email` and `owners` in the master licence table. All of data/private/. data/clean/ is tracked in git with these columns present, so the public build must drop them explicitly — git-ignoring data/private/ is not by itself enough.
 - Always store the county for towns, townships and other same-name places.
 - Federal baseline (as of Nov 2026): state-licensed MEDICAL marijuana and FDA products are Schedule III from 28 Apr 2026 (91 FR 22714); all adult-use stays Schedule I. 280E lifted for medical only. Hemp: PL 119-37 §781 effective 12 Nov 2026, limited by PL 119-103 §2019 until 11 Dec 2026; then total-THC definition and 0.4 mg/container cap. USDA DEA-lab testing enforcement delayed to 31 Dec 2026. Medical rider through 11 Dec 2026. No federal banking law.
-- Standard licence types (14), statuses (7) and business categories (17) are listed in docs/HANDOFF.md. Show the state's own licence name on state pages; use the standard type for search.
+- Standard licence types (16), statuses (10) and business categories (17) are listed in docs/HANDOFF.md. Show the state's own licence name on state pages; use the standard type for search. Never replace a regulator's own status wording — it stays in `status` while `standard_status` carries the standard value.
 
 ## Where things live
 - docs/ — HANDOFF.md (plan), STATUS.md (progress), FILE_INDEX.md (every file and its original name)
