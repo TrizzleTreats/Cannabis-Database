@@ -1,0 +1,23 @@
+business_id,region,business_name,category,audit_verdict,normalised_name,licence_states,licence_count,licence_ids,licensee_name_as_published
+NAT-006,National,Treez,Software,Confirmed,treez,TX,1,TX-2201-11809,Bluewillow Investments Llc
+NAT-079,National,"RYTHM, Inc. (formerly Agrify Corporation)",Grow Supplies and Equipment,Corrected,rythm,TX,2,TX-2201-7729; TX-2201-7729,"Rythm, Inc."
+NAT-145,National,Nabis,Marketing and Advertising,Corrected,nabis,CA,2,C11-0000150-LIC; C11-0001651-LIC,"Nabione, Inc."
+NAT-161,National,High Times (High Times / Hightimes Holding),Marketing and Advertising,Corrected,high times,CA,1,C10-0000040-LIC,The Black Card LLC
+NAT-193,National,Cookies (Cookies Creative Consulting & Promotions / Berner brands),Consumer Brands,Corrected,cookies,"CA,CO,OR",12,C10-0000638-LIC; C10-0001173-LIC; C11-0000630-LIC; C12-0000233-LIC; 402-00696; 402R-01129,Jonesa LLC
+NAT-194,National,incredibles (parent Green Thumb Industries — GTI),Consumer Brands,Corrected,incredibles,CO,1,404-00057,MEDICALLY CORRECT LLC
+NAT-202,National,STIIIZY (Shryne Group),Consumer Brands,Confirmed,stiiizy,CA,3,C10-0000053-LIC; C10-0000661-LIC; C10-0000720-LIC,"Bcok, Inc."
+NAT-209,National,Old Pal,Consumer Brands,Confirmed,old pal,TX,1,TX-2201-13250,Op 100 Market Llc
+NAT-210,National,Papa & Barkley,Consumer Brands,Corrected,papa barkley,CA,3,C11-0000119-LIC; C11-0000199-LIC; C11-0001128-LIC,P&B Labs Humboldt LLC
+NE-102,New England,Harvest Moon Hydroponics,Grow Supplies and Equipment,Unverified,harvest moon hydroponics,NY,1,OCM-MICR-25-000264,Nickel City Wholesale Garden Supply
+NE-106,New England,Healer (Healer CBD / Healer.com),Hemp and CBD Products,Unverified,healer,ME,1,CGR26424,Bradley J Feuer
+NE-117,New England,Lovewell Farms,Hemp and CBD Products,Checked,lovewell farms,RI,3,IHP GH 005; LCD0007; LCR0010,Lovewell Farms Co.
+GL-171,Great Lakes,Heartland Industries (Heartland Industries Inc.),Hemp and CBD Products,Corrected,heartland industries,CO,3,403-02390; 403R-00355; 404R-00084,HEARTLAND INDUSTRIES LLC
+GL-187,Great Lakes,Oliphant Brewing LLC.,Hemp and CBD Products,Confirmed,oliphant brewing,CT,1,CSM.0003237-TIB,OLIPHANT BREWING
+MT-077,Mountain,A1 Organics,Waste Services,,a1 organics,CA,1,CCL18-0000902,A1 Organics
+SC-120,South Central,"Green Acres Organic Pharms, Inc.",Hemp and CBD Products,,green acres organic pharms,AL,2,700-012481839; 700-012481839,Green Acres Organic Pharms Inc
+PAC-165,Pacific (OR/WA/AK/HI),Simply Sol (Simply Sol LLC; Simply Sol Farm),Hemp and CBD Products,Unverified,simply sol,OR,2,330-1079633IHH; 330-1079633IHH,SIMPLY SOL LLC
+SE-072,Southeast,New River Distilling Company,Extraction and Lab Equipment,Corrected,new river distilling,CT,2,CSM.0002946-TIB; CSM.0002946-TIB,NEW RIVER DISTILLING COMPANY
+SE-180,Southeast,Treadwell Farms,Hemp and CBD Products,Corrected,treadwell farms,FL,2,12_2600062; 12_2600173,"Treadwell Farms, LLC"
+CA-204,California,GAIACA Waste Revitalization (GAIACA),Waste Services,Unverified,gaiaca waste revitalization,CA,2,C11-0001363-LIC; C11-0001946-LIC,"Gaiaca, LLC"
+CA-227,California,CannaBiz Consulting Group,Compliance and Consulting,Unverified,cannabiz consulting group,CA,1,C12-0000260-LIC,"Coachella Sc, LLC"
+CA-229,California,Capitol Compliance Management (CCM),Compliance and Consulting,Confirmed,capitol compliance management,CA,1,CEO14-0000129-LIC,Capitol Compliance Management LLC
