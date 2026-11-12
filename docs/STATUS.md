@@ -9,6 +9,8 @@
 - Mid-Atlantic raw licence data captured for all six jurisdictions (scripts/fetch_raw.py, declared in scripts/sources.json, logged in data/raw/manifest.csv). 23 of 24 declared sources fetched.
 - Mid-Atlantic clean table built: data/clean/mid_atlantic_licences.csv, 4,067 rows (scripts/build_mid_atlantic.py). NY 3,056, NJ 586, PA 181, MD 130, DC 100, DE 14. Same 41 columns as the New England table, in the same order, so the two union cleanly (8,334 rows combined).
 - Regions 3-9 started: data/clean/regions_3_to_9_licences.csv, 41,026 rows across 7 of 39 jurisdictions (scripts/build_states.py). CA 20,984, TX 12,853, OR 3,701, CO 1,832, WA 1,226, NV 345, AL 85. Same 41 columns as the other two tables, so all three union to 49,360 rows.
+- Business directory built: all 11 audited directories parsed into data/clean/businesses_master.csv, 355 to 2,087 entries, every row on HANDOFF's 17 standard categories (scripts/build_businesses.py). California 371, National 237, Great Lakes 196, Plains 192, Pacific 192, Southeast 189, Mid-Atlantic 173, Southwest 165, South Central 130, Mountain 124, New England 118.
+- Business-to-licence matching done (scripts/match_businesses_to_licences.py): 22 directory entries hold a state licence under the same name, flagged on the row with their licence numbers and written to data/clean/business_licence_matches.csv.
 - USDA hemp list (May 2026) parsed.
 
 ## Next
@@ -97,6 +99,22 @@ Grand Rapids' layer is kept in data/raw/michigan-local-grand-rapids/ anyway: 110
 - **Schema gaps surfaced by real data — now settled.** The standard licence types went from 14 to **16** (Event Organizer, Operator) and the standard statuses from 7 to **10** (Limited Operations, Inactive, Canceled), decided on 12 Nov 2026 and recorded in HANDOFF.md with the reasoning. Every regulator word that still has no standard of its own now has a fixed, documented mapping there rather than an improvised one. That took the rows carrying an approximated status from **3,358 down to 1** — Oregon's single "NOT APPROVED", which is a refused application rather than a licence and stays visible and flagged.
 - 144 rows have a deliberately EMPTY standard_status: Maryland's 130 dispensaries and Delaware's 14, because neither regulator publishes a status at all. Empty must never be read as Active.
 
+## The business directory: 355 to 2,087 entries
+
+All 11 audited directories are now data rather than HTML. Three layouts, three parsers: six are category tables (Great Lakes, Plains, Mountain, Southwest, South Central, Pacific), two are one block per business (Mid-Atlantic, Southeast), and California is an audit table plus a category-number key.
+
+Two independent checks that the parse is faithful, both against figures the reports state themselves:
+- **California: exactly 371 businesses, exactly 242 unverified** — the two numbers HANDOFF records for R9c.
+- **Mid-Atlantic: exactly 173 kept, exactly 50 confirmed** — the numbers its own report states.
+
+Every row uses one of HANDOFF's 17 standard categories, none blank. The national and New England directories describe each category in a sentence rather than naming it, so 431 rows were mapped to the standard name with the directory's own wording kept.
+
+**A source that disagrees with itself.** The Mid-Atlantic directory's tally line says 71 corrected and 52 unverified, but its own per-entry badges say 63 and 60. The total (173) and the confirmed count (50) agree; the split does not.
+
+**22 directory entries hold a state licence.** Matched by normalised name against all 50,544 licence rows and written to data/clean/business_licence_matches.csv — Cookies (12 licences across CA, CO and OR), STIIIZY, Papa & Barkley, Old Pal, Treez and others. HANDOFF puts a licensed operator in the licence database rather than the directory, so each is flagged on its row with its licence numbers. **Nothing was deleted**: the match is on name alone, and a false positive would quietly drop a real directory entry, which is worse than a missed match. California's three show why it is a judgement call — GAIACA (waste services) holds two distributor licences and Capitol Compliance Management holds an event-organizer licence, so they are genuinely both a service business and a licensee.
+
+Still to do for this table: California's website, phone and address (the audit table carries the business set and verdicts; contact detail is in the rewritten-directory prose further down that report), de-duplication across directories, and merging national firms under parent profiles.
+
 ## Counties: 92% to 97%, filled from official sources only
 
 CLAUDE.md requires a county on every row. 4,039 of 50,544 rows had none because their regulator does not publish one. 2,925 are now filled and **every county in all three tables carries a source** (it was 3,677 with none). Nothing was inferred from a town name alone.
@@ -139,12 +157,12 @@ Data defects found in the official sources and recorded per row rather than sile
 - DC: the GIS retailer count (77 Active, Nov 2026) is NOT a correction to ABCA's 66 retailers (Aug 2026 report) — different source and date. Do not reconcile them into one number.
 - NY: the OCM dataset has 3,056 rows but only 2,286 distinct licence numbers, and 385 rows carry no licence number at all — those are applicants under proximity protection. Row count is not a licence count, and neither figure should be compared directly with the OCM 2025 Annual Report's 2,008 active (30 Nov 2025).
 - CT: 465 records in the fresh download are applications that never became licences (DENIED, EXPIRED APPLICATION / NSF PAYMENT DUE, WITHDRAWN, INSPECTION INCOMPLETE) and are excluded from the licence table. The rule is in scripts/build_new_england.py; it keys on statusreason, not status, because "EXPIRED APPLICATION / PROVISIONAL LICENSE EXPIRED" was a real licence.
-- Talaria: treat as a licensed operator everywhere (moved out of Mid-Atlantic directory as an NJ wholesaler, still in Great Lakes).
+- Talaria: SETTLED for the business table — excluded from businesses_master.csv because the Mid-Atlantic audit marks it MOVED OUT as an NJ wholesaler, and HANDOFF puts a licensed operator in the licence database. It still needs adding to the licence table, where NJ's CRC publishes no licence number for it.
 - CropLine (NV): link to Green Therapeutics' licence, not the directory.
 - Crested River Cannabis Company (MN): confirm licence and move.
 - Coastal Cannabis Consulting (LA): founder tied to a pharmacy licensee; decide.
 - American Cannabis Company (CO): ownership unverified.
-- California businesses: 242 of 371 unverified; match every name against the DCC licence download and CDPH hemp registrations.
+- California businesses: the DCC match is now DONE — all 371 names were matched against the 20,984-row DCC download, and 3 hold DCC licences (GAIACA Waste Revitalization, two distributor licences; CannaBiz Consulting Group; Capitol Compliance Management, an event-organizer licence). The 242 unverified entries are still unverified — that is a separate job from the licence match. CDPH hemp registrations are still unmatched.
 - California state report (R91) and Michigan (R56) audits are light; check law and tax pages against official sites.
 - New Hampshire audit is light (about 42 rows). Its 7 ATC rows were hand-transcribed from a DHHS PDF and still have no stored raw file.
 - New Jersey audit is lighter than the rest (about 78 claims).
