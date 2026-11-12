@@ -185,6 +185,7 @@ commissionsandappointments.sos.mn.gov
 comptroller.texas.gov
 constitutionalinitiatives.dos.fl.gov
 content.dcf.ks.gov
+content.govdelivery.com
 content.leg.colorado.gov
 corp.delaware.gov
 corp.sos.ms.gov
@@ -583,6 +584,7 @@ opendata.dc.gov
 opendata.maryland.gov
 ose.maryland.gov
 pa.gov
+paauditor.b-cdn.net
 padohmmp.custhelp.com
 palmbayflorida.primegov.com
 pci-nsn.gov
@@ -791,6 +793,7 @@ www.alea.gov
 www.ams.usda.gov
 www.anokacountymn.gov
 www.appropriations.senate.gov
+www.arcgis.com
 www.archives.gov
 www.arkleg.state.ar.us
 www.ashlandoregon.gov

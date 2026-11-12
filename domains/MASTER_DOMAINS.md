@@ -2,7 +2,7 @@
 
 Built 12 November 2026 from the official sources cited in the audited state reports (Regions 1–9) and the audited federal report, merged with the New England and Mid-Atlantic lists made in the earlier chat. These are the sites Claude Code needs access to for licence data, laws, rules and local codes. News sites, blogs, law firms, directories and unofficial law copies (Justia, FindLaw, LegiScan, Wikipedia) are deliberately left out.
 
-**Total unique sites:** 1238 (a plain one-per-line copy is in all-domains.txt).
+**Total unique sites:** 1241 (a plain one-per-line copy is in all-domains.txt).
 
 ## Federal
 ```
@@ -60,9 +60,9 @@ agriculture.ny.gov, buylegal.cannabis.ny.gov, cannabis.ny.gov, council.nyc.gov, 
 data.nj.gov, dep.nj.gov, extension.rutgers.edu, nj-crc-public.nls.egov.com, nj.gov, njmcp.crc.nj.gov, pub.njleg.gov, pub.njleg.state.nj.us, state.nj.us, www.nj.gov, www.njleg.state.nj.us, www.njoag.gov, www.state.nj.us, www20.state.nj.us
 ```
 
-### Pennsylvania (18)
+### Pennsylvania (19)
 ```
-cedatareporting.pa.gov, data.pa.gov, legis.state.pa.us, pa.gov, padohmmp.custhelp.com, phila.legistar.com, revenue-pa.custhelp.com, www.agriculture.pa.gov, www.legis.state.pa.us, www.lowerpaxton-pa.gov, www.pa.gov, www.paauditor.gov, www.pacodeandbulletin.gov, www.palegis.us, www.paplants.pa.gov, www.pasda.psu.edu, www.psp.pa.gov, www.yorkcity.org
+cedatareporting.pa.gov, data.pa.gov, legis.state.pa.us, pa.gov, paauditor.b-cdn.net, padohmmp.custhelp.com, phila.legistar.com, revenue-pa.custhelp.com, www.agriculture.pa.gov, www.legis.state.pa.us, www.lowerpaxton-pa.gov, www.pa.gov, www.paauditor.gov, www.pacodeandbulletin.gov, www.palegis.us, www.paplants.pa.gov, www.pasda.psu.edu, www.psp.pa.gov, www.yorkcity.org
 ```
 
 ### Delaware (30)
@@ -70,14 +70,14 @@ cedatareporting.pa.gov, data.pa.gov, legis.state.pa.us, pa.gov, padohmmp.custhel
 agriculture.delaware.gov, archive.regulations.delaware.gov, cheswold.delaware.gov, corp.delaware.gov, data.delaware.gov, date.delaware.gov, de-dshs.my.site.com, de.gov, delcode.delaware.gov, dhss.delaware.gov, dnrec.delaware.gov, dshs.delaware.gov, hartly.delaware.gov, housedems.delaware.gov, housegop.delaware.gov, legis.delaware.gov, newarkde.gov, news.delaware.gov, oabcc.delaware.gov, omc.delaware.gov, regulations.delaware.gov, revenue.delaware.gov, revenuefiles.delaware.gov, senatedems.delaware.gov, sussexcountyde.civicweb.net, sussexcountyde.gov, tax.delaware.gov, www.legis.delaware.gov, www.wilmingtoncitycouncil.com, www3.newcastlede.gov
 ```
 
-### Maryland (21)
+### Maryland (22)
 ```
-atcc.maryland.gov, cannabis.maryland.gov, commerce.maryland.gov, dbm.maryland.gov, dsd.maryland.gov, economicmobility.maryland.gov, elections.maryland.gov, frederickcountymd.gov, governor.maryland.gov, health.maryland.gov, mda.maryland.gov, mgaleg.maryland.gov, msa.maryland.gov, onestop.md.gov, opendata.maryland.gov, ose.maryland.gov, regs.maryland.gov, www.marylandcomptroller.gov, www.marylandtaxes.com, www.marylandtaxes.gov, www.washco-md.net
+atcc.maryland.gov, cannabis.maryland.gov, commerce.maryland.gov, content.govdelivery.com, dbm.maryland.gov, dsd.maryland.gov, economicmobility.maryland.gov, elections.maryland.gov, frederickcountymd.gov, governor.maryland.gov, health.maryland.gov, mda.maryland.gov, mgaleg.maryland.gov, msa.maryland.gov, onestop.md.gov, opendata.maryland.gov, ose.maryland.gov, regs.maryland.gov, www.marylandcomptroller.gov, www.marylandtaxes.com, www.marylandtaxes.gov, www.washco-md.net
 ```
 
-### District of Columbia (24)
+### District of Columbia (25)
 ```
-abca.dc.gov, abra.dc.gov, anc3a.dc.gov, code.dccouncil.gov, dcboe.org, dccouncil.gov, dcregs.dc.gov, dlcp.dc.gov, dob.dc.gov, doee.dc.gov, doh.dc.gov, edpm.dc.gov, electionresults.dcboe.org, hub.arcgis.com, lims.dccouncil.gov, maps2.dcgis.dc.gov, mayor.dc.gov, mpdc.dc.gov, oag.dc.gov, oca.dc.gov, opendata.arcgis.com, opendata.dc.gov, services.arcgis.com, www.dcregs.dc.gov
+abca.dc.gov, abra.dc.gov, anc3a.dc.gov, code.dccouncil.gov, dcboe.org, dccouncil.gov, dcregs.dc.gov, dlcp.dc.gov, dob.dc.gov, doee.dc.gov, doh.dc.gov, edpm.dc.gov, electionresults.dcboe.org, hub.arcgis.com, lims.dccouncil.gov, maps2.dcgis.dc.gov, mayor.dc.gov, mpdc.dc.gov, oag.dc.gov, oca.dc.gov, opendata.arcgis.com, opendata.dc.gov, services.arcgis.com, www.arcgis.com, www.dcregs.dc.gov
 ```
 
 ## Region 3 — Southeast
