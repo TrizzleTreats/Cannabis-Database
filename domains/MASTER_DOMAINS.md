@@ -2,7 +2,7 @@
 
 Built 12 November 2026 from the official sources cited in the audited state reports (Regions 1–9) and the audited federal report, merged with the New England and Mid-Atlantic lists made in the earlier chat. These are the sites Claude Code needs access to for licence data, laws, rules and local codes. News sites, blogs, law firms, directories and unofficial law copies (Justia, FindLaw, LegiScan, Wikipedia) are deliberately left out.
 
-**Total unique sites:** 1253 (a plain one-per-line copy is in all-domains.txt).
+**Total unique sites:** 1256 (a plain one-per-line copy is in all-domains.txt).
 
 ## Federal
 ```

@@ -13,7 +13,7 @@
 
 ## Next
 1. Post-election re-checks: Idaho HJR 4 (3 Nov 2026 ballot) and any other state with a 2026 cannabis measure; update Part 0 and Part 9 of those reports once results are certified.
-2. Fill the counties the regulators do not publish: PA 181, NJ 586, DE 14 rows have none at all, plus NY 306, CT 84, ME 23, MA 19, MD 3, RI 2. CLAUDE.md requires a county for every town; all are left empty rather than guessed. A town-to-county gazetteer per state is the missing piece.
+2. The remaining 1,185 county gaps (CA 275, CO 240, NY 196, NJ 88, TX 85, CT 65, HI 64, FL 59, IL 36, ME 23, PA 22, MO 11, AL 9, VA 4, MD 3, MA 2, RI 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need either an address the regulator does not publish, or a decision (Connecticut's two county vocabularies).
 3. Resolve the licence numbers PA, NJ, MD and DE do not publish in their public lists. NJ's are in per-facility licence PDFs linked from the CRC page (e.g. RE000900); the other three publish none anywhere found so far.
 4. Finish Regions 3-9: 32 of 39 jurisdictions remain. The two blockers are a PDF text extractor (none installed; 2,219 discovered files are PDFs) and browser-pane runs for the portal and bot-checked states. scripts/sources.json plus a spec in scripts/build_states.py is the pattern — adding a state is adding a spec.
 5. Decide the schema gaps the real data surfaced: licence types "Event Organizer" and "Operator", and statuses "Canceled", "Limited Operations" and "Inactive".
@@ -96,6 +96,21 @@ Grand Rapids' layer is kept in data/raw/michigan-local-grand-rapids/ anyway: 110
 - **HI**: 19 of 94 registrants are online-only with no premises address at all, and 6 are registered from outside Hawaii (CA, TN, LA). DOH publishes no county, which is correct — Hawaii has no municipal government below county level.
 - **Schema gaps surfaced by real data — now settled.** The standard licence types went from 14 to **16** (Event Organizer, Operator) and the standard statuses from 7 to **10** (Limited Operations, Inactive, Canceled), decided on 12 Nov 2026 and recorded in HANDOFF.md with the reasoning. Every regulator word that still has no standard of its own now has a fixed, documented mapping there rather than an improvised one. That took the rows carrying an approximated status from **3,358 down to 1** — Oregon's single "NOT APPROVED", which is a refused application rather than a licence and stays visible and flagged.
 - 144 rows have a deliberately EMPTY standard_status: Maryland's 130 dispensaries and Delaware's 14, because neither regulator publishes a status at all. Empty must never be read as Active.
+
+## Counties: 92% to 97%, filled from official sources only
+
+CLAUDE.md requires a county on every row. 4,039 of 50,544 rows had none because their regulator does not publish one. 2,925 are now filled and **every county in all three tables carries a source** (it was 3,677 with none). Nothing was inferred from a town name alone.
+
+Two sources, both official:
+- **The US Census geocoder** (`geocoding.geo.census.gov`, no key, benchmark `Public_AR_Current`, vintage `Current_Current`) resolved 1,886 of 2,229 distinct street addresses to a county. Address-level, which is what makes it safe for the township states HANDOFF warns about — Ohio, Michigan, Indiana, Illinois, Minnesota, North Dakota, New Jersey and Pennsylvania all have town names that repeat across counties, and a name-only lookup would mis-assign them. Results are cached in data/raw/census_county_lookup.csv so a re-run is free and the provenance stays on disk.
+- **New Jersey's own CRC Government Relations table**, already in data/raw/, pairs County with Municipality. It filled 498 of NJ's 586. The other 88 are unincorporated places inside townships (Somerset, Williamstown, Marlton, Atco) rather than municipalities, so they are not in the CRC's list and are left flagged.
+
+An authoritative county list now lives in data/raw/census_counties_by_state.csv — 3,229 counties across 56 states and territories, from Census TIGERweb — and verify.py checks every county against its own state. That check found four distinct problems, all now fixed or flagged:
+
+- **A bug of mine.** `title()` mangles Mc- names, so Texas's McLennan became "Mclennan" — 135 TX rows, plus McCulloch, McMullen and Missouri's McDonald. Normalised to the Census spelling.
+- **Variant spellings**: NY "St Lawrence", FL "Saint Lucie", FL "Dade" (renamed Miami-Dade in 1997), and the independent cities MD "Baltimore City" and MO "St. Louis City". 174 rows normalised in total.
+- **Placeholders in a county column**: Texas DSHS writes "Out Of State/Unknown" and "Private". 71 rows blanked, with the original value recorded on the row — a placeholder must never be published as a county.
+- **Premises outside the licensing state.** 41 rows. Connecticut's hemp-consumables credential is held by manufacturers in Buffalo, Atlanta, Bend and Chattanooga, so their premises county is genuinely in another state. The county is kept and the row says it must be left off a Connecticut county map. A further 24 rows have county names ambiguous across several states and say so.
 
 ## Mid-Atlantic counts: what this table says vs what the reports say
 

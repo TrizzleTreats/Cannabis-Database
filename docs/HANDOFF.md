@@ -78,6 +78,7 @@ Only the complete versions of R31, R34, R36, R53 and R63 should be kept (earlier
 
 ## Local government quirks to model
 - Townships (OH, MI, IN, IL, MN, ND, NJ, PA) share names across counties — always store the county.
+- **Connecticut has no working counties.** Census replaced CT's eight counties with nine Councils of Governments / Planning Regions as its county-equivalents in 2022, so the Census geocoder returns e.g. "Capitol Planning Region" where other states return "Hartford County". The traditional eight names still exist and are what ct_towns.csv and the CT licence rows use. The site must pick one vocabulary for Connecticut and say which — the two must never share the county column. Found 12 Nov 2026 while filling counties from the Census geocoder.
 - Parishes in Louisiana; boroughs and the Unorganized Borough in Alaska; independent cities in Virginia; consolidated city-counties (e.g. Denver, Broomfield, San Francisco, Jacksonville, Louisville Metro, Lexington-Fayette, Nashville-Davidson, Butte-Silver Bow, Carson City, Honolulu); Wisconsin has cities, villages AND towns with shared names; Hawaii has no municipal governments below county.
 - Unincorporated areas (e.g. the Las Vegas Strip is Clark County, not the City of Las Vegas; Los Angeles city vs unincorporated LA County).
 - Montana green/red counties; Colorado local opt-in by business type; Michigan opt-in (medical) vs opt-out (adult-use); Missouri local bans need a public vote; New Mexico and Minnesota towns cannot ban.

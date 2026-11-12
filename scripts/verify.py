@@ -170,6 +170,51 @@ if len(shapes) > 1:
     print(f"  -- combined rows across the regional tables: "
           f"{sum(len(list(csv.DictReader(open(ROOT / 'data/clean' / n, encoding='utf-8')))) for n in shapes)}")
 
+# ------------------------------------------------- county validation
+head("Counties must exist in their state")
+cpath = ROOT / "data/raw/census_counties_by_state.csv"
+if cpath.exists():
+    official = collections.defaultdict(set)
+    for r in csv.DictReader(open(cpath, encoding="utf-8")):
+        official[r["state"]].add(r["county_basename"])
+    # Connecticut replaced its eight counties with nine Planning Regions in
+    # 2022, so TIGER no longer lists the traditional names the tables use.
+    # Documented in HANDOFF; accepted here rather than reported as an error.
+    CT_TRADITIONAL = {"Fairfield", "Hartford", "Litchfield", "Middlesex",
+                      "New Haven", "New London", "Tolland", "Windham"}
+    bad, ct_trad, offstate, known_bad = collections.Counter(), 0, 0, 0
+    for name in TABLES:
+        path = ROOT / "data/clean" / name
+        if not path.exists():
+            continue
+        for r in csv.DictReader(open(path, encoding="utf-8")):
+            c = r["county"].strip()
+            if not c:
+                continue
+            if "premises outside the licensing state=" in r["extra_details"]:
+                offstate += 1
+                continue
+            if r["state"] == "CT" and c in CT_TRADITIONAL:
+                ct_trad += 1
+                continue
+            if c not in official.get(r["state"], set()):
+                # A row that already says its county is wrong is a known gap,
+                # not a regression. An UNflagged bad county is what must fail.
+                if "county not valid for this state=" in r["extra_details"]:
+                    known_bad += 1
+                else:
+                    bad[(r["state"], c)] += 1
+    print(f"  official county list: {sum(len(v) for v in official.values())} counties "
+          f"across {len(official)} states (Census TIGERweb)")
+    print(f"  -- {ct_trad} CT rows use the traditional county names TIGER dropped in 2022 (documented)")
+    print(f"  -- {offstate} rows are flagged as premises outside their licensing state")
+    print(f"  -- {known_bad} rows carry a county that is not their state's and say so on the row "
+          f"(ambiguous names inherited from the 24 Oct 2026 table)")
+    check(not bad, "every county exists in its own state",
+          "" if not bad else f"{sum(bad.values())} rows, e.g. {list(bad.items())[:5]}")
+else:
+    print("  (county reference not built yet)")
+
 # ------------------------------------------------------ NY reconciliation
 head("New York: row count is not a licence count")
 p = ROOT / "data/raw/new-york/jskf-tt3q_ocm_licences_2026-11-12.csv"

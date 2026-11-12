@@ -112,6 +112,9 @@ Notes:
 | scripts/build_states.py | Spec-driven builder for data/clean/regions_3_to_9_licences.csv — one declarative spec per state |
 | scripts/discover_sources.py | Walks the licensee pages the reports cite and records the data files they link to |
 | scripts/xlsx_reader.py | Reads .xlsx without openpyxl (shared strings, inline strings, 1900-epoch date serials) |
+| scripts/fill_counties.py | Fills, canonicalises and validates the county column from the Census geocoder and NJ's CRC table |
+| data/raw/census_county_lookup.csv | Cached Census geocoder results: address -> county, with the matched address and status |
+| data/raw/census_counties_by_state.csv | 3,229 official counties across 56 states, from Census TIGERweb — the reference verify.py checks against |
 | data/raw/discovered_sources.csv | What the discovery crawl found: 2,615 rows of candidate data files per state |
 | scripts/verify.py | Re-runnable check: private data not tracked, allowlist matches the domain list, every raw file hashes and opens, master table integrity, NY row-vs-licence reconciliation |
 | data/raw/manifest.csv | Append-only provenance log: one row per fetch attempt with bytes, sha256, status and reason. The LAST row for an id is its current state |

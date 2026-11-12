@@ -50,6 +50,7 @@ anc3a.dc.gov
 anokacountymn.gov
 anokamn.gov
 api.cannabis.ca.gov
+api.census.gov
 api.realfile.rtsclients.com
 app.leg.wa.gov
 app.lla.state.la.us
@@ -358,6 +359,7 @@ gbi.georgia.gov
 gbp.georgia.gov
 gc.nh.gov
 gencourt.state.nh.us
+geocoding.geo.census.gov
 goia.wa.gov
 gov.georgia.gov
 gov.idaho.gov
@@ -752,6 +754,7 @@ tax.utah.gov
 tax.vermont.gov
 tax.wv.gov
 texasagriculture.gov
+tigerweb.geo.census.gov
 tmchippewa.com
 tncab.tnsos.gov
 tntap.tn.gov
