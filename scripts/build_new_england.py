@@ -262,6 +262,11 @@ def main():
     cols = list(old_rows[0].keys())
     if "standard_status" not in cols:
         cols.insert(cols.index("status") + 1, "standard_status")
+    # HANDOFF's schema calls for a state-specific "extra details" slot. The
+    # Mid-Atlantic table needs it heavily; carrying it here too (mostly empty)
+    # keeps the two regional tables unionable without a later migration.
+    if "extra_details" not in cols:
+        cols.append("extra_details")
     blank = {c: "" for c in cols}
     prior = {(r["state"], r["licence_id"]): r for r in old_rows}
     town_county = {(r["state"], r["town"].lower()): r["county"]

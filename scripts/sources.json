@@ -236,5 +236,14 @@
     "filename": "ny_licensed_hemp_producers_page_2026-11-12.html",
     "format": "html",
     "note": "Part 5 describes this source as 'HTML list + PDF'. The PDF (licensed_hemp_producers.pdf) returns HTTP 403 to non-browser clients, with or without a Referer, so the HTML list is taken instead. CONTAINS PERSONAL EMAILS - those fields belong in private columns only."
+  },
+  {
+    "id": "pa-pasda-dispensaries",
+    "state": "pennsylvania",
+    "part5_ref": "PA 5 \u2014 PASDA dataset 920, DOH Medical Marijuana Dispensaries (file URL RESOLVED from the PASDA dataset page)",
+    "url": "https://www.pasda.psu.edu/spreadsheet/DOH_MedicalMarijuanaDispensaries202501.csv",
+    "filename": "pasda_DOH_MedicalMarijuanaDispensaries202501.csv",
+    "format": "csv",
+    "note": "The only machine-readable PA dispensary list. Part 5 left the exact file URL as VERIFY; it is resolved here from the PASDA dataset page's own Spreadsheet link. VINTAGE DOH 2025-01, so it is older than the Sept 2026 dispensary PDF and will not match it. Geocoding certainty is in its own field: 00=rooftop, 01=street, 04=zip centroid, 99=not geocoded. PASDA is Penn State republishing state data, not the regulator."
   }
 ]

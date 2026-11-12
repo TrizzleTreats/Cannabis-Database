@@ -1,0 +1,182 @@
+OBJECTID,FACILITY_N,LONGITUDE,LATITUDE,GEOCODING_,OPENED_ON,PRODUCT_AV,STREET,CITY,ZIP_CODE,TELEPHONE_,FACILITY_U
+1,Cresco Yeltrah - Butler County,-79.90584488,40.86026391,00,2/15/2018,Yes,201 Pillow St,Bulter,16001,724-276-0069,https://www.cydispensary.com
+2,Justice Grown,-75.89908649,41.25729732,00,2/16/2018,Yes,7B Gateway Shopping Center,Edwardsville,18704,570-763-7200,https://www.justicegrownpa.com
+3,Keystone Canna Remedies,-75.35532096,40.63189447,00,2/16/2018,Yes,1309 Stefko Blvd,Bethlehem,18017,484-408-6122,https://www.keystonecannaremedies.com
+4,Organic Remedies-Enola,-76.97265873,40.28967773,00,2/16/2018,Yes,4425 Valley Road,Enola,17025,717-562-7758,https://organicremediespa.com
+5,Solevo-Squirrel Hill,-79.92695816,40.42748474,00,2/16/2018,Yes,5600 Forward Ave,Pittsburgh,15217,412-422-0420,https://www.solevowellness.com
+6,Keystone Shops - Devon,-75.43074307,40.04476323,00,2/17/2018,Yes,420 West Lancaster Ave,Devon,19333,484-581-7189,https://keystoneshops.com
+7,TerraVida Holistic Centers - Sellersville,-75.30893899,40.35821864,00,2/17/2018,Yes,64 N. Main St,Sellersville,18960,215-257-3243,https://www.terravidahc.com
+8,The Apothecarium Dispensary,-75.28724699,40.11244223,00,3/2/2018,Yes,420 Plymouth Road,Plymouth Meeting,19462,484-531-4420,https://ilerahealthcare.com
+9,Cure Pennsylvania,-76.32048802,40.07197969,00,3/7/2018,Yes,1866 Fruitville Pike,Lancaster,17601,717-619-2873,https://curepenn.com
+10,Organic Remedies - Chambersburg,-77.65481312,39.91519598,00,3/20/2018,Yes,900 Wayne Avenue,Chambersburg,17201,717-251-2321,https://organicremediespa.com
+11,Cure Pennsylvania,-75.54714409,40.1299618,00,4/6/2018,Yes,500 Kimberton Road,Phoenixville,19460,610-546-2873,https://curepenn.com
+12,Columbia Care - Keyser Dispensary,-75.6687792,41.44331001,00,4/16/2018,Yes,1790 North Keyser Avenue,Scranton,18508,570-309-6098,https://col-care.com
+13,RISE - Erie,-80.13060025,42.1104469,00,4/18/2018,Yes,2108 W. 8th Street,Erie,16505,814-277-2835,https://risecannabis.com
+14,Keystone Shops - King of Prussia,-75.35795935,40.08639257,00,5/2/2018,Yes,367 S Henderson,King of Prussia,19406,484-581-7189,https://keystoneshops.com
+15,RISE - Steelton,-76.82745716,40.22514755,00,5/3/2018,Yes,801 South Front Street,Steelton,17113,717-279-5818,https://risecannabis.com
+16,Beyond Hello - Bristol,-74.88716279,40.13168453,00,5/11/2018,Yes,2412-2414 Durham Road,Bristol,19007,267-580-5801,https://www.beyond-hello.com
+17,TerraVida Holistic Centers - Malvern,-75.57090716,40.03603766,00,5/23/2018,Yes,249 Planebrook Road,Malvern,19355,484-328-3442,https://www.terravidahc.com
+18,Restore Integrative Wellness Center LLC,-75.13427146,39.96565169,00,5/30/2018,Yes,957-963 Frankford Avenue,Philadelphia,19125,215-999-2980,https://restoreiwc.com
+19,Knox Medical (Cansortium Pennsylvania LLC),-76.99453231,39.79088804,00,6/5/2018,Yes,648 Frederick Street,Hanover,17331,888-441-5669,(hKtNtpOsX:/)/www.getfluent.com
+20,Ethos Pennsylvania - Allentown,-75.47758412,40.56131552,00,6/7/2018,Yes,2733 W. Emmaus Avenue,Allentown,18103,267-662-1937,https://missiondispensaries.com
+21,Nature's Medicines,-77.9097224,40.81011815,00,6/21/2018,Yes,2105 N Atherton Street,State College,16803,814-924-0597,https://naturesmedicines.com
+22,Cresco Yeltrah - Allegheny County,-79.98256267,40.45192491,00,6/26/2018,Yes,2116 Penn Avenue,Pittsburgh,15222,724-276-0069,https://www.cydispensary.com
+23,The Healing Center - Washington,-80.26262851,40.16915431,00,6/30/2018,Yes,799 West Chestnut Street,Washington,15301,724-914-4944,http://www.thehealingcenterusa.com
+24,Keystone Center of Integrative Wellness,-77.03629122,41.24457969,00,7/6/2018,Yes,1490 High Street,Williamsport,17701,570-218-4402,https://www.keystoneciw.com
+25,Liberty - Norristown,-75.38033176,40.13324002,00,7/9/2018,Yes,2030 West Main Street,Norristown,19403,484-612-4520,https://www.libertydispensarypa.com
+26,Liberty - Philadelphia,-75.04982829,40.08300917,00,7/16/2018,Yes,8900 Krewstown Road,Philadelphia,19115,267-686-2824,https://www.libertydispensarypa.com
+27,Herbology û Gettysburg,-77.23126641,39.83018247,00,8/7/2018,Yes,19 Baltimore Street,Gettysburg,17325,717-398-0540,https://www.myherbology.com
+28,Maitri Medicinals - Uniontown,-79.72648635,39.90097572,00,9/4/2018,Yes,27-31 West Main Street,Uniontown,15401,724-550-4565,https://www.maitrimedicinals.com
+29,The Healing Center Monroeville,-79.79387063,40.43126421,00,9/28/2018,Yes,130 Mall Circle Drive,Monroeville,15146,412-256-7045,http://www.thehealingcenterusa.com
+30,Restore Integrative Wellness Center LLC,-75.12845831,40.07542857,00,10/2/2018,Yes,8003 Old York Road,Elkins Park,19027,215-709-2360,https://restoreiwc.com
+31,Harvest of Reading,-75.92712521,40.38341831,00,10/4/2018,Yes,3225 N. 5th Street Highway,Reading,19605,484-513-3732,https://www.harvestinc.com
+32,RISE - York,-76.81989684,39.92940063,00,10/5/2018,Yes,4395 West Market Street,York,17408,717-800-1729,https://risecannabis.com
+33,Herbology - DuBois Wellness Center LLC,-78.77091951,41.09844562,00,10/15/2018,Yes,1222 South Brady Street,DuBois,15801,814-299-4120,https://www.myherbology.com
+34,CURE Pennsylvania - Philadelphia,-75.22163377,40.00311515,00,11/2/2018,Yes,4502 City Avenue,Philadelphia,19131,215-876-2873,https://curepenn.com
+35,Herbology - Philadelphia,-75.15679961,39.93521476,00,11/2/2018,Yes,1125-1127 Passyunk Avenue,Philadelphia,19147,267-691-0565,https://www.myherbology.com
+36,Liberty,-74.95026049,40.13700109,00,11/9/2018,Yes,4201 Neshaminy Blvd Unit 101,Bensalem,19020,267-512-6103,https://www.libertydispensarypa.com
+37,Herbology - Altoona,-78.36945475,40.52164962,00,11/12/2018,Yes,514 E Pleasant Valley Blvd,Altoona,16602,814-626-9520,https://www.myherbology.com
+38,Solevo - Jackson Pointe,-80.11784481,40.75511828,00,11/20/2018,Yes,22095 Perry Highway Suite 301,Zelienople,16063,412-422-0420,https://www.solevowellness.com
+39,Columbia Care PA LLC - Wilkes- Barre,-75.84353898,41.24995788,00,12/3/2018,Yes,765 Kidder Street,Wilkes-Barre,18702,570-362-7020,https://col-care.com
+40,Columbia Care - Allentown,-75.52551273,40.59880951,00,12/17/2018,Yes,3025 W Tilghman Street,Allentown,18104,484-838-7900,https://col-care.com
+41,Delta 9 PA,-79.53779952,40.30349563,00,12/20/2018,Yes,305 East Pittsburgh Street,Greensburg,15601,724-600-4438,https://www.delta9pa.com/
+42,Beyond Hello - Franklin Bioscience Penn Dispensary,-75.16073925,39.94960838,00,1/24/2019,Yes,1206 Sansom Street,Philadelphia,19107,267-804-7168,http://beyond-hello.com
+43,Maitri Medicinals - Pittsburgh,-79.93037654,40.45850111,00,1/24/2019,Yes,5845 Centre Ave,Pittsburgh,15206,412-404-7464,https://www.maitrimedicinals.com
+44,Cresco Yeltrah - New Kensington,-79.76600711,40.56302178,00,2/25/2019,Yes,4 Kensington Square,New Kensington,15068,724-276-0069,https://www.cydispensary.com
+45,AES Herbology û Morton,-75.33139828,39.91760801,00,5/6/2019,Yes,409 Baltimore Pike,Morton,19070,610-490-8966,https://www.myherbology.com
+46,DuBois Wellness Center - Herbology,-78.64702217,41.95610793,00,5/13/2019,Yes,109 Main Street,Bradford,16701,814-250-0922,https://www.myherbology.com
+47,RISE - Latrobe,-79.43691399,40.28698639,00,6/20/2019,Yes,117 Beatty County Rd,Latrobe,15650,724-220-4106,https://risecannabis.com
+48,Keystone Canna Remedies - Allentown,-75.52489597,40.57805928,00,6/22/2019,Yes,3340 Hamilton Blvd,Allentown,18103,484-408-6122,https://www.keystonecannaremedies.com
+49,RISE - Mechanicsburg,-77.01502657,40.21831376,00,6/27/2019,Yes,507 N York Street,Mechanicsburg,17055,717-400-5610,https://risecannabis.com
+50,Herbology - Lebanon,-76.42523619,40.33936688,00,7/10/2019,Yes,815 Cumberland Street,Lebanon,17042,717-769-4174,https://www.myherbology.com
+51,Beyond Hello - Johnstown,-78.91937522,40.32560105,00,7/22/2019,Yes,416 Main Street,Johnstown,15901,814-357-9930,http://beyond-hello.com
+52,Herbology - King of Prussia,-75.40051659,40.08273462,00,7/22/2019,Yes,110 N Warner Rd,King of Prussia,19406,610-601-2054,https://www.myherbology.com
+53,Keystone Shops - South Philadelphia,-75.15463518,39.9076481,00,7/26/2019,Yes,300 Packer Avenue,Philadelphia,19148,215-876-0420,https://keystoneshops.com
+54,Justice Grown - Hayden Gateway,-75.63473798,41.45244641,00,8/2/2019,Yes,272 Main Street,Dickson City,18519,570-291-4747,https://www.justicegrownpa.com
+55,Nature's Medicines Bloomsburg,-76.48927823,41.01867339,00,8/7/2019,Yes,261 Columbia Mall,Drive Bloomsburg,17815,570-828-3888,https://naturesmedicines.com
+56,Herbology Brookville,-79.09613845,41.16302097,00,8/21/2019,Yes,240 W Main Street,Brookville,15825,814-759-4069,https://www.myherbology.com
+57,Beyond Hello - Northern Liberties Philadelphia,-75.14657685,39.96013556,00,8/26/2019,Yes,475 N 5th Street,Philadelphia,19123,215-475-3580,http://beyond-hello.com
+58,RISE - Hermitage,-80.45749448,41.23304411,00,9/19/2019,Yes,2880 E State Street,Hermitage,16148,724-500-5508,https://risecannabis.com
+59,Harvest of Reading - Lancaster Ave,-75.93466886,40.32247372,00,9/25/2019,Yes,201 Lancaster Ave,Reading,19611,484-207-1717,https://www.harvestinc.com
+60,Nature's Medicines Selinsgrove,-76.84068869,40.82857207,00,9/26/2019,Yes,1420 N Susquehanna Trail,Selinsgrove,17870,570-828-3999,https://naturesmedicines.com
+61,Restore - Doylestown,-75.12967107,40.33273666,00,10/14/2019,Yes,812 N Easton Road Unit 6,Doylestown,18902,267-621-3014,https://restoreiwc.com
+62,Delta 9 PA,-79.95480282,40.48101681,00,10/17/2019,Yes,211 52nd Street,Pittsburgh,15201,412-439-2093,https://www.delta9pa.com/
+63,Harvest of Scranton,-75.66839231,41.4044665,00,10/17/2019,Yes,340 S Washington Ave,Scranton,18505,570-209-7401,https://www.harvestinc.com
+64,Organic Remedies - York,-76.68263226,39.95870186,00,10/24/2019,Yes,1098 Haines Road,York,17402,717-699-7083,https://organicremediespa.com
+65,Green Goods,-75.68796988,41.3994953,00,10/27/2019,Yes,1146 S Main Avenue,Scranton,18504,800-514-8532,www.visitgreengoods.com
+66,Green Goods - Bethlehem,-75.38570196,40.58537354,00,11/6/2019,Yes,3679 Route 378 Unit 10,Bethlehem,18015,800-514-8532,www.visitgreengoods.com
+67,Harvest of Johnstown,-78.92034368,40.32646535,00,11/12/2019,Yes,339 Main Street,Johnstown,15901,814-258-8190,https://www.harvestinc.com
+68,Harvest of Harrisburg,-76.89405953,40.28708495,00,11/19/2019,Yes,2500-2504 N 6th St,Harrisburg,17110,717-356-0800,https://www.harvestinc.com
+69,RISE - King of Prussia,-75.37450448,40.09050657,00,11/26/2019,Yes,445 West DeKalb Pike,King of Prussia,19706,610-596-9266,www.risedispensaries.com
+70,RISE - New Castle,-80.39981643,41.01453744,00,12/17/2019,Yes,2622 W. State Street,New Castle,16101,724-250-8081,www.risecannabis.com
+71,Beyond Hello - West Chester,-75.55503818,39.96817902,00,12/18/2019,Yes,1261 West Chester Pike,West Chester,19382,610-471-1059,www.beyond-hello.com
+72,Ethos Pennsylvania - Philadelphia,-75.15559008,39.94725457,00,1/2/2020,Yes,807 Locust Street,Philadelphia,19107,267-861-7350,www.ethospa.com
+73,Solevo Wellness - Washington,-80.20082779,40.21647042,00,2/14/2020,Yes,200 Adios Drive Suite 20,Washington,15301,412-422-0420,www.solevowellness.com
+74,The Healing Center û Cranberry,-80.11035011,40.69165004,00,3/16/2020,Yes,270 Executive Drive,Cranberry,16066,1-855-443-4325,http://www.thehealingcenterusa.com/
+75,RISE - Cranberry,-80.10348298,40.71486348,00,3/31/2020,Yes,20808 Route 19,Cranberry Township,16066,445-900-1081,www.risedispensaries.com
+76,Apothecarium Dispensary,-76.20224772,40.02550811,00,4/13/2020,Yes,2405 Covered Bridge Dr Suite 125,Lancaster,17602,717-803-2420,www.apothecariumpa.com
+77,Beyond Hello - Ardmore,-75.29175145,40.00723888,00,5/18/2020,Yes,39 Cricket Ave,Ardmore,19003,610-471-1099,www.beyond-hello.com
+78,Liberty - Aliquippa,-80.28255674,40.60618424,00,5/18/2020,Yes,2320 Sheffield Rd,Aliquippa,15001,724-203-3029,www.libertydispensarypa.com
+79,RISE - Chambersburg 1640,-77.66599237,39.91285712,00,6/16/2020,Yes,Orchard Drive,Chambersburg,17201,717-400-5833,www.risedispensaries.com
+80,Keystone Canna Remedies - Stroudsburg,-75.24605565,40.99307755,00,6/18/2020,Yes,1523 N 9th Street,Stroudsburg,18360,484-408-6122,www.keystonecannaremedies.com
+81,RISE - Duncansville,-78.40831874,40.45012307,00,6/30/2020,Yes,370 Pound Lane,Duncansville,16634,814-815-8077,www.risedispensaries.com
+82,Vytal Options - Harrisburg,-76.8089818,40.30260329,00,7/1/2020,Yes,4711 Queen Avenue Suite 101,Harrisburg,17109,717-303-3017,www.vytaloptions.com
+83,Apothecarium Dispensary - Thorndale,-75.77260021,39.99200271,00,7/6/2020,Yes,2701 Lincoln Highway,East Thorndale,19372,484-789-6420,www.apothecariumpa.com
+84,BEYOND/HELLO - Reading,-75.93100178,40.33432377,00,7/15/2020,Yes,300 Cherry Street,Reading,19602,610-471-1184,www.beyond-hello.com
+85,Verilife Shamokin,-76.55131547,40.79184416,00,8/3/2020,Yes,520 N. Shamokin Street,Shamokin,17872,888-493-6066,www.verilife.com/pa
+86,Ethos Pennsylvania - Montgomeryville,-75.2387557,40.23433286,00,8/25/2020,Yes,921 Bethlehem Pike,Montgomeryville,18936,267-857-7295,www.ethospa.com
+87,Restore Pottstown,-75.61761776,40.24323515,00,9/8/2020,Yes,1450 East High Street,Pottstown,19464,484-391-2951,www.restoreiwc.com
+88,Harvest of Cranberry Township,-80.10326749,40.68875253,00,9/30/2020,Yes,20269 Route 19 N,Cranberry Township,16066,878-217-0350,www.harvesthoc.com
+89,Vytal Options - Lancaster,-76.30488017,40.04144624,00,10/1/2020,Yes,39 E Chestnut Street,Lancaster,17602,717-327-4740,www.vytaloptions.com
+90,Harvest of Camp Hill,-76.92619433,40.22391572,00,10/14/2020,Yes,3401 Hartzdale Drive,Camp Hill,17011,570-273-8701,www.harvestinc.com/state/pennsylvania
+91,Ayr Wellness - New Castle,-80.35998154,41.00978219,00,10/16/2020,Yes,809 Sampson Street,New Castle,16101,724-652-1010,www.ayr-wellness.com
+92,Ethos Pennsylvania - Wilkes Barre,-75.839066,41.245961,00,10/21/2020,Yes,326 Bear Creek Commons,Wilkes-Barre,18702,570-800-2385,www.ethospa.com
+93,RISE Monroeville,-79.78191325,40.43644763,00,10/21/2020,Yes,3838 William Penn Highway,Monroeville,15146,412-516-9096,www.risedispensaries.com
+94,Ethos Pittsburgh West,-80.18348069,40.45108545,00,11/24/2020,Yes,470 Home Drive,Pittsburgh,15275,412-664-5402,www.ethospa.com
+95,Zen Leaf Harrisburg,-76.86353179,40.26515705,00,12/2/2020,Yes,137 S. 17th Street,Harrisburg,17104,717-794-7064,https://zenleafdispensaries.com/dispensary/zen-leaf-harrisburg/
+96,Zen Leaf York,-76.75196583,39.979857,00,12/16/2020,Yes,890 Loucks Road,York,17404,717-794-7064,https://zenleafdispensaries.com/dispensary/zen-leaf-york/
+97,Verilife - Chester,-75.37529764,39.85814775,00,12/17/2020,Yes,875 Upland Avenue Unit 55,Chester,19013,610-245-5610,www.verilife.com/pa
+98,Ethos Pennsylvania - Hazleton,-76.02936874,40.98081034,00,12/18/2020,Yes,113 Woodbine Street #2,Hazleton,18202,570-914-9211,www.ethospa.com
+99,Curaleaf Harrisburg,-76.75305678,40.32983282,00,1/29/2021,Yes,7040 Jonestown Road,Harrisburg,17112,717-996-9010,https://curaleaf.com/shop/pennsylvania/curaleaf-pa-harrisburg/
+100,Rise Erie Peach,-80.08959045,42.05921014,00,2/3/2021,Yes,1950 Rotunda Drive,Erie,16509,814-480-9432,www.risedispensaries.com
+101,Zen Leaf Altoona,-78.40754798,40.46896674,00,2/3/2021,Yes,590 W. Plank Road,Altoona,16602,814-499-6181,https://zenleafdispensaries.com/dispensary/zen-leaf-altoona/
+102,Harvest of Whitehall,-75.4851999,40.63151796,00,2/9/2021,Yes,1809 MacArthur Rd,Whitehall,18052,445-465-7555,www.harvesthoc.com
+103,Ayr Wellness - Plymouth Meeting,-75.2862128,40.11550369,00,2/26/2021,Yes,505 W Germantown Pike,Plymouth Meeting,19462,610-814-7047,www.ayr-wellness.com/dispensaries/pennsylvania
+104,BEYOND/HELLO - Irwin,-79.69688682,40.32277399,00,3/12/2021,Yes,9337 Lincoln Highway,Irwin,15642,724-382-7068,www.beyond-hello.com
+105,Vytal Options - Lansdale,-75.303501,40.24091586,00,3/29/2021,Yes,850 S. Valley Forge Road Suite P,Lansdale,19446,267-498-0803,www.vytaloptions.com
+106,RISE Meadville,-80.1603244,41.62311347,00,3/31/2021,Yes,18914 Park Avenue Plaza,Meadville,16335,814-900-4674,www.risedispensaries.com
+107,Curaleaf Horsham,-75.13135919,40.17957363,00,4/6/2021,Yes,255 Horsham Road,Horsham,19044,267-631-0003,www.curaleaf.com/shop/pennsylvania/curaleaf-pa-horsham/info
+108,Curaleaf Philadelphia,-75.23173423,39.99832829,00,4/6/2021,Yes,5058 City Avenue,Philadelphia,19131,610-934-2291,www.curaleaf.com/shop/pennsylvania/curaleaf-pa-philadelphia-city-ave
+109,Liberty - Cranberry,-80.1115697,40.68322854,00,4/6/2021,Yes,900 Commonwealth Drive Suite 500,Cranberry Township,16066,878-208-7299,www.libertydispensarypa.com
+110,Verilife - Williamsport,-76.95707428,41.24709051,00,4/12/2021,Yes,2300 E 3rd Street,Williamsport,17701,570-260-6907,www.verilife.com/pa
+111,Bloc Dispensary - Bethlehem,-75.34596558,40.67105029,00,4/29/2021,Yes,3650 Nazareth Pike,Bethlehem,18020,484-214-5400,www.blocdispensary.com
+112,Laurel Harvest Labs,-75.24435244,40.24878305,00,5/1/2021,Yes,721 Bethlehem Pike,Montgomeryville,18936,267-263-7770,www.laurelharvestlabs.com
+113,The Healing Research Center - Chester,-75.37530362,39.83809123,00,5/14/2021,Yes,122 Norris Street,Chester,19013,267-831-3262,www.thehealingresearchcenterusa.com
+114,Ethos - Pittsburgh South,-79.9460873,40.33129445,00,5/19/2021,Yes,560 Clairton Boulevard,Pittsburgh,15236,412-790-6194,www.ethospa.com
+115,Harvest of York,-76.95707428,41.24709051,00,5/26/2021,Yes,2300 E Market Street Suite L,York,17402,not yet available,www.harvesthoc.com/locations/pennsylvania/york/harvest-of-york/
+116,Restore IWC,-76.34947962,40.09307347,00,6/7/2021,Yes,5471 Main Street,East Petersburg,17520,717-209-7430,www.restoreiwc.com
+117,Beyond/Hello - Easton,-75.28906549,40.71843981,00,6/11/2021,Yes,3812 Easton Nazareth Highway,Easton,18045,610-829-9799,www.beyond-hello.com
+118,Ayr Wellness- Gibsonia,-79.94044231,40.63775696,00,6/21/2021,Yes,112 Northtowne Sq,Gibsonia,15044,878-728-1001,www.ayrwellnessdispensary.com
+119,Sunnyside* - Philadelphia,-75.16108646,39.95067157,00,6/21/2021,Yes,1221 Chestnut Street,Philadelphia,19107,267-857-4240,www.sunnyside.shop
+120,Ethos - NE Philadelphia,-75.0255971,40.08007932,00,6/30/2021,Yes,2467 Grant Avenue,Philadelphia,19114,267-857-9397,www.ethospa.com
+121,Zen Leaf Philadelphia,-75.03513561,40.07304414,00,7/21/2021,Yes,2504 Welsh Road,Philadelphia,19152,267-585-5700,www.zenleafdispensaries.com
+122,The Healing Research Center - Robinson,-80.16057123,40.45374096,00,7/29/2021,Yes,6300 Robinson Center Dr.,Pittsburgh,15205,412-615-4990,www.thehealingresearchcenterusa.com
+123,Rise - Warminster,-75.10030169,40.20183778,00,8/10/2021,Yes,435 York Rd.,Warminster,18974,267-682-5652,www.risedispensaries.com
+124,Fluent Care,-76.99560208,40.24400242,00,8/19/2021,Yes,6200 Carlise Pike,Mechanicsburg,17050,717-610-5911,pa.getfluent.com
+125,Harvest of Philadelphia,-75.16487795,39.9444665,00,8/19/2021,Yes,501-505 S. Broad St.,Philadelphia,19147,267-946-0004,www.harvesthoc.com
+126,Beyond Hello,-75.1930619,39.95846912,00,8/31/2021,Yes,3519 Lancaster Ave.,Philadelphia,19104,445-895-1999,www.beyond-hello.com
+127,Vytal Options,-75.62809209,40.58312116,00,9/27/2021,Yes,7720 Main St.,Fogelsville,18051,484-214-4440,www.vytaloptions.com
+128,Harvest of Pittsburgh,-80.00405822,40.44846774,00,10/21/2021,Yes,200 Federal Street,Pittsburgh,15212,412-912-9050,www.harvesthoc.com
+129,Sunnyside û Wyomissing,-75.95734315,40.33968261,00,10/22/2021,Yes,208 North Park Road Unit 1,Wyomissing,19610,720-443-9144,www.sunnyside.shop
+130,Green Goods - Stroudsburg,-75.21215667,40.98979833,00,10/27/2021,Yes,852 North Ninth Street,Stroudsburg,18360,272-271-2999,www.beyond-hello.com
+131,Verilife,-75.28660991,40.1177884,00,11/6/2021,Yes,601 W. Germantown Pike,Plymouth Meeting,19462,484-484-9105,www.verilife.com/pa
+132,Ayr Wellness,-75.24303278,40.24769708,00,11/12/2021,Yes,801 Horsham Rd.,Montgomeryville,18936,215-702-6068,www.ayrwellnessdispensary.com
+133,Verilife,-75.34427882,40.42169076,00,11/20/2021,Yes,895 S. West End Blvd.,Quakertown,18951,215-515-5997,www.verilife.com/pa
+134,Verilife,-76.20538443,40.02537054,00,11/23/2021,Yes,2359 Lincoln Highway,East Lancaster,17602,717-999-0840,www.verilife.com/pa
+135,Organic Remedies,-80.01172386,40.54078415,00,11/26/2021,Yes,7402 McKnight Road,Pittsburgh,15237,412-690-0803,www.organicremediespa.com
+136,Zenleaf - Chadds Ford,-75.55197614,39.88644221,00,12/3/2021,Yes,300 Oakland Rd.,Chadds Ford,19382,814-447-2936,www.zenleafdispensaries.com
+137,Verilife,-75.66227163,40.25554594,00,12/4/2021,Yes,204 Shoemaker Rd. A,Pottstown,19464,610-600-6007,www.verilife.com/pa
+138,Beyond Hello,-79.97718585,40.42872101,00,12/15/2021,Yes,2009 East Carson St,Pittsburgh,15203,215-948-6048,www.beyond-hello.com
+139,Beyond Hello,-76.1959955,40.68582741,00,12/20/2021,Yes,101 N. Centre St,Pottsville,17901,570-691-0100,www.beyond-hello.com
+140,Ayr Wellness,-75.31426397,40.01928514,00,12/31/2021,Yes,712 Lancaster Ave,Bryn Mawr,19010,610-445-8600,www.ayrwellnessdispensary.com
+141,Trulieve,-75.16063946,39.95392449,00,1/8/2022,Yes,1222-1226 Arch Street,Philadelphia,19107,267-946-1470,www.trulieve.com
+142,Curaleaf,-79.49648812,40.30276916,00,1/14/2022,Yes,5133 US 30,Greensburg,15601,724-853-5135,www.curaleaf.com
+143,Curaleaf,-75.40802836,40.04736591,00,1/18/2022,Yes,707 West Lancaster Ave,Wayne,19087,484-584-0270,www.curaleaf.com
+144,Sunnyside,-75.24555971,40.13904121,00,1/18/2022,Yes,28 West Skippack Pike,Ambler,19002,484-709-1932,www.sunnyside.shop
+145,Organic Remedies,-75.46603196,40.04215214,00,2/7/2022,Yes,1538-40 E. Lancaster Ave,Paoli,19301,610-596-8340,www.organic remedies.com
+146,Restore Integrative Wellness Center,-75.24980213,39.93308906,00,2/14/2022,Yes,735 Church Lane,Yeadon,19050,610-947-1991,www.restore integrative wellness center.com
+147,Curaleaf,-77.84668575,40.78410007,00,2/19/2022,Yes,1248 S. Atherton Street,State College,16801,814-826-1140,www.curaleaf.com
+148,Curaleaf,-80.08163032,42.05057089,00,3/8/2022,Yes,7891 Peach St,Erie,16509,814-616-7050,www.curaleaf.com
+149,Organic Remedies,-80.02667462,40.3420443,00,4/18/2022,Yes,5002 Library Road,Bethel Park,15102,412-838-2800,www.organic remedies.com
+150,Fluent Dispensary,-76.49770815,40.33341082,00,4/20/2022,Yes,1015 East Main Street,Annville,17003,717-820-5111,pa.getfluent.com
+151,Verilife,-77.83283296,40.78460536,00,4/23/2022,Yes,1820 S Atherton Street,State College,16801,814-420-5056,www.verilife.com/pa
+152,Ethos Pennsylvania -Pittsburgh North of Harmarville,-79.83025988,40.54000417,00,4/28/2022,Yes,5 Alpha Drive,East Pittsburgh,15238,412-548-6334,www.ethospa.com
+153,Maitri Medicinals-Greensburg,-79.54639221,40.28613478,00,5/14/2022,Yes,1075 S Main St. Suites 104 &106,Greensburg,15601,724-420-5724,www.maitrimeds.com
+154,Zen Leaf Wynnewood,-75.28196168,40.00366869,00,6/1/2022,Yes,257 E Lancaster Ave,Wynnewood,19096,814-447-2936,www.zenleafdispensaries.com
+155,Trulieve-Coatesville,-75.78632313,39.98950923,00,6/2/2022,Yes,1951 Lincoln Hwy E,Coatesville,19320,484-859-0848,www.trulieve.com
+156,Curaleaf Lancaster,-76.33386623,40.07125104,00,6/16/2022,Yes,1440 Manheim Pike,Lancaster,17601,717-553-2045,www.curaleaf.com
+157,Ayr Wellness - Indiana,-79.18058814,40.60809731,00,7/30/2022,Yes,2244 Oakland Ave,Indiana,15701,833-420-8620,www.ayrwellnessdispensary.com
+158,Zen Leaf New Kensington,-79.75213654,40.59153127,00,9/7/2022,Yes,215 Tarentum Bridge Road,New Kensington,15068,814-447-2936,www.zenleafdispensaries.com
+159,Curaleaf,-75.43466952,40.63781916,00,9/17/2022,Yes,1801 Airport Road,Allentown,18109,610-596-8545,www.curaleaf.com
+160,Vytal Options,-75.72353222,39.84444819,00,10/17/2022,Yes,716 W Baltimore Pike,Kennett Square,19348,484-581-0999,www.vytaloptions.com
+161,Ascend Dispensary-Scranton,-75.69201225,41.37727641,00,10/19/2022,Yes,605 Davis Street,Scranton,18505,717-606-1268,www.letsascend.com
+162,Vytal Options,-77.89551601,40.81075871,00,10/31/2022,Yes,1653 North Atherton Street,State College,16803,814-680-6078,www.vytaloptions.com
+163,Pennsylvania Dispensary Solutions- Beyond Hello-Dickson City,-75.64724465,41.46558215,00,11/8/2022,Yes,832 Scranton Carbondale Highway,Dickson City,18519,570-800-6760,https://beyond-hello.com/pennsylvania/dispensaries
+164,Liberty Pittsburgh,-80.03903143,40.39109177,00,11/18/2022,Yes,3105 W Liberty Ave,Pittsburgh,15216,267-241-5970,www.libertydispensarypa.com
+165,Ascend Dispensary-Wayne,-75.4097869,40.04763544,00,11/19/2022,Yes,745 Lancaster Ave,Wayne,19087,610-453-0770,www.letsascend.com
+166,Sunnyside-Erie,-80.08204301,42.05098225,00,2/15/2023,Yes,7851 Peach Street,Erie,16509,582-205-0124,www.sunnyside.shop
+167,Zen Leaf Clifton Heights,-75.30971208,39.92552328,00,2/15/2023,Yes,5321 West Baltimore Pike,Clifton Heights,19018,814-447-2936,www.zenleafdispensaries.com
+168,Rise-Grove City,-80.16101699,41.14195816,00,4/17/2023,Yes,225 Westside Square drive,Mercer,16137,878-598-0206,www.risedispensaries.com
+169,Trulieve KOP-Limerick,-75.35795662,40.08639167,00,5/19/2023,yes,451 W Ridge Pike Suite 461,Limerick,19468,610-428-3645,www.trulieve.com
+170,Zenleaf-Pittsburgh McKnight Rd,-80.00497557,40.52285548,00,5/22/2023,yes,4778 McKnight Rd,Pittsburgh,15237,412-4740136,www.zenleafdispensaries.com
+171,Rise-Philadelphia,-75.08706469,39.99784945,00,6/17/2023,yes,3903 Aramingo Ave,Philadelphia,19137,267-585-0072,www.risedispensaries.com
+172,Sunnyside-Washington,-80.22080012,40.18611834,00,6/27/2023,yes,360 Washington Rd,Washington,15301,878-226-8067,www.sunnyside.shop
+173,Sunnyside-Somerset,-79.07482172,40.01127847,00,6/28/2023,yes,250 Stoystown Rd,Somerset,15501,814-485-0317,www.sunnyside.shop
+174,Rise - Carlisle,-77.14141781,40.23317451,00,7/12/2023,yes,1186 Harrisburg Pike,Carlisle,17103,717-279-5820,www.risedispensaries.com
+175,Sunnyside-Altoona,-78.40718711,40.47079343,00,10/5/2023,yes,534 W Plank Rd,Altoona,16602,814-298-6555,www.sunnyside.shop
+176,Franklin Bioscience Mt Pocono,-75.37494276,41.12013471,00,1/12/2024,yes,3192 SR940 Suite 101,Mt Pocono,18344,570-216-8590,https://beyond-hello.com/pennsylvania/dispensaries
+177,Agronomed Biologics LLCNorristown,-75.40008992,40.13062478,00,2/13/2024,yes,436 Egypt Rd,Norristown,19403,484-285-8707,www.zenleafdispensaries.com
+178,Sunnyside- Gettysburg,-77.198443,39.846615,00,2/20/2024,yes,1380 York Rd,Gettysburg,17325,717-912-3077,www.sunnyside.shop
+179,PharmaCann Penn LLC-Philadelphia,-75.14513362,39.9304363,00,2/23/2024,yes,1300 S Christopher Columbus Blvd Ste 11,Philadelphia,19147,215-248-6560,www.verilife.com/pa
+180,Ascend Dispensary-Monaca,-80.31146774,40.67050847,00,3/13/2024,yes,1451 Old BrodHead Rd,Monaca,15061,878-978-3097,www.letsascend.com
+181,Hive-Shamokin Dam,-76.82736946,40.84260231,00,4/20/2024,Yes,2625 North Susquehanna Trail,Shamokin Dam,17876, , 

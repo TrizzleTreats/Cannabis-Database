@@ -106,33 +106,50 @@ for r in sorted(latest.values(), key=lambda x: (x["state"], x["id"])):
     captured += 1
 print(f"  => {captured} captured and verified, {missing} not captured")
 
-# --------------------------------------------------------- master table
-head("New England master table")
-rows = list(csv.DictReader(open(ROOT / "data/clean/new_england_licences.csv")))
-cols = list(rows[0].keys())
-print(f"  {len(rows)} rows x {len(cols)} columns")
-check(not [c for c in cols if "EIN" in c.upper() or "TIN" in c.upper()], "no EIN/TIN column")
-check(not [r for r in rows if not r["source_url"]], "every row has a source_url")
-check(not [r for r in rows if not r["data_as_of"]], "every row has a data_as_of")
-dup = [k for k, v in collections.Counter((r["state"], r["licence_id"]) for r in rows).items() if v > 1]
-check(not dup, "licence ids unique per state", str(dup[:3]) if dup else "")
-check(not [r for r in rows if not r.get("standard_status")], "every row has a standard_status")
-contra = 0
-for r in rows:
-    sw, st = r["status"].lower(), r.get("standard_status", "")
-    if st == "Active" and any(w in sw for w in ("revoked", "surrender", "denied", "suspended")):
-        contra += 1
-    if st in ("Expired", "Revoked", "Surrendered", "Suspended") and "operating" in sw and "not" not in sw:
-        contra += 1
-check(contra == 0, "no row contradicts its own state wording", f"({contra})" if contra else "")
-print("  -- per state:")
-for st in sorted({r["state"] for r in rows}):
-    sr = [r for r in rows if r["state"] == st]
-    d = collections.Counter(r["standard_status"] for r in sr)
-    nc = sum(1 for r in sr if not r["county"])
-    print(f"     {st}: {len(sr):>5} rows | no county: {nc:>3} | {dict(d.most_common())}")
-print(f"  -- default search set (Active + Provisional): "
-      f"{sum(1 for r in rows if r['standard_status'] in ('Active', 'Provisional'))}")
+# --------------------------------------------------------- clean tables
+TABLES = ["new_england_licences.csv", "mid_atlantic_licences.csv"]
+shapes = {}
+for name in TABLES:
+    path = ROOT / "data/clean" / name
+    if not path.exists():
+        print(f"\n{name}: not built yet")
+        continue
+    head(name)
+    rows = list(csv.DictReader(open(path, encoding="utf-8")))
+    cols = list(rows[0].keys())
+    shapes[name] = cols
+    print(f"  {len(rows)} rows x {len(cols)} columns")
+    check(not [c for c in cols if "EIN" in c.upper() or "TIN" in c.upper()], "no EIN/TIN column")
+    check(not [r for r in rows if not r["source_url"]], "every row has a source_url")
+    check(not [r for r in rows if not r["data_as_of"]], "every row has a data_as_of")
+    check(not [r for r in rows if not r["source"]], "every row has a source")
+    dup = [k for k, v in collections.Counter((r["state"], r["licence_id"]) for r in rows).items() if v > 1]
+    check(not dup, "licence ids unique per state", str(dup[:3]) if dup else "")
+    check(not [r for r in rows if not r["legal_name"]], "every row has a name")
+    contra = 0
+    for r in rows:
+        sw, st = r["status"].lower(), r.get("standard_status", "")
+        if st == "Active" and any(w in sw for w in ("revoked", "surrender", "denied", "suspended")):
+            contra += 1
+        if st in ("Expired", "Revoked", "Surrendered", "Suspended") and "operating" in sw and "not" not in sw:
+            contra += 1
+    check(contra == 0, "no row contradicts its own state wording", f"({contra})" if contra else "")
+    # A blank standard_status is legitimate where a regulator publishes none,
+    # but it must never be read as Active - so report it, loudly, per state.
+    print("  -- per state:  rows | no standard_status | no county | status spread")
+    for st in sorted({r["state"] for r in rows}):
+        sr = [r for r in rows if r["state"] == st]
+        nos = sum(1 for r in sr if not r.get("standard_status"))
+        noc = sum(1 for r in sr if not r["county"])
+        d = collections.Counter(r.get("standard_status") or "(none)" for r in sr)
+        print(f"     {st}: {len(sr):>5} | {nos:>5} | {noc:>5} | {dict(d.most_common())}")
+    print(f"  -- default search set (Active + Provisional): "
+          f"{sum(1 for r in rows if r.get('standard_status') in ('Active', 'Provisional'))}")
+
+if len(shapes) == 2:
+    a, b = shapes[TABLES[0]], shapes[TABLES[1]]
+    check(a == b, "the two regional tables share one column set, in order",
+          "" if a == b else f"{len(a)} vs {len(b)}")
 
 # ------------------------------------------------------ NY reconciliation
 head("New York: row count is not a licence count")

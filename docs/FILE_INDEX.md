@@ -108,6 +108,7 @@ Notes:
 | scripts/fetch_raw.py | Downloads every source declared in scripts/sources.json into data/raw/<state>/ and logs each attempt |
 | scripts/sources.json | Source declarations: Part 5 reference, URL, expected format and the limitation the audit recorded for each |
 | scripts/build_new_england.py | Rebuilds data/clean/new_england_licences.csv from data/raw/, carrying forward enrichment raw cannot supply |
+| scripts/build_mid_atlantic.py | Builds data/clean/mid_atlantic_licences.csv from data/raw/ for NY, PA, NJ, DE, MD and DC |
 | scripts/verify.py | Re-runnable check: private data not tracked, allowlist matches the domain list, every raw file hashes and opens, master table integrity, NY row-vs-licence reconciliation |
 | data/raw/manifest.csv | Append-only provenance log: one row per fetch attempt with bytes, sha256, status and reason. The LAST row for an id is its current state |
 | .claude/settings.json | WebFetch allow rules for all 1,242 official hosts, plus the two build scripts |
@@ -124,4 +125,7 @@ Notes:
 | new-york | 1 | OCM licences (3,056 rows, 2,286 distinct licence numbers, 385 rows with no licence number = proximity-protected applicants). Hemp producer list could not be fetched: HTTP 403 |
 | pennsylvania | 8 | Auditor General audit, dispensary PDF, 2024 biennial report, MMAB presentations for June and Sept 2026, and the three DOH index pages |
 
-Nothing has been written to data/clean/ for the Mid-Atlantic — this was raw capture only.
+data/clean/mid_atlantic_licences.csv — 4,067 rows, 41 columns (NY 3,056, NJ 586, PA 181, MD 130, DC 100, DE 14),
+built from these raw files on 12 Nov 2026. Same column set and order as new_england_licences.csv, so the two
+union to 8,334 rows. Only NY and DC publish licence numbers; PA, NJ, MD and DE ids are assigned locally and
+each row's `source` says so.
