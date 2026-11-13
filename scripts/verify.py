@@ -8,6 +8,8 @@ Usage: python3 scripts/verify.py
 """
 import collections, csv, hashlib, io, json, pathlib, re, subprocess, sys
 
+from standard_types import CATEGORY_TO_TYPES, STANDARD_TYPES, types_for
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 fails = []
 
@@ -189,6 +191,55 @@ for name in TABLES:
         if st in ("Expired", "Revoked", "Surrendered", "Suspended") and "operating" in sw and "not" not in sw:
             contra += 1
     check(contra == 0, "no row contradicts its own state wording", f"({contra})" if contra else "")
+
+    # standard_type is the column one search spans every state with, so an
+    # unknown value in it is worse than a missing row: a facet would quietly
+    # drop the licence. Every row must carry exactly one of HANDOFF's 16, and
+    # the tag list must agree with it. The builders do not write these columns
+    # (scripts/add_standard_type.py does), so this is also the guard that
+    # catches a rebuild having dropped them.
+    allowed = set(STANDARD_TYPES)
+    if "standard_type" not in cols:
+        check(False, "standard_type column present",
+              "run python3 scripts/add_standard_type.py --apply")
+    else:
+        bad_t = collections.Counter()
+        bad_all, not_canon, lead_not_in = 0, 0, 0
+        for r in rows:
+            t, every = r["standard_type"], r.get("standard_types_all", "")
+            if t not in allowed:
+                bad_t[(r["state"], r["category"], t or "(blank)")] += 1
+            parts = [p for p in (x.strip() for x in every.split(";")) if p]
+            if not parts or any(p not in allowed for p in parts):
+                bad_all += 1
+            elif parts != [s for s in STANDARD_TYPES if s in parts]:
+                not_canon += 1
+            if t in allowed and t not in parts:
+                lead_not_in += 1
+        check(not bad_t, f"every standard_type is one of the {len(STANDARD_TYPES)} standard types",
+              "" if not bad_t else f"{sum(bad_t.values())} rows, e.g. {list(bad_t.items())[:3]}")
+        check(bad_all == 0, "every standard_types_all entry is a standard type",
+              f"({bad_all} rows)" if bad_all else "")
+        check(not_canon == 0, "standard_types_all is in canonical HANDOFF order",
+              f"({not_canon} rows)" if not_canon else "")
+        check(lead_not_in == 0, "the leading standard_type is one of the row's own types",
+              f"({lead_not_in} rows)" if lead_not_in else "")
+        # Recompute from the mapping: catches a hand-edited table, and a
+        # partial re-run that left some rows on an older mapping.
+        drift = collections.Counter()
+        for r in rows:
+            lead, every = types_for(r["category"], r["licence_type"])
+            if lead is None:
+                drift[(r["state"], r["category"], "no mapping")] += 1
+            elif (lead, every) != (r["standard_type"], r.get("standard_types_all")):
+                drift[(r["state"], r["category"], f"{r['standard_type']} != {lead}")] += 1
+        check(not drift, "every standard_type still matches the recorded mapping",
+              "" if not drift else f"{sum(drift.values())} rows, e.g. {list(drift.items())[:3]}")
+        multi = sum(1 for r in rows if "; " in r.get("standard_types_all", ""))
+        print(f"  -- type spread: {dict(collections.Counter(r['standard_type'] for r in rows).most_common())}")
+        print(f"  -- {multi} rows authorise more than one activity "
+              f"(the full set is in standard_types_all; standard_type is the lead)")
+
     # A blank standard_status is legitimate where a regulator publishes none,
     # but it must never be read as Active - so report it, loudly, per state.
     print("  -- per state:  rows | no standard_status | no county | status spread")
@@ -205,9 +256,29 @@ if len(shapes) > 1:
     first = shapes[TABLES[0]]
     same = all(v == first for v in shapes.values())
     check(same, f"all {len(shapes)} regional tables share one column set, in order",
-          "" if same else str({k: len(v) for k, v in shapes.items()}))
-    print(f"  -- combined rows across the regional tables: "
-          f"{sum(len(list(csv.DictReader(open(ROOT / 'data/clean' / n, encoding='utf-8')))) for n in shapes)}")
+          f"{len(first)} columns" if same else str({k: len(v) for k, v in shapes.items()}))
+    if not same:
+        for n, v in shapes.items():
+            print(f"     {n}: {len(v)} columns")
+            odd = [c for c in v if c not in first] + [c for c in first if c not in v]
+            if odd:
+                print(f"       differs by: {odd}")
+    # The standard type is what one search spans every state with, so the
+    # combined spread is the number the database page will actually serve.
+    allrows = [r for n in shapes
+               for r in csv.DictReader(open(ROOT / 'data/clean' / n, encoding='utf-8'))]
+    print(f"  -- combined rows across the regional tables: {len(allrows)}")
+    if all("standard_type" in v for v in shapes.values()):
+        spread = collections.Counter(r["standard_type"] for r in allrows)
+        print(f"  -- combined standard_type spread across {len(STANDARD_TYPES)} standard types:")
+        for t in STANDARD_TYPES:
+            print(f"     {spread.get(t, 0):>7,}  {t}" + ("   <- none built yet" if not spread.get(t) else ""))
+        unused = [t for t in STANDARD_TYPES if not spread.get(t)]
+        if unused:
+            print(f"     {len(unused)} standard types lead no row in the 26 built jurisdictions: "
+                  f"{', '.join(unused)}")
+        print(f"  -- {len(CATEGORY_TO_TYPES)} regulator/build category values map onto them "
+              f"({len({r['category'] for r in allrows})} of them in use)")
 
 # ------------------------------------------------- county validation
 head("Counties must exist in their state")

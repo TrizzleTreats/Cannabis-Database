@@ -18,7 +18,7 @@ check and it passed clean at the last commit. If it fails, fix that before
 anything else.
 
 State of the data: 50,544 licences across 26 of 51 jurisdictions in three tables
-(new_england / mid_atlantic / regions_3_to_9), all sharing one 41-column schema,
+(new_england / mid_atlantic / regions_3_to_9), all sharing one 43-column schema,
 plus 2,087 business-directory entries. Raw downloads are declared in
 scripts/sources.json and logged in data/raw/manifest.csv.
 
@@ -67,6 +67,8 @@ Then stop and show me a plan before changing data.
 | `scripts/match_businesses_to_licences.py` | Matches directory entries to licensees by normalised name |
 | `scripts/fill_counties.py` | Fills, canonicalises and validates the county column |
 | `scripts/xlsx_reader.py` | Reads .xlsx; predates openpyxl being installed, still used by the builders |
+| `scripts/standard_types.py` | The 16 standard licence types and the mapping onto them from every `category` value — imported by the applier and by verify.py; the reasoning is in docs/HANDOFF.md |
+| `scripts/add_standard_type.py` | Writes `standard_type` and `standard_types_all` into the three tables. **Re-run with `--apply` after any rebuild** — the builders do not write them |
 
 Installed since the first session: `pypdf`, `openpyxl`, `xlrd`. Python's SSL store
 needs an explicit CA bundle (`/etc/ssl/cert.pem`) — the scripts already handle it.

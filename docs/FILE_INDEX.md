@@ -82,7 +82,7 @@ Every report copied into this folder, with the name it had on my phone. All pass
 ## Data files (rebuilt 12 November 2026 from official sources unless noted)
 | File | What it is |
 |---|---|
-| data/clean/new_england_licences.csv | All six New England states in one schema, 4,267 licences — rebuilt from data/raw/ on 12 Nov 2026 by scripts/build_new_england.py. CT 498, MA 1,072, ME 1,903, VT 524, RI 263, NH 7. Has a `standard_status` column (40 columns) beside each state's own status wording |
+| data/clean/new_england_licences.csv | All six New England states in one schema, 4,267 licences — rebuilt from data/raw/ on 12 Nov 2026 by scripts/build_new_england.py. CT 498, MA 1,072, ME 1,903, VT 524, RI 263, NH 7. Has a `standard_status` column beside each state's own status wording, and `standard_type` + `standard_types_all` beside each regulator's own licence name (43 columns) |
 | data/clean/ma_licences.csv | Massachusetts CCC licences, 944 (EIN/TIN column removed) |
 | data/clean/ct_licences.csv | Connecticut DCP cannabis business credentials, 683 records (all statuses; employee badges and product registrations excluded). SUPERSEDED as the master's input by data/raw/connecticut/ngch-56tr_business_credentials_2026-11-12.csv (963 rows), which also carries the 280 hemp and THC-beverage credentials this file omits |
 | data/clean/ri_licences.csv | Rhode Island CCC: 9 compassion centres, 55 cultivators, 10 industrial hemp, 189 hemp-consumable licences (263) |
@@ -119,10 +119,12 @@ Notes:
 | data/raw/census_county_lookup.csv | Cached Census geocoder results: address -> county, with the matched address and status |
 | data/raw/census_counties_by_state.csv | 3,229 official counties across 56 states, from Census TIGERweb — the reference verify.py checks against |
 | data/raw/discovered_sources.csv | What the discovery crawl found: 2,615 rows of candidate data files per state |
-| scripts/verify.py | Re-runnable check: private data not tracked, allowlist matches the domain list, every raw file hashes and opens, master table integrity, NY row-vs-licence reconciliation. Also verifies file-set sources (one declared source, many files) as a set |
+| scripts/verify.py | Re-runnable check: private data not tracked, allowlist matches the domain list, every raw file hashes and opens, master table integrity, every row's `standard_type` one of the 16 and still matching the recorded mapping, one shared column set across the three tables, county validity, NY row-vs-licence reconciliation. Also verifies file-set sources (one declared source, many files) as a set |
 | scripts/fetch_nj_permits.py | Downloads NJ's 517 per-business permit PDFs, resolving every URL out of the saved CRC page and logging one manifest row per file. Writes _link_index.csv with each link's table-row context |
 | scripts/parse_nj_permits.py | Reads those PDFs into data/clean/nj_crc_permits.csv — one row per permit page, licences and consumption-area endorsements kept apart |
 | scripts/reconcile_nj_permits.py | Reports how the permits line up with the NJ rows already in the master table, and which county gaps they close. Changes nothing |
+| scripts/standard_types.py | The 16 standard licence types and the mapping onto them from all 38 `category` values — one source of truth, imported by add_standard_type.py and verify.py so the write and the check cannot drift. Every non-obvious call is argued in docs/HANDOFF.md |
+| scripts/add_standard_type.py | Writes `standard_type` (one of the 16) and `standard_types_all` (every type the licence authorises) into the three licence tables, leaving `category` and `licence_type` untouched. Idempotent; refuses to write if any category is unmapped. Must be re-run after any rebuild |
 | data/clean/nj_crc_permits.csv | 660 rows, 29 columns: 655 NJ licences with the CRC's real numbers, class wording, street address, county and full expiry, plus 5 consumption-area endorsements |
 | data/raw/new-jersey/permits/ | The 517 permit PDFs as published, plus _link_index.csv naming the page row each came from |
 | data/raw/manifest.csv | Append-only provenance log: one row per fetch attempt with bytes, sha256, status and reason. The LAST row for an id is its current state |
@@ -140,7 +142,7 @@ Notes:
 | new-york | 1 | OCM licences (3,056 rows, 2,286 distinct licence numbers, 385 rows with no licence number = proximity-protected applicants). Hemp producer list could not be fetched: HTTP 403 |
 | pennsylvania | 8 | Auditor General audit, dispensary PDF, 2024 biennial report, MMAB presentations for June and Sept 2026, and the three DOH index pages |
 
-data/clean/mid_atlantic_licences.csv — 4,067 rows, 41 columns (NY 3,056, NJ 586, PA 181, MD 130, DC 100, DE 14),
+data/clean/mid_atlantic_licences.csv — 4,083 rows, 43 columns (NY 3,056, NJ 586, PA 197, MD 130, DC 100, DE 14),
 built from these raw files on 12 Nov 2026. Same column set and order as new_england_licences.csv, so the two
 union to 8,334 rows. Only NY and DC publish licence numbers; PA, NJ, MD and DE ids are assigned locally and
 each row's `source` says so.
