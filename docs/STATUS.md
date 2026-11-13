@@ -28,7 +28,7 @@
 3. Resolve the licence numbers PA, MD and DE do not publish in their public lists — they publish none anywhere found so far. **NJ is DONE**: all 655 licences carry the CRC's real numbers (see "New Jersey: rebuilt from the permit PDFs" below).
 4. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 5. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
-6. De-duplicate the business table across directories and merge national firms under parent profiles (Baker Donelson, HUB, Brink's, Holland & Hart and the like appear in several regional directories). Also add California's website, phone and address from the rewritten-directory prose, and review the 22 entries flagged as holding a state licence.
+6. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
 7. Build the site.
 
 ## What the build corrected in the research
@@ -230,6 +230,90 @@ municipality at address level, which beat the village-level assumption: 56 River
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
 
+## The business directory: profiles, California's contact detail (13 Nov 2026)
+
+Four jobs, all of them Next item 6.
+
+**California's contact detail now exists.** All 371 California rows carried a verdict and nothing
+else — no website, phone, email, address or description — because build_businesses.py parsed the
+report's PART 1 audit table, and the contact detail is in PART 2, the "corrected rewrite".
+scripts/fill_california_contacts.py reads it:
+
+| field | before | after |
+|---|---|---|
+| website | 0 | 212 |
+| phone | 0 | 217 |
+| address | 0 | 215 |
+| description | 0 | 238 |
+| email | 0 | 102 |
+| key_people_private | 0 | 158 |
+
+Part 2 uses **four** layouts, none tabular — numbered headings with label/value lines; id headings
+("9-11b-01 — Humboldt Hydroponics — Eureka") over `<ul><li><strong>Label:</strong>` bullets; one
+paragraph per business with the labels inline; and "Row 1 — Spokes Digital — Unverified" headings,
+sometimes with the report's own row id in the middle. So the parse keys on the labels, which are
+consistent, not the markup, which is not. 302 entry starts yield 284 distinct businesses, 271 of
+which match an audit-table row.
+
+**No placeholder was published, and that mattered more than it looked.** "Not published — Verify"
+appears 1,359 times in Part 2 and is treated as absent. The subtler trap was a value *led* by
+"Verify": the report writes `Phone: Verify — conflict: directory (415) 651-4613 ...; opened page
+footer 707-380-7058` and `Email: Verify — opened page footer lists jared@harris-sliwoski.com, a
+non-schwasslaw.com domain`. A regex happily pulls a phone and an email out of both, and the first
+pass did exactly that — publishing two values the auditor had explicitly declined to confirm. A
+leading "Verify", "conflict" or "unverified" now means the field is absent.
+
+**The California report is double-escaped** — 59 instances of `&amp;amp;` — so a single unescape
+left 19 rows carrying entities, 7 of them in a published business name reading "Sheppard, Mullin,
+Richter &amp; Hampton LLP". `txt()` now unescapes until stable, and build_businesses.py gained a
+`--refresh REGION` flag so a region can be re-parsed rather than only appended to. verify.py fails
+if a business name ever carries an entity again.
+
+**One profile per business, nothing deleted.** 2,087 directory entries are 1,945 businesses: a
+national firm legitimately appears in the national directory and again in each regional one.
+HUB International is in 8 of them, Vicente LLP and Dark Horse CPAs in 7, GrowGeneration and ARCO
+National Construction in 5 — Brink's, Colliers, Loomis and GardaWorld in 4 each, which is exactly
+the pattern HANDOFF names. Five columns mirror the licence tables' group_id convention
+(`profile_id`, `is_primary_profile`, `duplicate_of`, `entries_in_profile`, `regions_in_profile`),
+so the public build filters to the primary and reads `regions_in_profile` for "serves" instead of
+deleting a separately audited entry. The primary is the National row where one exists — that is
+the parent profile HANDOFF asks for — otherwise the fullest row, and **238 blank cells on primaries
+were filled from their own group**, because a regional audit often found a phone the national one
+did not.
+
+**10 profiles are categorised differently by different directories** — Green Rush Packaging is
+Marketing in one and Packaging in another, Blue Line Protection Group is Cash Management and
+Security, GrowGeneration is Grow Supplies and Marketing. The category is NOT reconciled: the row
+says which directories disagree and what they each said, because picking a winner would bury a
+real disagreement between two audits.
+
+**The 22 licence matches are reviewed, on evidence rather than brand knowledge.** The matcher keys
+on the licensee's legal name AND its DBA, which is what makes a verdict possible:
+
+| verdict | n | what it means |
+|---|---|---|
+| same business — belongs in the licence database | 6 | legal name matched, geography agrees |
+| name matches, geography unknown | 4 | the directory gives the business no state or address, so there is nothing to check against — silence is not confirmation |
+| trades under another company's licence | 11 | only the DBA matched: HANDOFF's "operates under another company's licence", but which brand needs a person |
+| likely a different business with the same name | 1 | A1 Organics, a composting firm in Eaton, Colorado, against a California cultivation licence in Trinity County |
+
+GAIACA needed care: "Gaiaca, LLC" is a *shorter* form of "GAIACA Waste Revitalization", not a
+different name, so a legal name counts as matching when one name's words are a subset of the
+other's. Still nothing deleted and nothing moved — each verdict and its reason sit on the row and
+in business_licence_matches.csv, so the public build can hold an entry back while a person settles
+the 15 uncertain ones.
+
+Pipeline order, because several of these steps write onto rows another step produced:
+
+```
+scripts/build_businesses.py [--refresh REGION]
+scripts/fill_california_contacts.py
+scripts/merge_business_profiles.py
+scripts/match_businesses_to_licences.py
+scripts/review_business_licence_matches.py
+scripts/verify.py
+```
+
 ## Connecticut's villages, and a geocoder asked the wrong question (13 Nov 2026)
 
 Connecticut's last 13 county-less rows were two different problems wearing one label.
@@ -288,7 +372,9 @@ Every row uses one of HANDOFF's 17 standard categories, none blank. The national
 
 **22 directory entries hold a state licence.** Matched by normalised name against all 50,636 licence rows (re-run after the New Jersey rebuild gave NJ real licence numbers; the match is unchanged at 22) and written to data/clean/business_licence_matches.csv — Cookies (12 licences across CA, CO and OR), STIIIZY, Papa & Barkley, Old Pal, Treez and others. HANDOFF puts a licensed operator in the licence database rather than the directory, so each is flagged on its row with its licence numbers. **Nothing was deleted**: the match is on name alone, and a false positive would quietly drop a real directory entry, which is worse than a missed match. California's three show why it is a judgement call — GAIACA (waste services) holds two distributor licences and Capitol Compliance Management holds an event-organizer licence, so they are genuinely both a service business and a licensee.
 
-Still to do for this table: California's website, phone and address (the audit table carries the business set and verdicts; contact detail is in the rewritten-directory prose further down that report), de-duplication across directories, and merging national firms under parent profiles.
+All three of those jobs are now done (13 Nov 2026) — California's contact detail is parsed out of
+the report's PART 2 prose, and the entries are grouped into 1,945 profiles with national firms
+under a parent. See "The business directory: profiles, California's contact detail" above.
 
 ## Counties: 92% to 97%, filled from official sources only
 
@@ -337,7 +423,7 @@ Data defects found in the official sources and recorded per row rather than sile
 - Crested River Cannabis Company (MN): confirm licence and move.
 - Coastal Cannabis Consulting (LA): founder tied to a pharmacy licensee; decide.
 - American Cannabis Company (CO): ownership unverified.
-- California businesses: the DCC match is now DONE — all 371 names were matched against the 20,984-row DCC download, and 3 hold DCC licences (GAIACA Waste Revitalization, two distributor licences; CannaBiz Consulting Group; Capitol Compliance Management, an event-organizer licence). The 242 unverified entries are still unverified — that is a separate job from the licence match. CDPH hemp registrations are still unmatched.
+- California businesses: the DCC match is DONE and the three hits are now reviewed on evidence (13 Nov 2026) — GAIACA Waste Revitalization and Capitol Compliance Management are the same business as their licensee and belong in the licence database; CannaBiz Consulting Group matched only a licensee's trading name ("Coachella Sc, LLC") and needs a person. The 242 unverified entries are still unverified — a separate job from the licence match. CDPH hemp registrations are still unmatched.
 - California state report (R91) and Michigan (R56) audits are light; check law and tax pages against official sites.
 - New Hampshire audit is light (about 42 rows). Its 7 ATC rows were hand-transcribed from a DHHS PDF and still have no stored raw file.
 - New Jersey audit is lighter than the rest (about 78 claims).

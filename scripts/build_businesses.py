@@ -62,8 +62,26 @@ SKIP_HEADER = re.compile(r"(?i)^(category|business)$")
 TALLY = re.compile(r"(?i)confirmed.*corrected.*unverified|what was checked")
 
 
+ENTITY = re.compile(r"&(?:[a-zA-Z]+|#\d+);")
+
+
 def txt(s):
-    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s))).strip()
+    """Visible text. Unescapes until stable, because one report is double-escaped.
+
+    california-businesses-audited.html carries 59 instances of "&amp;amp;", so a
+    single pass leaves "&amp;" and publishes a business name reading "Sheppard,
+    Mullin, Richter &amp; Hampton LLP". No directory text is meant to display a
+    literal entity, so repeating the unescape is safe; it is capped so a
+    pathological value cannot loop.
+    """
+    out = re.sub(r"<[^>]+>", " ", s)
+    for _ in range(3):
+        once = html.unescape(out)
+        if once == out or not ENTITY.search(once):
+            out = once
+            break
+        out = once
+    return re.sub(r"\s+", " ", out).strip()
 
 
 def cells(tr):
@@ -499,11 +517,25 @@ def normalise_categories(rows, warn):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true"), ap.add_argument("--only")
+    ap.add_argument("--refresh", action="append", default=[],
+                    help="drop a region's rows and re-parse it from its report "
+                         "(repeatable). Anything another script added to those rows — "
+                         "California's contact detail, the licence-match flags — must be "
+                         "re-applied afterwards; see docs/STATUS.md for the order.")
     a = ap.parse_args()
 
     with open(OUT, encoding="utf-8") as f:
         existing = list(csv.DictReader(f))
     cols = list(existing[0].keys())
+    if a.refresh:
+        before = len(existing)
+        dropped = {r["region"] for r in existing if r["region"] in a.refresh}
+        missing = [x for x in a.refresh if x not in {r["region"] for r in existing}]
+        if missing:
+            sys.exit(f"no such region in the file: {missing} — "
+                     f"regions are {sorted({r['region'] for r in existing})}")
+        existing = [r for r in existing if r["region"] not in a.refresh]
+        print(f"refresh: dropped {before - len(existing)} rows from {sorted(dropped)}")
     have = {r["region"] for r in existing}
     print(f"existing: {len(existing)} rows from {sorted(have)}")
 

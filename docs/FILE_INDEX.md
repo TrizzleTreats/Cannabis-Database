@@ -113,9 +113,12 @@ Notes:
 | scripts/discover_sources.py | Walks the licensee pages the reports cite and records the data files they link to |
 | scripts/xlsx_reader.py | Reads .xlsx without openpyxl (shared strings, inline strings, 1900-epoch date serials) |
 | scripts/fill_counties.py | Fills, canonicalises and validates the county column from the Census geocoder and NJ's CRC table. Reads the geocoder's County Subdivisions layer too, which is what resolves a Connecticut village to its town and so to a traditional county; asks about the state the premises are in rather than the licensing state; and clears a stale "county unavailable" note whenever it supplies a county |
-| scripts/build_businesses.py | Parses all 11 audited business directories into data/clean/businesses_master.csv |
+| scripts/build_businesses.py | Parses all 11 audited business directories into data/clean/businesses_master.csv. Appends by region; `--refresh REGION` drops and re-parses one. Unescapes until stable, because the California report is double-escaped |
+| scripts/fill_california_contacts.py | Reads website, phone, email, address, description and private people out of the California report's PART 2 prose (four layouts), which the audit table does not carry. Treats every "Not published"/"Verify" value as absent |
+| scripts/merge_business_profiles.py | Groups the 2,087 entries into 1,945 one-per-business profiles, national firms under a parent, filling a primary's blanks from its own group. Deletes nothing |
+| scripts/review_business_licence_matches.py | Gives each of the 22 licence matches a verdict on evidence — legal name vs trading name, and whether the geography agrees — and records the reason |
 | scripts/match_businesses_to_licences.py | Matches directory entries against the licence tables by normalised name |
-| data/clean/business_licence_matches.csv | The 22 directory entries that hold a state licence, with their licence numbers |
+| data/clean/business_licence_matches.csv | The 22 directory entries whose name matches a licensee, with their licence ids and a reviewed verdict and reason for each |
 | data/raw/census_county_lookup.csv | Cached Census geocoder results: address -> county and county subdivision, with the matched address and status |
 | data/raw/census_counties_by_state.csv | 3,229 official counties across 56 states, from Census TIGERweb — the reference verify.py checks against |
 | data/raw/discovered_sources.csv | What the discovery crawl found: 2,615 rows of candidate data files per state |

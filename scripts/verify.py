@@ -338,6 +338,65 @@ else:
     print("  (county reference not built yet)")
 
 # ------------------------------------------------------ NY reconciliation
+head("The business directory groups into one profile per business")
+bpath = ROOT / "data/clean/businesses_master.csv"
+if not bpath.exists():
+    print("  -- businesses_master.csv not built")
+else:
+    brows = list(csv.DictReader(open(bpath, encoding="utf-8")))
+    bcols = list(brows[0].keys())
+    if "profile_id" not in bcols:
+        check(False, "businesses_master.csv carries the profile columns",
+              "run scripts/merge_business_profiles.py")
+    else:
+        by_id = {r["business_id"]: r for r in brows}
+        groups = collections.defaultdict(list)
+        for r in brows:
+            if r["profile_id"]:
+                groups[r["profile_id"]].append(r)
+        primaries = [r for r in brows if r["is_primary_profile"] == "Y"]
+        print(f"  {len(brows)} directory entries in {len(primaries)} profiles "
+              f"({sum(1 for g in groups.values() if len(g) > 1)} of them hold more than one entry)")
+        bad_flag = [r["business_id"] for r in brows if r["is_primary_profile"] not in ("Y", "N")]
+        check(not bad_flag, "every entry is marked primary or duplicate",
+              f"({len(bad_flag)} neither: {bad_flag[:3]})" if bad_flag else "")
+        # Exactly one primary per profile, or a listing shows a business twice
+        # or not at all.
+        wrong = {pid: sum(1 for r in g if r["is_primary_profile"] == "Y")
+                 for pid, g in groups.items()}
+        offenders = [(pid, n) for pid, n in wrong.items() if n != 1]
+        check(not offenders, "exactly one primary entry per profile",
+              f"({len(offenders)}: {offenders[:3]})" if offenders else "")
+        dangling = [r["business_id"] for r in brows if r["duplicate_of"]
+                    and r["duplicate_of"] not in by_id]
+        check(not dangling, "every duplicate_of points at a real entry",
+              f"({len(dangling)}: {dangling[:3]})" if dangling else "")
+        not_primary = [r["business_id"] for r in brows if r["duplicate_of"]
+                       and r["duplicate_of"] in by_id
+                       and by_id[r["duplicate_of"]]["is_primary_profile"] != "Y"]
+        check(not not_primary, "every duplicate points at its profile's primary",
+              f"({len(not_primary)}: {not_primary[:3]})" if not_primary else "")
+        miscount = [pid for pid, g in groups.items()
+                    if any(r["entries_in_profile"] != str(len(g)) for r in g)]
+        check(not miscount, "entries_in_profile matches the real group size",
+              f"({len(miscount)} wrong: {miscount[:3]})" if miscount else "")
+        misregion = [pid for pid, g in groups.items()
+                     if any(r["regions_in_profile"] != "; ".join(sorted({x["region"] for x in g}))
+                            for r in g)]
+        check(not misregion, "regions_in_profile lists exactly the profile's regions",
+              f"({len(misregion)} wrong: {misregion[:3]})" if misregion else "")
+        # A published name must not carry markup. One report is double-escaped,
+        # so a single unescape left names reading "Richter &amp; Hampton".
+        entity = re.compile(r"&(?:amp|lt|gt|quot|nbsp|apos|#\d+);")
+        escaped = [r["business_id"] for r in brows
+                   if entity.search(r["business_name"] or "")]
+        check(not escaped, "no business name carries an unescaped HTML entity",
+              f"({len(escaped)}: {escaped[:3]})" if escaped else "")
+        for f in ("website", "phone", "address", "description"):
+            print(f"  -- {f:12} published on {sum(1 for r in brows if r[f].strip()):>5} of {len(brows)}")
+        reviewed = sum(1 for r in brows if "licence match review=" in (r["audit_note"] or ""))
+        print(f"  -- {reviewed} entries carry a licence-match review verdict")
+
 head("New Jersey: every licence number traces to a published permit")
 njp = ROOT / "data/clean/nj_crc_permits.csv"
 if not njp.exists():
