@@ -15,10 +15,10 @@
 
 ## Next
 1. Post-election re-checks: Idaho HJR 4 (3 Nov 2026 ballot) and any other state with a 2026 cannabis measure; update Part 0 and Part 9 of those reports once results are certified.
-2. The remaining 1,185 county gaps (CA 275, CO 240, NY 196, NJ 88, TX 85, CT 65, HI 64, FL 59, IL 36, ME 23, PA 22, MO 11, AL 9, VA 4, MD 3, MA 2, RI 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need either an address the regulator does not publish, or a decision (Connecticut's two county vocabularies).
+2. The remaining 1,133 county gaps (CA 275, CO 240, NY 196, NJ 88, TX 85, HI 64, FL 59, IL 36, ME 23, PA 22, CT 13, MO 11, AL 9, VA 4, MD 3, MA 2, RI 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish.
 3. Resolve the licence numbers PA, NJ, MD and DE do not publish in their public lists. NJ's are in per-facility licence PDFs linked from the CRC page (e.g. RE000900); the other three publish none anywhere found so far.
 4. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
-5. Decide Connecticut's county vocabulary — traditional eight counties or the nine Census Planning Regions. The two must never share the county column, and 391 CT rows currently use the traditional names. See the local-government notes in HANDOFF.md.
+5. Fill the 13 Connecticut rows still without a county. They are village and borough names that are not towns (Terryville is in Plymouth, Cornwall Bridge in Cornwall, Mystic spans Stonington and Groton, Kensington is in Berlin, Baltic in Sprague) plus a few out-of-state towns. A village-to-town mapping would close them.
 6. De-duplicate the business table across directories and merge national firms under parent profiles (Baker Donelson, HUB, Brink's, Holland & Hart and the like appear in several regional directories). Also add California's website, phone and address from the rewritten-directory prose, and review the 22 entries flagged as holding a state licence.
 7. Build the site.
 
@@ -98,6 +98,16 @@ Grand Rapids' layer is kept in data/raw/michigan-local-grand-rapids/ anyway: 110
 - **HI**: 19 of 94 registrants are online-only with no premises address at all, and 6 are registered from outside Hawaii (CA, TN, LA). DOH publishes no county, which is correct — Hawaii has no municipal government below county level.
 - **Schema gaps surfaced by real data — now settled.** The standard licence types went from 14 to **16** (Event Organizer, Operator) and the standard statuses from 7 to **10** (Limited Operations, Inactive, Canceled), decided on 12 Nov 2026 and recorded in HANDOFF.md with the reasoning. Every regulator word that still has no standard of its own now has a fixed, documented mapping there rather than an improvised one. That took the rows carrying an approximated status from **3,358 down to 1** — Oregon's single "NOT APPROVED", which is a refused application rather than a licence and stays visible and flagged.
 - 144 rows have a deliberately EMPTY standard_status: Maryland's 130 dispensaries and Delaware's 14, because neither regulator publishes a status at all. Empty must never be read as Active.
+
+## Connecticut: the traditional eight counties (decided 12 Nov 2026)
+
+Connecticut uses its traditional eight counties — Fairfield, Hartford, Litchfield, Middlesex, New Haven, New London, Tolland, Windham — not the nine Planning Regions that replaced them as Census county-equivalents in 2022.
+
+Current Census sources cannot supply them: TIGER lists only the Planning Regions, and the geocoder returns "Capitol Planning Region" where another state returns "Hartford County". The mapping therefore comes from the **Census ACS2021 vintage**, the last published before the change — still an official source, just an older one. All 173 CT towns are cached in data/raw/census_ct_town_county_2021.csv.
+
+That took CT from 391 rows with a county to **443**, leaving 13. scripts/verify.py now **fails** if a Planning Region ever appears in a CT row, and checks CT against the traditional eight rather than the current Census list.
+
+The 13 left are village and borough names rather than towns — Terryville is in Plymouth, Cornwall Bridge in Cornwall, Mystic spans Stonington and Groton, Kensington is in Berlin, Baltic in Sprague — plus a few genuinely out-of-state towns. A village-to-town mapping would close them.
 
 ## The business directory: 355 to 2,087 entries
 

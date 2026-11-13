@@ -177,9 +177,11 @@ if cpath.exists():
     official = collections.defaultdict(set)
     for r in csv.DictReader(open(cpath, encoding="utf-8")):
         official[r["state"]].add(r["county_basename"])
-    # Connecticut replaced its eight counties with nine Planning Regions in
-    # 2022, so TIGER no longer lists the traditional names the tables use.
-    # Documented in HANDOFF; accepted here rather than reported as an error.
+    # Connecticut uses its traditional eight counties by project decision
+    # (12 Nov 2026), not the nine Planning Regions that replaced them as Census
+    # county-equivalents in 2022. Current TIGER lists only the Planning
+    # Regions, so the traditional names are the CORRECT value here and a
+    # Planning Region is the error.
     CT_TRADITIONAL = {"Fairfield", "Hartford", "Litchfield", "Middlesex",
                       "New Haven", "New London", "Tolland", "Windham"}
     bad, ct_trad, offstate, known_bad = collections.Counter(), 0, 0, 0
@@ -206,7 +208,17 @@ if cpath.exists():
                     bad[(r["state"], c)] += 1
     print(f"  official county list: {sum(len(v) for v in official.values())} counties "
           f"across {len(official)} states (Census TIGERweb)")
-    print(f"  -- {ct_trad} CT rows use the traditional county names TIGER dropped in 2022 (documented)")
+    print(f"  -- {ct_trad} CT rows use the traditional eight counties, the vocabulary this "
+          f"project chose")
+    ct_regions = 0
+    for name in TABLES:
+        path = ROOT / "data/clean" / name
+        if path.exists():
+            for r in csv.DictReader(open(path, encoding="utf-8")):
+                if r["state"] == "CT" and "Planning Region" in r["county"]:
+                    ct_regions += 1
+    check(ct_regions == 0, "no CT row uses a Census Planning Region",
+          "" if not ct_regions else f"{ct_regions} rows do")
     print(f"  -- {offstate} rows are flagged as premises outside their licensing state")
     print(f"  -- {known_bad} rows carry a county that is not their state's and say so on the row "
           f"(ambiguous names inherited from the 24 Oct 2026 table)")

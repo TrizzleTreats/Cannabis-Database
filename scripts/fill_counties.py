@@ -156,6 +156,22 @@ CT_TRADITIONAL = {"Fairfield", "Hartford", "Litchfield", "Middlesex",
                   "New Haven", "New London", "Tolland", "Windham"}
 
 
+def ct_town_counties():
+    """Connecticut's traditional eight counties, town by town.
+
+    The project's decision (12 Nov 2026) is that Connecticut uses its
+    traditional eight counties, not the nine Planning Regions that replaced
+    them as Census county-equivalents in 2022. Current TIGER therefore cannot
+    supply them, so the mapping comes from the Census ACS2021 vintage, the last
+    one published before the change — an official source, just an older one.
+    """
+    path = ROOT / "data/raw/census_ct_town_county_2021.csv"
+    if not path.exists():
+        return {}
+    with open(path, encoding="utf-8") as f:
+        return {r["town"].strip().lower(): r["county"] for r in csv.DictReader(f)}
+
+
 def official_counties():
     path = ROOT / "data/raw/census_counties_by_state.csv"
     if not path.exists():
@@ -350,6 +366,8 @@ def main():
         print(f"cache now holds {len(cache)} addresses; {sum(1 for v in cache.values() if v['county'])} with a county")
 
     if a.apply:
+        ct_towns = ct_town_counties()
+        print(f"CT town->traditional county pairs (Census ACS2021): {len(ct_towns)}")
         nj = nj_municipality_counties()
         print(f"NJ municipality->county pairs from the CRC table: {len(nj)}")
         filled, unfilled = collections.Counter(), collections.Counter()
@@ -361,6 +379,16 @@ def main():
                     continue
                 k = key_of(r)
                 hit = cache.get(k)
+                # Connecticut first: its county comes from the traditional-county
+                # town map, never from the geocoder's Planning Region.
+                if r["state"] == "CT" and r["town"].strip().lower() in ct_towns:
+                    r["county"] = ct_towns[r["town"].strip().lower()]
+                    r["county_source"] = ("Census ACS2021 county subdivisions, matched on town — "
+                                          "Connecticut's traditional eight counties, the vocabulary "
+                                          "this project uses")
+                    filled["CT"] += 1
+                    changed += 1
+                    continue
                 # Connecticut is a special case. Census replaced CT's eight
                 # counties with nine Planning Regions as county-equivalents in
                 # 2022, so the geocoder returns e.g. "Capitol Planning Region".
