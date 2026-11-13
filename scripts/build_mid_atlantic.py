@@ -26,7 +26,12 @@ inferred from a town name.
 
 Usage: python3 scripts/build_mid_atlantic.py [--dry-run]
 """
-import argparse, collections, csv, html, json, pathlib, re
+import argparse, collections, csv, html, json, pathlib, re, sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from nj_towns import norm_org, norm_town, resolve_town, same_town
+from verify_nj_permit_counties import (AGREES, DIFFERS_CONFIRMED,
+                                      DIFFERS_UNRESOLVED)
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
@@ -349,67 +354,256 @@ def build_pa(blank):
 
 
 # ----------------------------------------------------------------- New Jersey
+# NJ is built from the per-business permit PDFs, NOT from the HTML table. The
+# table publishes organisations - business types per organisation, locations in
+# one cell, and an expiration YEAR - so a row built from it is an
+# organisation-by-location guess with no licence number. Each table row also
+# links the issued permit, and that document is the licence: it carries the
+# number, the Commission's own class wording, the facility address with its
+# county, and a full expiry date. See scripts/parse_nj_permits.py.
+#
+# REQUIRES data/clean/nj_crc_permits.csv. Pipeline order:
+#   fetch_nj_permits.py -> parse_nj_permits.py -> verify_nj_permit_counties.py
+#   -> build_mid_atlantic.py -> add_standard_type.py --apply -> verify.py
+NJ_PERMITS = ROOT / "data" / "clean" / "nj_crc_permits.csv"
+
+# CRC class -> this table's `category`. Every value is one standard_types.py
+# already knows, so no new vocabulary enters the table: a medical retailer is
+# Retail Store with program=Medical (the same call PA's 197 medical-only
+# dispensaries already get here), and wholesaler and distributor are both
+# Transport & Distribution, which NJ's rows already used.
+NJ_PERMIT_CAT = {
+    "CLASS 1 - CULTIVATOR": "Cultivation",
+    "CLASS 2 - MANUFACTURER": "Manufacturing",
+    "CLASS 3 - WHOLESALER": "Transport & Distribution",
+    "CLASS 4 - DISTRIBUTOR": "Transport & Distribution",
+    "CLASS 5 - RETAILER": "Retail Store",
+    "CLASS 6 - DELIVERY": "Delivery",
+    "MEDICAL CULTIVATOR": "Cultivation",
+    "MEDICAL MANUFACTURER": "Manufacturing",
+    "MEDICAL RETAILER": "Retail Store",
+}
+# For a CRC-listed location with no permit of its own, the only activity the CRC
+# publishes is the ORGANISATION's business-type list, which it gives per
+# organisation and never per location. Those rows therefore take the
+# organisation's types, exactly as this table did for every NJ row before the
+# permits were read, with the row saying the types are not confirmed for that
+# location. Leaving `category` empty instead is not the safer option: it empties
+# a search column, and standard_types.py refuses to write a blank standard_type
+# because a blank reads as "no such licence" rather than "not classified".
 NJ_CAT = {"Retailer": "Retail Store", "Dispensing": "Retail Store",
           "Manufacturer": "Manufacturing", "Manufacturing": "Manufacturing",
           "Cultivator": "Cultivation", "Cultivating": "Cultivation",
           "Delivery": "Delivery", "Wholesaler": "Transport & Distribution",
           "Distributor": "Transport & Distribution", "Consumption Area": "Consumption Lounge"}
-NJ_SRC = f"NJ CRC, Permitted & Licensed Cannabis Businesses — {LOCAL_ID}"
+NJ_SRC = ("NJ CRC, Office of Licensing — issued permit PDF linked from the Permitted & "
+          "Licensed Cannabis Businesses page")
 NJ_URL = "https://www.nj.gov/cannabis/businesses/permitted/"
+# The CRC's own heading over both tables. It is the only status wording the CRC
+# publishes for these businesses, and it is what standard_status Active rests
+# on - never a reading of the expiry date.
+NJ_ACTIVE = "Active Cannabis Business Permits & Licenses"
+
+
+def nj_permit_rows():
+    """The parsed permits, split into licences and endorsements."""
+    if not NJ_PERMITS.exists():
+        raise SystemExit(
+            f"{NJ_PERMITS.relative_to(ROOT)} is missing — New Jersey is built from the "
+            f"permit PDFs.\n  Run: python3 scripts/fetch_nj_permits.py && "
+            f"python3 scripts/parse_nj_permits.py")
+    with open(NJ_PERMITS, newline="", encoding="utf-8") as f:
+        recs = list(csv.DictReader(f))
+    if "county_check" not in (recs[0] if recs else {}):
+        raise SystemExit(
+            f"{NJ_PERMITS.relative_to(ROOT)} has no county_check column — the permit "
+            f"counties have not been checked against the Census geocoder.\n"
+            f"  Run: python3 scripts/verify_nj_permit_counties.py")
+    return ([r for r in recs if r["record_kind"] == "licence"],
+            [r for r in recs if r["record_kind"] != "licence"])
+
+
+def nj_county(r, flags):
+    """(county, county_source). Both counties stay on the row when they differ.
+
+    The Census result only displaces the permit's own printed county where the
+    two agree on the address and differ on nothing but the county field - which
+    the permit's own ZIP is what establishes. Where the geocoder matched a
+    different address it settles nothing, and the permit's value stands, flagged.
+    """
+    printed, census, check = r["county"].strip(), r["county_geocoded"].strip(), r["county_check"]
+    if check == AGREES:
+        return printed, ("NJ CRC permit PDF (facility address), confirmed at address level "
+                         "by the US Census geocoder")
+    if check == DIFFERS_CONFIRMED:
+        flags["county as printed on the permit"] = (
+            f"{printed} — wrong: the permit's own ZIP {r['zip']} and the US Census geocoder "
+            f"agree this address is in {census}. Published as {census}, original kept here")
+        # Deliberately led by the permit, not by "US Census geocoder":
+        # fill_counties.py revisits any row whose county_source starts with that
+        # phrase, and this county is already adjudicated — a second pass keyed
+        # on the full town name can miss the cache and relabel it.
+        return census, ("NJ CRC permit PDF (facility address) with its county field corrected "
+                        "by the US Census geocoder at address level, which the permit's own "
+                        "ZIP corroborates")
+    if check == DIFFERS_UNRESOLVED:
+        flags["county disputed"] = (
+            f"the permit prints {printed}; the US Census geocoder returned {census} but "
+            f"matched a different address ({r['geocoded_address']}), so the two are NOT "
+            f"reconciled. The regulator's printed value stands until a person checks it")
+        return printed, ("NJ CRC permit PDF (facility address); disputed by the Census "
+                         "geocoder and unresolved — see extra_details")
+    flags["county not confirmed"] = (
+        f"the US Census geocoder returned no match for this address, so the permit's "
+        f"printed county is unverified")
+    return printed, "NJ CRC permit PDF (facility address); not confirmed by the Census geocoder"
 
 
 def build_nj(blank, unmapped):
-    rows, n = [], 0
-    tabs = tables("new-jersey/crc_permitted_businesses_2026-11-12.html")
-    for tb in tabs:
-        header = cells(tb[0])[0] if tb else ""
-        program = "Medical" if "Medicinal" in header else "Adult Use"
-        for tr in tb[1:]:
-            c = cells(tr)
-            if len(c) < 4 or not c[0]:
+    licences, endorsements = nj_permit_rows()
+    with open(RAW / "new-jersey" / "permits" / "_link_index.csv", newline="",
+              encoding="utf-8") as f:
+        links = list(csv.DictReader(f))
+
+    # Each organisation's municipalities and business types, as the CRC's HTML
+    # spells them - the only place the full town names and the organisation's
+    # own type list exist.
+    listed, types_of = {}, {}
+    for l in links:
+        key = norm_org(l["organisation"])
+        for town in (t.strip() for t in l["locations"].split(",")):
+            if town:
+                listed.setdefault(key, set()).add(town)
+        if l["business_types"]:
+            types_of.setdefault(key, set()).add(l["business_types"])
+
+    endorsed = {}
+    for e in endorsements:
+        endorsed.setdefault(e["associated_licence_number"], []).append(e)
+
+    # A licence number belongs to the premises and can carry two holders, so a
+    # repeated number takes NY's own discriminator (~1, ~2) to stay distinct.
+    repeats = collections.Counter(r["permit_number"] for r in licences)
+    seen = collections.Counter()
+    by_org = collections.Counter(norm_org(r["link_organisation"]) for r in licences)
+
+    rows, claimed = [], set()
+    for r in licences:
+        cls = r["licence_class_state"].strip()
+        category = NJ_PERMIT_CAT.get(cls.upper())
+        if not category:
+            unmapped.append(("NJ permit class", cls))
+            category = ""
+        num = r["permit_number"]
+        if repeats[num] > 1:
+            seen[num] += 1
+            licence_id = f"{num}~{seen[num]}"
+        else:
+            licence_id = num
+
+        key = norm_org(r["link_organisation"])
+        full_town, why = resolve_town(r["town"], sorted(listed.get(key, set())))
+        town = full_town or r["town"].title()
+        if full_town:
+            claimed.add((key, norm_town(full_town)))
+        claimed.add((key, norm_town(r["town"])))
+
+        flags = {}
+        county, county_source = nj_county(r, flags)
+        if not full_town:
+            flags["town spelling not matched"] = (
+                f"the permit prints '{r['town']}'; the CRC's HTML lists "
+                f"{sorted(listed.get(key, set())) or 'no locations'} for this organisation ({why})")
+        if r["expiration_date"] and r["expiration_date"] < TODAY:
+            flags["permit expiry has passed"] = (
+                f"{r['expiration_date']}, yet the CRC still publishes this business under "
+                f"'{NJ_ACTIVE}' — the two are not reconciled and neither is read off the other")
+        ends = endorsed.get(num, [])
+
+        row = dict(blank)
+        row.update({
+            "licence_id": licence_id, "state": "NJ",
+            "program": r["program"], "category": category,
+            "licence_type": cls.title().replace(" - ", " — "),
+            "legal_name": r["facility_name"], "holder_is_individual": "N",
+            "status": f"Listed by the CRC under '{NJ_ACTIVE}'",
+            "standard_status": "Active",
+            "expiry_date": r["expiration_date"],
+            "street_address": r["street_address"], "town": town,
+            "county": county, "town_as_listed": r["town"],
+            "location_basis": "Facility address as printed on the CRC's issued permit",
+            "county_source": county_source,
+            "group_id": f"NJ-ORG-{key.replace(' ', '-')[:28]}" if by_org[key] > 1 else "",
+            "linked_group": r["link_organisation"] if by_org[key] > 1 else "",
+            "licences_in_group": str(by_org[key]) if by_org[key] > 1 else "",
+            "source": NJ_SRC, "source_url": r["source_url"], "data_as_of": r["data_as_of"],
+            "extra_details": extras(
+                licence_class_as_printed=cls,
+                issuing_document=r["issuing_document"],
+                term=r["term"],
+                programme_basis=r["program_basis"],
+                zip_code=r["zip"],
+                address_line_2=r["address_line_2"],
+                endorsements="; ".join(f'Consumption Area ({e["permit_number"]}, expires '
+                                       f'{e["expiration_date"]})' for e in ends),
+                organisation_as_listed=r["link_organisation"],
+                business_types_as_listed="; ".join(sorted(types_of.get(key, set()))),
+                shared_premises_number=(
+                    f"{num} is printed on {repeats[num]} permits at this address under "
+                    f"different holders; an NJ licence number belongs to the premises, so "
+                    f"the rows keep a ~n suffix and must not be merged"
+                    if repeats[num] > 1 else ""),
+                source_pdf=r["pdf_filename"], source_pdf_sha256=r["pdf_sha256"],
+                **flags),
+        })
+        rows.append(row)
+
+    # A location the CRC lists for an organisation but publishes no permit for
+    # is still something the CRC publishes. Kept, with no licence number, so a
+    # rebuild cannot quietly lose it.
+    n = 0
+    for l in links:
+        key = norm_org(l["organisation"])
+        program = "Medical" if "Medicinal" in l["section"] else "Adult Use"
+        for town in (t.strip() for t in l["locations"].split(",")):
+            if not town or (key, norm_town(town)) in claimed:
                 continue
-            org, types_s, locs_s, year = c[0], c[1], c[2], c[3].strip()
-            types = [t.strip() for t in re.split(r",\s*", types_s) if t.strip()]
+            if any(same_town(town, t) for k, t in claimed if k == key):
+                continue
+            n += 1
             cats = []
-            for t in types:
+            for t in (x.strip() for x in l["business_types"].split(",")):
+                if not t:
+                    continue
                 if t in NJ_CAT:
                     if NJ_CAT[t] not in cats:
                         cats.append(NJ_CAT[t])
                 else:
                     unmapped.append(("NJ business type", t))
-            if year.upper() == "INACTIVE":
-                std, expiry = "Expired", ""
-            elif year.isdigit():
-                # CRC publishes a year, not a date, so a 2026 expiry cannot be
-                # resolved against today. Treated as current, and said so.
-                std, expiry = ("Expired" if int(year) < 2026 else "Active"), year
-            else:
-                std, expiry = "", ""
-            locs = [l.strip() for l in re.split(r",\s*", locs_s) if l.strip()] or [""]
-            for loc in locs:
-                n += 1
-                row = dict(blank)
-                row.update({
-                    "licence_id": f"NJ-{'MED' if program == 'Medical' else 'AU'}-{n:04d}",
-                    "state": "NJ", "program": program, "category": "; ".join(cats),
-                    "licence_type": types_s, "legal_name": org, "holder_is_individual": "N",
-                    "status": f"Permitted/licensed; expiration year {year}" if year else "Permitted/licensed",
-                    "standard_status": std, "expiry_date": expiry,
-                    "town": loc, "town_as_listed": loc,
-                    "location_basis": "CRC listed location (CRC gives business types per organisation, not per location)",
-                    "group_id": f"NJ-G{n:04d}" if len(locs) > 1 else "",
-                    "linked_group": org if len(locs) > 1 else "",
-                    "licences_in_group": str(len(locs)) if len(locs) > 1 else "",
-                    "programs_in_group": program if len(locs) > 1 else "",
-                    "source": NJ_SRC, "source_url": NJ_URL, "data_as_of": TODAY,
-                    "extra_details": extras(
-                        all_locations="; ".join(locs) if len(locs) > 1 else "",
-                        business_types_as_listed=types_s, expiration_year=year,
-                        note="CRC publishes organisations, not licences: no licence number, no per-location "
-                             "activity, and only a year for expiry. Business types are the organisation's and "
-                             "are NOT confirmed for this location."),
-                })
-                rows.append(row)
+            row = dict(blank)
+            row.update({
+                "licence_id": f"NJ-NOPERMIT-{n:03d}", "state": "NJ", "program": program,
+                "category": "; ".join(cats), "licence_type": l["business_types"], "legal_name": l["organisation"],
+                "holder_is_individual": "N",
+                "status": f"Listed by the CRC under '{NJ_ACTIVE}'",
+                "standard_status": "", "expiry_date": "",
+                "town": town, "town_as_listed": town,
+                "location_basis": "CRC listed location (no permit published for it)",
+                "source": f"NJ CRC, Permitted & Licensed Cannabis Businesses — {LOCAL_ID}",
+                "source_url": NJ_URL, "data_as_of": TODAY,
+                "extra_details": extras(
+                    business_types_as_listed=l["business_types"],
+                    expiration_year=l["expiration_year"],
+                    all_locations=l["locations"],
+                    note="the CRC lists this location for the organisation but publishes no "
+                         "permit PDF naming it, so there is no licence number, no county and "
+                         "no expiry date, and the business types are the ORGANISATION's and "
+                         "are NOT confirmed for this location. standard_status is EMPTY, "
+                         "which must never be read as Active"),
+            })
+            rows.append(row)
+    if n:
+        print(f"  NJ: {n} CRC-listed locations have no permit of their own — kept without a number")
     return rows
 
 

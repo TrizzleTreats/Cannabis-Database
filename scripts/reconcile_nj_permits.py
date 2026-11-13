@@ -11,77 +11,24 @@ the master table is touched:
   * which permits describe a facility the current table has no row for
 
 The join is on organisation plus town, and the towns need care: the CRC
-abbreviates them on the permit ("EGG HBR TWP", "EDGEWATER PRK") while spelling
-them out in the HTML table ("Egg Harbor Township"). Rather than invent an
-expansion table, each abbreviated town is matched against the full municipality
-names the CRC itself lists for that same organisation, accepting a match only
-when the abbreviation is a letter-by-letter subsequence of the full name and
-exactly one candidate fits. Anything else is reported as unresolved.
+abbreviates them on the permit ("EGG HBR TWP") while spelling them out in the
+HTML table ("Egg Harbor Township"). The matching rules live in scripts/nj_towns.py,
+shared with the builder and the county check so no two of them can disagree.
+Anything they cannot resolve confidently is reported as unresolved, not guessed.
 
 Usage:
   python3 scripts/reconcile_nj_permits.py
 """
-import csv, pathlib, re, sys
+import csv, pathlib, sys
 from collections import Counter, defaultdict
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from nj_towns import is_abbrev_of, norm_org, norm_town, resolve_town
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PERMITS = ROOT / "data" / "clean" / "nj_crc_permits.csv"
 MASTER = ROOT / "data" / "clean" / "mid_atlantic_licences.csv"
 LINK_INDEX = ROOT / "data" / "raw" / "new-jersey" / "permits" / "_link_index.csv"
-
-
-def norm_org(name):
-    """Compare organisation names without punctuation or corporate suffixes."""
-    s = name.upper()
-    s = re.sub(r"\(.*?\)", " ", s)                      # "(formerly Justice Grown NJ)"
-    s = re.sub(r"[^A-Z0-9 ]", " ", s)
-    s = re.sub(r"\b(LLC|L L C|INC|CORP|CORPORATION|CO|COMPANY|LP|LLP|"
-               r"HOLDINGS|GROUP|THE)\b", " ", s)
-    return re.sub(r"\s+", " ", s).strip()
-
-
-def norm_town(name):
-    s = name.upper()
-    s = re.sub(r"[^A-Z ]", " ", s)
-    return re.sub(r"\s+", " ", s).strip()
-
-
-def is_abbrev_of(short, full):
-    """True if `short` is a token-wise abbreviation of `full`.
-
-    Each token of the abbreviation must share its first letter with the matching
-    token of the full name and be a subsequence of it: HBR of HARBOR, TWP of
-    TOWNSHIP, PRK of PARK. Token counts must agree, which keeps "EGG HBR TWP"
-    from matching "EGG HARBOR CITY".
-    """
-    a, b = norm_town(short).split(), norm_town(full).split()
-    if len(a) != len(b):
-        return False
-    for x, y in zip(a, b):
-        if x == y:
-            continue
-        if not y.startswith(x[0]) or len(x) > len(y):
-            return False
-        it = iter(y)
-        if not all(ch in it for ch in x):
-            return False
-    return True
-
-
-def resolve_town(permit_town, candidates):
-    """The CRC's own full spelling for an abbreviated town, or ('', reason)."""
-    pt = norm_town(permit_town)
-    exact = [c for c in candidates if norm_town(c) == pt]
-    if len(exact) == 1:
-        return exact[0], ""
-    if len(exact) > 1:
-        return exact[0], ""
-    hits = [c for c in candidates if is_abbrev_of(permit_town, c)]
-    if len(hits) == 1:
-        return hits[0], ""
-    if not hits:
-        return "", "no listed location matches"
-    return "", f"ambiguous between {len(hits)}: {', '.join(hits)}"
 
 
 def main():
@@ -120,84 +67,69 @@ def main():
     if len(gap) > 12:
         print(f"    ... and {len(gap)-12} more")
 
-    print("\nHow they line up with the table's NJ rows")
-    print("-----------------------------------------")
-    print(f"  NJ rows in mid_atlantic_licences.csv    {len(nj)}")
-    print(f"  of those, rows with a real licence id   "
-          f"{sum(1 for r in nj if not r['licence_id'].startswith('NJ-'))}")
+    print("\nEvery permit is represented in the master table")
+    print("-----------------------------------------------")
+    # Before the migration this joined on organisation and town, because the
+    # table held no licence numbers. It holds them now, so the join is on the
+    # number - the only key that cannot be ambiguous. A number printed on two
+    # permits at one premises appears as ~1 and ~2, so the suffix is stripped
+    # before comparing.
+    def base(licence_id):
+        return licence_id.split("~")[0]
 
-    # The organisation's own listed locations, as the CRC spells them.
-    listed = defaultdict(set)
-    for l in links:
-        for town in (t.strip() for t in l["locations"].split(",")):
-            if town:
-                listed[norm_org(l["organisation"])].add(town)
-
-    master_by_org = defaultdict(list)
+    in_table = {}
     for r in nj:
-        master_by_org[norm_org(r["legal_name"])].append(r)
+        in_table.setdefault(base(r["licence_id"]), []).append(r)
+    permit_numbers = Counter(p["permit_number"] for p in permits)
 
-    matched, unresolved, no_row, org_only = 0, [], [], 0
-    claimed = set()
-    for p in permits:
-        key = norm_org(p["link_organisation"])
-        rows = master_by_org.get(key, [])
-        if not rows:
-            no_row.append((p["permit_number"], p["link_organisation"], "organisation not in the table"))
-            continue
-        org_only += 1
-        full, why = resolve_town(p["town"], sorted(listed.get(key, set())))
-        hit = [r for r in rows if norm_town(r["town"]) == norm_town(full)] if full else []
-        if len(hit) == 1:
-            matched += 1
-            claimed.add(id(hit[0]))
-        elif full and not hit:
-            no_row.append((p["permit_number"], f"{p['link_organisation']} / {p['town']}",
-                           f"no row for town '{full}'"))
-        elif full and len(hit) > 1:
-            unresolved.append((p["permit_number"], p["town"], f"{len(hit)} rows share that town"))
+    missing = [n for n in permit_numbers if n not in in_table]
+    print(f"  permits published                 {len(permits)} ({len(permit_numbers)} numbers)")
+    print(f"  NJ rows in the master table       {len(nj)}")
+    print(f"  rows carrying a real licence id   {sum(1 for r in nj if not r['licence_id'].startswith('NJ-'))}")
+    print(f"  permit numbers absent from table  {len(missing)}")
+    for n in missing[:10]:
+        print(f"    {n}")
+
+    # The reverse direction: a row must not claim a number the permits do not.
+    invented = [r for r in nj if not r["licence_id"].startswith("NJ-")
+                and base(r["licence_id"]) not in permit_numbers]
+    print(f"  rows claiming an unpublished id   {len(invented)}")
+    for r in invented[:10]:
+        print(f"    {r['licence_id']}  {r['legal_name']}")
+
+    # And the row count has to decompose exactly.
+    suffixed = sum(1 for r in nj if "~" in r["licence_id"])
+    nopermit = sum(1 for r in nj if r["licence_id"].startswith("NJ-NOPERMIT"))
+    print(f"  of those rows: {len(nj) - nopermit} permit rows ({suffixed} with a ~n suffix for a "
+          f"shared premises number) + {nopermit} CRC-listed locations with no permit")
+
+    print("\nWhat the table now carries that the HTML list never did")
+    print("-------------------------------------------------------")
+    for label, field in (("real licence number", "licence_id"), ("street address", "street_address"),
+                         ("county", "county"), ("full ISO expiry date", "expiry_date")):
+        if field == "licence_id":
+            have = sum(1 for r in nj if not r["licence_id"].startswith("NJ-"))
+        elif field == "expiry_date":
+            have = sum(1 for r in nj if len(r["expiry_date"]) == 10)
         else:
-            unresolved.append((p["permit_number"], p["town"], why))
+            have = sum(1 for r in nj if r[field])
+        print(f"  {label:22} {have}/{len(nj)}")
 
-    print(f"  permits whose organisation is in the table   {org_only}")
-    print(f"  permits matched to exactly one row           {matched}")
-    print(f"  table rows claimed by a permit               {len(claimed)}")
-    print(f"  table rows with no permit                    {len(nj) - len(claimed)}")
-    print(f"  permits whose town could not be resolved     {len(unresolved)}")
-    for n, t, why in unresolved[:12]:
-        print(f"    {n:10} '{t}'  {why}")
-    if len(unresolved) > 12:
-        print(f"    ... and {len(unresolved)-12} more")
-    print(f"  permits describing a facility with no row    {len(no_row)}")
-    for n, who, why in no_row[:12]:
-        print(f"    {n:10} {who}  —  {why}")
-    if len(no_row) > 12:
-        print(f"    ... and {len(no_row)-12} more")
-
-    print("\nCounty gaps")
-    print("-----------")
+    print("\nCounty, and where each one came from")
+    print("------------------------------------")
     blank = [r for r in nj if not r["county"]]
-    print(f"  NJ rows with no county today        {len(blank)}")
-    towns_with_county = {}
-    for p in permits:
-        if p["county"]:
-            towns_with_county.setdefault(norm_town(p["town"]), set()).add(p["county"])
-    closable, conflicted = 0, 0
+    print(f"  NJ rows with no county   {len(blank)}  (88 of 586 before the permits were read)")
     for r in blank:
-        hits = set()
-        for p in permits:
-            if norm_org(p["link_organisation"]) == norm_org(r["legal_name"]) and p["county"]:
-                full, _ = resolve_town(p["town"], sorted(listed.get(norm_org(r["legal_name"]), set())))
-                if full and norm_town(full) == norm_town(r["town"]):
-                    hits.add(p["county"])
-        if len(hits) == 1:
-            closable += 1
-        elif len(hits) > 1:
-            conflicted += 1
-    print(f"  closable from a permit for the same org+town   {closable}")
-    print(f"  permits disagreeing on the county             {conflicted}")
-    print(f"  distinct counties seen on permits             "
-          f"{len({p['county'] for p in permits if p['county']})} of New Jersey's 21")
+        print(f"    {r['licence_id']:16} {r['legal_name'][:30]:32} {r['town']}")
+    for src, n in Counter(r["county_source"] for r in nj).most_common():
+        print(f"  {n:5}  {src[:92] or '(none)'}")
+    disputed = [r for r in nj if "county disputed=" in r["extra_details"]]
+    corrected = [r for r in nj if "county as printed on the permit=" in r["extra_details"]]
+    print(f"\n  {len(corrected)} rows publish a county the Census geocoder corrected, with the "
+          f"permit's printed value kept on the row")
+    print(f"  {len(disputed)} row is disputed and keeps the regulator's printed value:")
+    for r in disputed:
+        print(f"    {r['licence_id']} {r['legal_name']} — published as {r['county']}")
 
     print("\nLoose ends this settles")
     print("-----------------------")

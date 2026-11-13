@@ -122,10 +122,12 @@ Notes:
 | scripts/verify.py | Re-runnable check: private data not tracked, allowlist matches the domain list, every raw file hashes and opens, master table integrity, every row's `standard_type` one of the 16 and still matching the recorded mapping, one shared column set across the three tables, county validity, NY row-vs-licence reconciliation. Also verifies file-set sources (one declared source, many files) as a set |
 | scripts/fetch_nj_permits.py | Downloads NJ's 517 per-business permit PDFs, resolving every URL out of the saved CRC page and logging one manifest row per file. Writes _link_index.csv with each link's table-row context |
 | scripts/parse_nj_permits.py | Reads those PDFs into data/clean/nj_crc_permits.csv — one row per permit page, licences and consumption-area endorsements kept apart |
-| scripts/reconcile_nj_permits.py | Reports how the permits line up with the NJ rows already in the master table, and which county gaps they close. Changes nothing |
+| scripts/verify_nj_permit_counties.py | Checks every permit's printed county against the Census geocoder and adjudicates a disagreement on the permit's own ZIP. Adds county_geocoded, geocoded_address and county_check |
+| scripts/nj_towns.py | The rules for matching the CRC's two spellings of one municipality ("EGG HBR TWP" against "Egg Harbor Township"). Imported by the builder, the county check and the reconciliation report so none of them can disagree |
+| scripts/reconcile_nj_permits.py | Reports what the permits publish and checks every one reaches the master table by its number, with nothing claiming a number the permits do not. Changes nothing |
 | scripts/standard_types.py | The 16 standard licence types and the mapping onto them from all 38 `category` values — one source of truth, imported by add_standard_type.py and verify.py so the write and the check cannot drift. Every non-obvious call is argued in docs/HANDOFF.md |
 | scripts/add_standard_type.py | Writes `standard_type` (one of the 16) and `standard_types_all` (every type the licence authorises) into the three licence tables, leaving `category` and `licence_type` untouched. Idempotent; refuses to write if any category is unmapped. Must be re-run after any rebuild |
-| data/clean/nj_crc_permits.csv | 660 rows, 29 columns: 655 NJ licences with the CRC's real numbers, class wording, street address, county and full expiry, plus 5 consumption-area endorsements |
+| data/clean/nj_crc_permits.csv | 660 rows, 32 columns: 655 NJ licences with the CRC's real numbers, class wording, street address, county and full expiry, plus 5 consumption-area endorsements. The county columns carry the Census cross-check |
 | data/raw/new-jersey/permits/ | The 517 permit PDFs as published, plus _link_index.csv naming the page row each came from |
 | data/raw/manifest.csv | Append-only provenance log: one row per fetch attempt with bytes, sha256, status and reason. The LAST row for an id is its current state |
 | .claude/settings.json | WebFetch allow rules for all 1,242 official hosts, plus the two build scripts |
@@ -138,11 +140,12 @@ Notes:
 | delaware | 1 | OMC dispensaries page — 5 operator brands, addresses only. No licence numbers, types or statuses are published anywhere |
 | district-of-columbia | 3 | ABCA Aug 2026 programme report, plus GIS layers 33 (non-retailer, 21 facilities) and 31 (retailer, 79) |
 | maryland | 6 | MCA home, Industry Licensees, Dispensary Locator (130-row table with counties), Data Dashboard and its Sept 2026 XLSX extract, plus OSE licensing |
-| new-jersey | 2 | CRC permitted-businesses page (519 table rows) and the government-relations municipality table (234 rows) — both are static HTML, no CSV exists |
+| new-jersey | 519 | CRC permitted-businesses page (519 table rows) and the government-relations municipality table (234 rows), both static HTML with no CSV, plus the 517 per-business permit PDFs the page links — the only place NJ publishes a licence number |
 | new-york | 1 | OCM licences (3,056 rows, 2,286 distinct licence numbers, 385 rows with no licence number = proximity-protected applicants). Hemp producer list could not be fetched: HTTP 403 |
 | pennsylvania | 8 | Auditor General audit, dispensary PDF, 2024 biennial report, MMAB presentations for June and Sept 2026, and the three DOH index pages |
 
-data/clean/mid_atlantic_licences.csv — 4,083 rows, 43 columns (NY 3,056, NJ 586, PA 197, MD 130, DC 100, DE 14),
-built from these raw files on 12 Nov 2026. Same column set and order as new_england_licences.csv, so the two
-union to 8,334 rows. Only NY and DC publish licence numbers; PA, NJ, MD and DE ids are assigned locally and
-each row's `source` says so.
+data/clean/mid_atlantic_licences.csv — 4,175 rows, 43 columns (NY 3,056, NJ 678, PA 197, MD 130, DC 100, DE 14),
+built from these raw files. Same column set and order as new_england_licences.csv, so the two union cleanly.
+NY, DC and NJ publish licence numbers — NJ's come from its per-business permit PDFs, one row per permit, 655 of
+678 rows (the other 23 are locations the CRC lists but publishes no permit for). PA, MD and DE ids are still
+assigned locally and each row's `source` says so.

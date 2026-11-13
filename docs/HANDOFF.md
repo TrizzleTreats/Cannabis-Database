@@ -49,7 +49,7 @@ Only the complete versions of R31, R34, R36, R53 and R63 should be kept (earlier
 - Licence columns: state, licence number, programme (medical/adult-use/hemp/testing), state's official licence name, standard type, activity tags, tier, state status wording, standard status, issue/expiry/first-issue dates, legal name, DBA, individual flag, parent company/group, vertical integration flag, owners, address, town, town as listed, county + county source, location basis, town opt-in/allows activity, website, contact name/phone/email, law-firm-contact flag, social equity status, latitude/longitude, endorsements, operating yes/no, source name/link/date, notes, "extra details" field (state-specific items; promote to a column once several states share it).
 - Standard types (16): Cultivation, Nursery, Manufacturing, Retail, Delivery, Transport & Distribution, Testing Lab, Microbusiness, Consumption Lounge, Research, Caregiver, Event Organizer, Operator, Hemp Grower, Hemp Processor, Hemp Retail. Medical vs adult-use is a separate filter.
   - Event Organizer and Operator were added on 12 Nov 2026 after the build met them in real data: California issues 193 Event Organizer licences and Colorado 8 Operator licences (a company running a licensed business on the licensee's behalf). Neither fits any of the original 14.
-  - **The standard type is carried in two columns, added 12 Nov 2026** (`scripts/add_standard_type.py`, mapping in `scripts/standard_types.py`). `standard_type` holds exactly one of the 16 — the LEAD activity, so a facet has one value per licence and counts cannot double. `standard_types_all` holds every one of the 16 the licence authorises, `; `-joined in the canonical order this list is written in. It is always populated and equals `standard_type` on the 50,397 single-activity rows; 147 rows carry more than one. The regulator's own official licence name stays in `licence_type` and the build's own grouping stays in `category` — neither is rewritten, exactly as `status` keeps the regulator's own status wording.
+  - **The standard type is carried in two columns, added 12 Nov 2026** (`scripts/add_standard_type.py`, mapping in `scripts/standard_types.py`). `standard_type` holds exactly one of the 16 — the LEAD activity, so a facet has one value per licence and counts cannot double. `standard_types_all` holds every one of the 16 the licence authorises, `; `-joined in the canonical order this list is written in. It is always populated and equals `standard_type` on the 50,612 single-activity rows; 24 rows carry more than one. The regulator's own official licence name stays in `licence_type` and the build's own grouping stays in `category` — neither is rewritten, exactly as `status` keeps the regulator's own status wording.
   - The lead is picked by a **fixed precedence, most downstream (most consumer-facing) first**: Retail, Consumption Lounge, Delivery, Transport & Distribution, Hemp Retail, Manufacturing, Hemp Processor, Cultivation, Hemp Grower, Nursery, then the types that never appear in a compound. Source order cannot be the rule: the same New Jersey combination arrives as "Cultivation; Manufacturing; Retail Store", as "Retail Store; Cultivation" and as "Dispensing, Cultivating", so keying on it would scatter one real combination across three different leads. Downstream-first means someone searching for a place that can sell to them finds every licence that may.
   - Where a regulator's or the build's own category word has no standard of its own, the mapping is **fixed and documented here rather than improvised**, the same rule the standard statuses follow:
     - "Retail Store" → **Retail** (8,618 rows); this list's name is Retail. "Medical Caregiver" → **Caregiver**; "Hemp Retailer" (178) → **Hemp Retail**, a near-duplicate spelling of the same type, not a second type.
@@ -73,6 +73,70 @@ Only the complete versions of R31, R34, R36, R53 and R63 should be kept (earlier
 - California business directory is grouped by 10 sub-regions with a county field.
 - Counts must carry a date and must not mix "issued", "approved", "licensed", "pending renewal" and "operating".
 - Unverified entries stay out of the public site until checked.
+
+## New Jersey: built from the permit PDFs (decided 12 Nov 2026)
+
+The CRC publishes no licence number in any list. Its permitted-businesses page gives
+organisations — business types per organisation, locations in one cell, an expiration YEAR — and
+links an issued permit PDF per business. That PDF **is** the licence, so New Jersey is built from
+the permits, one row per permit, not from the HTML table.
+
+`licence_type` keeps the Commission's own class wording in title case (`Class 5 — Retailer`,
+`Medical Retailer`) with the verbatim all-caps string in `extra_details`; the all-caps is
+typography, not wording. `category` uses only values `standard_types.py` already knows, so the
+permits introduced no new vocabulary:
+
+| CRC class | category | standard_type |
+|---|---|---|
+| CLASS 1 - CULTIVATOR, MEDICAL CULTIVATOR | Cultivation | Cultivation |
+| CLASS 2 - MANUFACTURER, MEDICAL MANUFACTURER | Manufacturing | Manufacturing |
+| CLASS 3 - WHOLESALER, CLASS 4 - DISTRIBUTOR | Transport & Distribution | Transport & Distribution |
+| CLASS 5 - RETAILER, MEDICAL RETAILER | Retail Store | Retail |
+| CLASS 6 - DELIVERY | Delivery | Delivery |
+
+A **medical retailer is Retail Store with `program` = Medical**, not a separate category: HANDOFF
+already holds that medical vs adult-use is a filter and never a type, and this table already
+categorises Pennsylvania's 197 medical-only dispensaries that way. A **wholesaler and a
+distributor are both Transport & Distribution**, the value NJ's rows already used and the one VT's
+own "Wholesaler" maps to.
+
+**Status rests on the regulator's own heading, never on the expiry date.** The CRC publishes both
+tables under "Active Cannabis Business Permits & Licenses", which is the only status wording it
+gives these businesses, so `standard_status` is Active and `status` quotes the heading. 72 permits
+print an expiry already past; that is flagged per row and the two are not reconciled, because a
+past expiry is not proof a licence is dead — the CRC may simply not have posted the renewal.
+
+**A licence number belongs to the premises**, as in Washington. Two numbers are each printed on
+two permits at one address under different holders (RE000774 at Plainfield, RE001037 at
+Willingboro), so those rows take NY's own `~n` discriminator and must never be merged.
+
+**Consumption-area endorsements are not licences.** Five exist, numbered from the retailer's own
+licence plus `-CA000n`. They are named on the licence they attach to, in `extra_details`, the way
+Oregon's endorsements are — counting them as licences would inflate the licence count.
+
+**Counties are adjudicated on the permit's own ZIP.** Every facility address goes through the
+Census geocoder; where it disagrees with the permit's printed county AND the permit's ZIP matches
+the ZIP of the address the geocoder matched, the two describe the same building and the permit's
+county field is wrong, so the Census value is published with the printed one kept on the row.
+Where the ZIPs differ the geocoder settles nothing and the regulator's value stands, flagged.
+
+**Pipeline order.** Several of these columns are derived and no builder writes them, so a rebuild
+must be followed by the rest of the chain or verify.py fails loudly:
+
+```
+scripts/fetch_nj_permits.py            # 517 PDFs, URLs read out of the saved CRC page
+scripts/parse_nj_permits.py            # -> data/clean/nj_crc_permits.csv
+scripts/verify_nj_permit_counties.py   # adds county_geocoded / county_check
+scripts/build_mid_atlantic.py          # NJ rows from the permits
+scripts/fill_counties.py --apply       # fills what the permits do not cover
+scripts/fill_counties.py --canonicalise
+scripts/add_standard_type.py --apply   # derived, not written by any builder
+scripts/verify.py
+```
+
+One trap found the hard way: `fill_counties.py` re-processes any row whose `county_source` starts
+with "US Census geocoder", so an already-adjudicated NJ county must not be labelled that way or a
+later pass relabels it. verify.py now fails if any NJ row does.
 
 ## Site layout
 - Home: US map colour-coded by legal status (dark green medical+adult, medium green medical only, lighter green adult-only if needed); two-letter state labels; Alaska/Hawaii inset. Database and Federal Laws buttons next to the map. Footer on every page: "legal information, not legal advice" linking to full terms. Glossary. No report-error button, no separate news feed.

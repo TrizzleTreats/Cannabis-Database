@@ -12,6 +12,7 @@ from standard_types import CATEGORY_TO_TYPES, STANDARD_TYPES, types_for
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 fails = []
+TODAY_ISO = __import__("datetime").date.today().isoformat()
 
 
 def head(t):
@@ -338,6 +339,42 @@ else:
     print("  (county reference not built yet)")
 
 # ------------------------------------------------------ NY reconciliation
+head("New Jersey: every licence number traces to a published permit")
+njp = ROOT / "data/clean/nj_crc_permits.csv"
+if not njp.exists():
+    print("  -- nj_crc_permits.csv not built; New Jersey carries no licence numbers")
+else:
+    recs = list(csv.DictReader(open(njp, encoding="utf-8")))
+    permits = [r for r in recs if r["record_kind"] == "licence"]
+    ends = [r for r in recs if r["record_kind"] != "licence"]
+    numbers = {r["permit_number"] for r in permits}
+    njrows = [r for r in csv.DictReader(open(ROOT / "data/clean/mid_atlantic_licences.csv",
+                                             encoding="utf-8")) if r["state"] == "NJ"]
+    # A number printed on two permits at one premises carries a ~n suffix, the
+    # same discriminator NY's duplicate Location IDs use.
+    bases = {r["licence_id"].split("~")[0] for r in njrows}
+    real = [r for r in njrows if not r["licence_id"].startswith("NJ-")]
+    invented = [r["licence_id"] for r in real if r["licence_id"].split("~")[0] not in numbers]
+    absent = sorted(n for n in numbers if n not in bases)
+    print(f"  permits parsed from the PDFs       {len(permits)} ({len(numbers)} distinct numbers)")
+    print(f"  consumption-area endorsements      {len(ends)}  <- endorsements, NOT licences:"
+          f" they are named on the licence they attach to and counted separately")
+    print(f"  NJ rows carrying a real number     {len(real)} of {len(njrows)}")
+    check(not invented, "every NJ licence number appears on a published permit",
+          f"({len(invented)} invented: {invented[:3]})" if invented else "")
+    check(not absent, "every published permit reaches the table",
+          f"({len(absent)} absent: {absent[:3]})" if absent else "")
+    nopermit = [r for r in njrows if r["licence_id"].startswith("NJ-NOPERMIT")]
+    check(all(not r["standard_status"] for r in nopermit),
+          "CRC-listed locations with no permit carry an EMPTY standard_status",
+          f"{len(nopermit)} rows — empty must never be read as Active")
+    stale = [r for r in njrows if r["county_source"].startswith("US Census geocoder")]
+    check(not stale, "no NJ county_source invites a fill_counties revisit",
+          f"({len(stale)} rows would be re-processed and relabelled)" if stale else "")
+    past = sum(1 for r in njrows if len(r["expiry_date"]) == 10 and r["expiry_date"] < TODAY_ISO)
+    print(f"  -- {past} NJ rows print an expiry already past while the CRC still lists the "
+          f"business as active; flagged per row, never reconciled")
+
 head("New York: row count is not a licence count")
 p = ROOT / "data/raw/new-york/jskf-tt3q_ocm_licences_2026-11-12.csv"
 if p.exists():

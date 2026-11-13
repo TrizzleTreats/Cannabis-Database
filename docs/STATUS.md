@@ -7,13 +7,13 @@
 - Master list of 1,242 official sites, allowed to Claude Code in .claude/settings.json as WebFetch(domain:...) rules. Four hosts were added during the build: paauditor.b-cdn.net, content.govdelivery.com, www.arcgis.com, maryland.maps.arcgis.com. einpresswire.com was deliberately left out as a secondary news reprint.
 - New England licence table rebuilt from data/raw/ on 12 Nov 2026 (scripts/build_new_england.py): 3,917 to 4,267 rows. CT 253 to 498, MA 967 to 1,072; ME, VT, RI and NH carried forward unchanged because their raw files hold nothing the table did not already have. A `standard_status` column was added so one search spans all six states.
 - Mid-Atlantic raw licence data captured for all six jurisdictions (scripts/fetch_raw.py, declared in scripts/sources.json, logged in data/raw/manifest.csv). 23 of 24 declared sources fetched.
-- Mid-Atlantic clean table built: data/clean/mid_atlantic_licences.csv, 4,067 rows (scripts/build_mid_atlantic.py). NY 3,056, NJ 586, PA 181, MD 130, DC 100, DE 14. Same 41 columns as the New England table, in the same order, so the two union cleanly (8,334 rows combined).
+- Mid-Atlantic clean table built: data/clean/mid_atlantic_licences.csv, 4,175 rows (scripts/build_mid_atlantic.py). NY 3,056, NJ 678, PA 197, MD 130, DC 100, DE 14. Same columns as the New England table, in the same order, so the two union cleanly. NJ was rebuilt from its permit PDFs on 12 Nov 2026 (586 → 678) and PA's dispensary source moved to the DOH PDF (181 → 197).
 - Regions 3-9 started: data/clean/regions_3_to_9_licences.csv, 41,026 rows across 7 of 39 jurisdictions (scripts/build_states.py). CA 20,984, TX 12,853, OR 3,701, CO 1,832, WA 1,226, NV 345, AL 85. Same 41 columns as the other two tables, so all three union to 49,360 rows.
 - Business directory built: all 11 audited directories parsed into data/clean/businesses_master.csv, 355 to 2,087 entries, every row on HANDOFF's 17 standard categories (scripts/build_businesses.py). California 371, National 237, Great Lakes 196, Plains 192, Pacific 192, Southeast 189, Mid-Atlantic 173, Southwest 165, South Central 130, Mountain 124, New England 118.
 - Business-to-licence matching done (scripts/match_businesses_to_licences.py): 22 directory entries hold a state licence under the same name, flagged on the row with their licence numbers and written to data/clean/business_licence_matches.csv.
 - USDA hemp list (May 2026) parsed.
-- **New Jersey's licence numbers captured (12 Nov 2026).** The CRC publishes no licence number in any list, but each row of its permitted-businesses page links a per-business permit PDF, and that PDF is the issued licence. All 517 were fetched (scripts/fetch_nj_permits.py, declared as `nj-crc-permit-pdfs` in scripts/sources.json, one manifest row per file, 22.4 MB, 0 failures) and parsed into data/clean/nj_crc_permits.csv (scripts/parse_nj_permits.py): 660 pages giving **655 licences and 5 consumption-area endorsements**, with zero parse flags. Every URL was read out of the saved page, never constructed. The master table is NOT yet rebuilt from this — see Next item 3.
-- **`standard_type` added to all three licence tables (12 Nov 2026).** CLAUDE.md says to show the state's own licence name on state pages and use the standard type for search, and HANDOFF names 16 standard types, but no column carried one — `category` was doing the job with 38 inconsistent values (Hemp Retail 12,396 beside Hemp Retailer 178; "Retail Store" where HANDOFF says Retail; compounds like "Cultivation; Manufacturing; Retail Store"). Two columns now sit after `licence_type`, where HANDOFF's column list puts them and mirroring how `standard_status` sits after `status`: `standard_type` (exactly one of the 16, the lead activity) and `standard_types_all` (every type the licence authorises, in canonical order). 41 → 43 columns in each table, all three still identical and in order. `category` and `licence_type` were not touched. All 50,544 rows carry a type, all 16 types are in use, and 147 rows authorise more than one activity — 133 New Jersey compound CRC classes, 9 RI compassion centres, 3 RI Industrial Hemp Dual, 2 VT Integrated. Every non-obvious call is recorded in HANDOFF.md with its reasoning, following the precedent set for `standard_status`: nothing was improvised and nothing genuinely different was folded together. CT's micro-cultivator stayed **Cultivation** rather than Microbusiness (§21a-420: ≥15,000 sq ft for a cultivator, 2,000–10,000 for a micro-cultivator — the same activity at a smaller cap, where a microbusiness covers several activities), and hemp distributors stayed **Transport & Distribution** rather than Hemp Retail (they sell to retailers, not to the public).
+- **New Jersey's licence numbers captured (12 Nov 2026).** The CRC publishes no licence number in any list, but each row of its permitted-businesses page links a per-business permit PDF, and that PDF is the issued licence. All 517 were fetched (scripts/fetch_nj_permits.py, declared as `nj-crc-permit-pdfs` in scripts/sources.json, one manifest row per file, 22.4 MB, 0 failures) and parsed into data/clean/nj_crc_permits.csv (scripts/parse_nj_permits.py): 660 pages giving **655 licences and 5 consumption-area endorsements**, with zero parse flags. Every URL was read out of the saved page, never constructed. **The master table is rebuilt from them**: NJ is now 678 rows, one per licence, carrying real numbers, street addresses, counties and full expiry dates where it had none. 17 permits print a county the Census geocoder corrected; 1 is disputed and keeps the regulator's value.
+- **`standard_type` added to all three licence tables (12 Nov 2026).** CLAUDE.md says to show the state's own licence name on state pages and use the standard type for search, and HANDOFF names 16 standard types, but no column carried one — `category` was doing the job with 38 inconsistent values (Hemp Retail 12,396 beside Hemp Retailer 178; "Retail Store" where HANDOFF says Retail; compounds like "Cultivation; Manufacturing; Retail Store"). Two columns now sit after `licence_type`, where HANDOFF's column list puts them and mirroring how `standard_status` sits after `status`: `standard_type` (exactly one of the 16, the lead activity) and `standard_types_all` (every type the licence authorises, in canonical order). 41 → 43 columns in each table, all three still identical and in order. `category` and `licence_type` were not touched. All rows carry a type and all 16 types are in use. 24 rows authorise more than one activity — 10 New Jersey compound CRC organisation types, 9 RI compassion centres, 3 RI Industrial Hemp Dual, 2 VT Integrated. (It was 147 when this column was added, 133 of them New Jersey; rebuilding NJ from its permit PDFs replaced those organisation-level compounds with one row per licence, each authorising one activity, and left only the 10 CRC-listed locations that have no permit of their own.) Every non-obvious call is recorded in HANDOFF.md with its reasoning, following the precedent set for `standard_status`: nothing was improvised and nothing genuinely different was folded together. CT's micro-cultivator stayed **Cultivation** rather than Microbusiness (§21a-420: ≥15,000 sq ft for a cultivator, 2,000–10,000 for a micro-cultivator — the same activity at a smaller cap, where a microbusiness covers several activities), and hemp distributors stayed **Transport & Distribution** rather than Hemp Retail (they sell to retailers, not to the public).
   - The lead of a compound comes from a fixed downstream-first precedence, not from the order the source wrote: NJ publishes the same combination as "Cultivation; Manufacturing; Retail Store", "Retail Store; Cultivation" and "Dispensing, Cultivating", so source order would have scattered one real combination across three leads. All three now read `Cultivation; Manufacturing; Retail` or `Cultivation; Retail`.
   - The mapping lives in `scripts/standard_types.py` and is imported by both the applier and verify.py, so the check and the write cannot drift. It **refuses to write** if any row carries a category it does not know, rather than defaulting — a blank in a search column would read as "no such licence" instead of "not classified yet".
   - These are derived columns and the three builders do not write them, so `python3 scripts/add_standard_type.py --apply` has to be re-run after any rebuild. verify.py fails loudly if the column is missing or stale, which is the guard; the failure names the command to run. The new checks were tested by corrupting rows and by dropping the columns, and they do fail.
@@ -23,7 +23,7 @@
 ## Next
 1. Post-election re-checks: Idaho HJR 4 (3 Nov 2026 ballot) and any other state with a 2026 cannabis measure; update Part 0 and Part 9 of those reports once results are certified.
 2. The remaining 1,133 county gaps (CA 275, CO 240, NY 196, NJ 88, TX 85, HI 64, FL 59, IL 36, ME 23, PA 22, CT 13, MO 11, AL 9, VA 4, MD 3, MA 2, RI 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish.
-3. Resolve the licence numbers PA, NJ, MD and DE do not publish in their public lists. **NJ is captured and parsed** — 655 licences with real CRC numbers now sit in data/clean/nj_crc_permits.csv, awaiting a decision on how they land in the master table (see "New Jersey: the permit PDFs" below). PA, MD and DE publish none anywhere found so far.
+3. Resolve the licence numbers PA, MD and DE do not publish in their public lists — they publish none anywhere found so far. **NJ is DONE**: all 655 licences carry the CRC's real numbers (see "New Jersey: rebuilt from the permit PDFs" below).
 4. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 5. Fill the 13 Connecticut rows still without a county. They are village and borough names that are not towns (Terryville is in Plymouth, Cornwall Bridge in Cornwall, Mystic spans Stonington and Groton, Kensington is in Berlin, Baltic in Sprague) plus a few out-of-state towns. A village-to-town mapping would close them.
 6. De-duplicate the business table across directories and merge national firms under parent profiles (Baker Donelson, HUB, Brink's, Holland & Hart and the like appear in several regional directories). Also add California's website, phone and address from the rewritten-directory prose, and review the 22 entries flagged as holding a state licence.
@@ -106,7 +106,7 @@ Grand Rapids' layer is kept in data/raw/michigan-local-grand-rapids/ anyway: 110
 - **Schema gaps surfaced by real data — now settled.** The standard licence types went from 14 to **16** (Event Organizer, Operator) and the standard statuses from 7 to **10** (Limited Operations, Inactive, Canceled), decided on 12 Nov 2026 and recorded in HANDOFF.md with the reasoning. Every regulator word that still has no standard of its own now has a fixed, documented mapping there rather than an improvised one. That took the rows carrying an approximated status from **3,358 down to 1** — Oregon's single "NOT APPROVED", which is a refused application rather than a licence and stays visible and flagged.
 - 144 rows have a deliberately EMPTY standard_status: Maryland's 130 dispensaries and Delaware's 14, because neither regulator publishes a status at all. Empty must never be read as Active.
 
-## New Jersey: the permit PDFs (captured 12 Nov 2026, master table not yet rebuilt)
+## New Jersey: rebuilt from the permit PDFs (12 Nov 2026)
 
 The CRC's permitted-businesses page gives organisation, business types, locations and an
 expiration YEAR. Each of its 517 rows also links a permit PDF, and that is where the licence
@@ -157,31 +157,55 @@ past (earliest 2025-07-10), yet the CRC publishes all 517 businesses under its o
 "Active Cannabis Business Permits & Licenses". The regulator's framing is the source for Active;
 the expiry is recorded and flagged. Neither may be read as the other.
 
-**11 permits disagree with the CRC's own County/Municipality table** (of 406 whose town appears in
-it; that table lists only the 230 municipalities that have acted on cannabis, so the other 249
-towns cannot be tested against it). Some are the same-name collision HANDOFF warns about rather
-than an error — Franklin Borough in Sussex against Franklin Township in Warren (4 rows, Ascend),
-and Ocean Township in Monmouth against Ocean Township in Ocean (W000005, Alta Leaf). Others look
-like a genuine slip on the permit: Clementon printed as Gloucester (2 rows, Honeygrove South),
-Roselle as Middlesex (M000144), Passaic as Morris (M000127), Carlstadt as Passaic (RE000850),
-North Bergen as Bergen (C000356). **Not resolved yet, and not rewritten.** The permits carry full
-street addresses, so the Census geocoder — the same official route fill_counties.py already uses,
-cached in data/raw/census_county_lookup.csv — can settle all 11 and cover the untestable 249. Do
-that before any permit county is written into the master table.
+**17 permits print the wrong county, and the permits' own ZIPs are what proved it.** The CRC's
+County/Municipality table flagged 11 disagreements but could not settle them: it lists only the
+230 municipalities that have acted on cannabis, and some disagreements are the same-name
+collision HANDOFF warns about rather than an error (Franklin Borough in Sussex against Franklin
+Township in Warren; Ocean Township in Monmouth against Ocean Township in Ocean).
 
-**The existing 586 NJ rows cannot be matched one-to-one**, which is the heart of the decision in
-Next item 3. They are organisation-by-location rows expanded from organisation-level business
-types, so of the 655 permits: 491 match exactly one existing row, 135 land on a town where
-several existing rows share it, and 29 name a town the CRC's own HTML table does not list for
-that organisation (e.g. MRE001003 at Paulsboro, where the table lists only Egg Harbor,
-Hammonton and Winslow). 130 existing rows have no permit at all, and no permit describes a
-facility with no row. Towns need care in any join: the CRC abbreviates them on the permit
-("EGG HBR TWP", "EDGEWATER PRK") and spells them out in the HTML ("Egg Harbor Township"), so
-scripts/reconcile_nj_permits.py matches an abbreviation only against the full names the CRC
-itself lists for that same organisation, accepting it only when it is a letter-by-letter
-subsequence and exactly one candidate fits. No expansion table was invented.
+So every permit address went through the US Census geocoder at address level
+(scripts/verify_nj_permit_counties.py, sharing fill_counties.py's cache): **556 agree, 18 differ,
+86 no match.** A difference alone decides nothing, so the adjudication rests on the permit's own
+printed ZIP: where it equals the ZIP of the address the geocoder matched, both describe the same
+building and only the permit's county field is wrong. That held on **17 of the 18** — Hammonton
+printed as Camden (4 rows, Brute's Roots; it is Atlantic), Lakewood as Monmouth (Ocean),
+Clementon as Gloucester (2 rows, Honeygrove South; Camden), Sicklerville as Gloucester (2 rows,
+MPX; Camden), Blackwood as Camden (Gloucester), Branchburg as Somerset (Hunterdon), Roselle as
+Middlesex (Union), Somerset as Middlesex (Somerset), Passaic as Morris (Passaic), Cape May as
+Atlantic (Cape May), Oak Ridge as Passaic (Morris), North Bergen as Bergen (Hudson). Those rows
+publish the Census county, with the permit's printed value kept on the row.
 
-83 of NJ's 88 county gaps are closable from a permit for the same organisation and town.
+**One is left unresolved and keeps the regulator's value**: RE000766, Evolve Cannabis, 186 Route
+130, Bordentown. The permit prints Burlington with ZIP 08505; the geocoder returned Mercer but
+matched ZIP 08620, a different address, so it settles nothing. Burlington stands until a person
+checks it. The 86 with no match keep the permit's county and say on the row that it is unverified.
+
+NJ's county gaps went from 88 to **2** — INSA Coastline at Cape May Court House and Sea & Leaf at
+Cape May, both CRC-listed locations with no permit.
+
+**The table is now built from the permits, one row per licence.** The old 586 rows could not be
+matched to them one-to-one — they were organisation-by-location rows expanded from
+organisation-level business types, so 135 of the 655 permits landed on a town that several of
+them shared. NJ is now **678 rows: 655 permits + 23 locations the CRC lists for an organisation
+but publishes no permit for.** Those 23 keep the organisation's business types with the row
+saying the types are NOT confirmed for that location, exactly as every NJ row did before, and
+carry an EMPTY standard_status, which must never be read as Active.
+
+| | before | after |
+|---|---|---|
+| NJ rows | 586 | 678 |
+| real licence numbers | 0 | 655 |
+| street addresses | 0 | 655 |
+| counties | 498 | 676 |
+| full expiry dates | 0 (year only) | 655 |
+
+Towns need care, because the CRC abbreviates them on the permit ("EGG HBR TWP") and spells them
+out in the HTML ("Egg Harbor Township"). The rules live in **scripts/nj_towns.py**, shared by the
+builder, the county check and the reconciliation report so no two of them can disagree: an
+abbreviation is accepted only against the full names the CRC itself lists for that same
+organisation, only when it is a letter-by-letter subsequence, and only when exactly one
+candidate fits. No expansion table was invented. 26 rows say on the row that their spelling
+could not be matched.
 
 **Talaria is settled**: W000018, CLASS 3 - WHOLESALER, Talaria NJ LLC, 950 Mount Holly Rd,
 Edgewater Park (Burlington), expires 2026-11-25. It was the one loose end waiting on a number.
@@ -212,7 +236,7 @@ Every row uses one of HANDOFF's 17 standard categories, none blank. The national
 
 **A source that disagrees with itself.** The Mid-Atlantic directory's tally line says 71 corrected and 52 unverified, but its own per-entry badges say 63 and 60. The total (173) and the confirmed count (50) agree; the split does not.
 
-**22 directory entries hold a state licence.** Matched by normalised name against all 50,544 licence rows and written to data/clean/business_licence_matches.csv — Cookies (12 licences across CA, CO and OR), STIIIZY, Papa & Barkley, Old Pal, Treez and others. HANDOFF puts a licensed operator in the licence database rather than the directory, so each is flagged on its row with its licence numbers. **Nothing was deleted**: the match is on name alone, and a false positive would quietly drop a real directory entry, which is worse than a missed match. California's three show why it is a judgement call — GAIACA (waste services) holds two distributor licences and Capitol Compliance Management holds an event-organizer licence, so they are genuinely both a service business and a licensee.
+**22 directory entries hold a state licence.** Matched by normalised name against all 50,636 licence rows (re-run after the New Jersey rebuild gave NJ real licence numbers; the match is unchanged at 22) and written to data/clean/business_licence_matches.csv — Cookies (12 licences across CA, CO and OR), STIIIZY, Papa & Barkley, Old Pal, Treez and others. HANDOFF puts a licensed operator in the licence database rather than the directory, so each is flagged on its row with its licence numbers. **Nothing was deleted**: the match is on name alone, and a false positive would quietly drop a real directory entry, which is worse than a missed match. California's three show why it is a judgement call — GAIACA (waste services) holds two distributor licences and Capitol Compliance Management holds an event-organizer licence, so they are genuinely both a service business and a licensee.
 
 Still to do for this table: California's website, phone and address (the audit table carries the business set and verdicts; contact detail is in the rewritten-directory prose further down that report), de-duplication across directories, and merging national firms under parent profiles.
 
@@ -222,7 +246,7 @@ CLAUDE.md requires a county on every row. 4,039 of 50,544 rows had none because 
 
 Two sources, both official:
 - **The US Census geocoder** (`geocoding.geo.census.gov`, no key, benchmark `Public_AR_Current`, vintage `Current_Current`) resolved 1,886 of 2,229 distinct street addresses to a county. Address-level, which is what makes it safe for the township states HANDOFF warns about — Ohio, Michigan, Indiana, Illinois, Minnesota, North Dakota, New Jersey and Pennsylvania all have town names that repeat across counties, and a name-only lookup would mis-assign them. Results are cached in data/raw/census_county_lookup.csv so a re-run is free and the provenance stays on disk.
-- **New Jersey's own CRC Government Relations table**, already in data/raw/, pairs County with Municipality. It filled 498 of NJ's 586. The other 88 are unincorporated places inside townships (Somerset, Williamstown, Marlton, Atco) rather than municipalities, so they are not in the CRC's list and are left flagged.
+- **New Jersey's own CRC Government Relations table**, already in data/raw/, pairs County with Municipality. It filled 498 of the old 586 NJ rows, leaving 88 unincorporated places inside townships (Somerset, Williamstown, Marlton, Atco). Superseded on 12 Nov 2026: NJ is now built from its permit PDFs, which print a county on every facility address, so only 2 of 678 rows lack one. The CRC table still fills the locations that have no permit.
 
 An authoritative county list now lives in data/raw/census_counties_by_state.csv — 3,229 counties across 56 states and territories, from Census TIGERweb — and verify.py checks every county against its own state. That check found four distinct problems, all now fixed or flagged:
 
@@ -258,7 +282,7 @@ Data defects found in the official sources and recorded per row rather than sile
 - DC: the GIS retailer count (77 Active, Nov 2026) is NOT a correction to ABCA's 66 retailers (Aug 2026 report) — different source and date. Do not reconcile them into one number.
 - NY: the OCM dataset has 3,056 rows but only 2,286 distinct licence numbers, and 385 rows carry no licence number at all — those are applicants under proximity protection. Row count is not a licence count, and neither figure should be compared directly with the OCM 2025 Annual Report's 2,008 active (30 Nov 2025).
 - CT: 465 records in the fresh download are applications that never became licences (DENIED, EXPIRED APPLICATION / NSF PAYMENT DUE, WITHDRAWN, INSPECTION INCOMPLETE) and are excluded from the licence table. The rule is in scripts/build_new_england.py; it keys on statusreason, not status, because "EXPIRED APPLICATION / PROVISIONAL LICENSE EXPIRED" was a real licence.
-- Talaria: SETTLED for the business table — excluded from businesses_master.csv because the Mid-Atlantic audit marks it MOVED OUT as an NJ wholesaler, and HANDOFF puts a licensed operator in the licence database. It still needs adding to the licence table, where NJ's CRC publishes no licence number for it.
+- Talaria: FULLY SETTLED (12 Nov 2026). Excluded from businesses_master.csv because the Mid-Atlantic audit marks it MOVED OUT as an NJ wholesaler, and HANDOFF puts a licensed operator in the licence database — where it now sits as **W000018**, Class 3 — Wholesaler, 950 Mount Holly Rd, Edgewater Park (Burlington), expiring 2026-11-25, from the CRC's own permit PDF.
 - CropLine (NV): link to Green Therapeutics' licence, not the directory.
 - Crested River Cannabis Company (MN): confirm licence and move.
 - Coastal Cannabis Consulting (LA): founder tied to a pharmacy licensee; decide.
