@@ -12,11 +12,12 @@
 - Business directory built: all 11 audited directories parsed into data/clean/businesses_master.csv, 355 to 2,087 entries, every row on HANDOFF's 17 standard categories (scripts/build_businesses.py). California 371, National 237, Great Lakes 196, Plains 192, Pacific 192, Southeast 189, Mid-Atlantic 173, Southwest 165, South Central 130, Mountain 124, New England 118.
 - Business-to-licence matching done (scripts/match_businesses_to_licences.py): 22 directory entries hold a state licence under the same name, flagged on the row with their licence numbers and written to data/clean/business_licence_matches.csv.
 - USDA hemp list (May 2026) parsed.
+- **New Jersey's licence numbers captured (12 Nov 2026).** The CRC publishes no licence number in any list, but each row of its permitted-businesses page links a per-business permit PDF, and that PDF is the issued licence. All 517 were fetched (scripts/fetch_nj_permits.py, declared as `nj-crc-permit-pdfs` in scripts/sources.json, one manifest row per file, 22.4 MB, 0 failures) and parsed into data/clean/nj_crc_permits.csv (scripts/parse_nj_permits.py): 660 pages giving **655 licences and 5 consumption-area endorsements**, with zero parse flags. Every URL was read out of the saved page, never constructed. The master table is NOT yet rebuilt from this — see Next item 3.
 
 ## Next
 1. Post-election re-checks: Idaho HJR 4 (3 Nov 2026 ballot) and any other state with a 2026 cannabis measure; update Part 0 and Part 9 of those reports once results are certified.
 2. The remaining 1,133 county gaps (CA 275, CO 240, NY 196, NJ 88, TX 85, HI 64, FL 59, IL 36, ME 23, PA 22, CT 13, MO 11, AL 9, VA 4, MD 3, MA 2, RI 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish.
-3. Resolve the licence numbers PA, NJ, MD and DE do not publish in their public lists. NJ's are in per-facility licence PDFs linked from the CRC page (e.g. RE000900); the other three publish none anywhere found so far.
+3. Resolve the licence numbers PA, NJ, MD and DE do not publish in their public lists. **NJ is captured and parsed** — 655 licences with real CRC numbers now sit in data/clean/nj_crc_permits.csv, awaiting a decision on how they land in the master table (see "New Jersey: the permit PDFs" below). PA, MD and DE publish none anywhere found so far.
 4. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 5. Fill the 13 Connecticut rows still without a county. They are village and borough names that are not towns (Terryville is in Plymouth, Cornwall Bridge in Cornwall, Mystic spans Stonington and Groton, Kensington is in Berlin, Baltic in Sprague) plus a few out-of-state towns. A village-to-town mapping would close them.
 6. De-duplicate the business table across directories and merge national firms under parent profiles (Baker Donelson, HUB, Brink's, Holland & Hart and the like appear in several regional directories). Also add California's website, phone and address from the rewritten-directory prose, and review the 22 entries flagged as holding a state licence.
@@ -98,6 +99,90 @@ Grand Rapids' layer is kept in data/raw/michigan-local-grand-rapids/ anyway: 110
 - **HI**: 19 of 94 registrants are online-only with no premises address at all, and 6 are registered from outside Hawaii (CA, TN, LA). DOH publishes no county, which is correct — Hawaii has no municipal government below county level.
 - **Schema gaps surfaced by real data — now settled.** The standard licence types went from 14 to **16** (Event Organizer, Operator) and the standard statuses from 7 to **10** (Limited Operations, Inactive, Canceled), decided on 12 Nov 2026 and recorded in HANDOFF.md with the reasoning. Every regulator word that still has no standard of its own now has a fixed, documented mapping there rather than an improvised one. That took the rows carrying an approximated status from **3,358 down to 1** — Oregon's single "NOT APPROVED", which is a refused application rather than a licence and stays visible and flagged.
 - 144 rows have a deliberately EMPTY standard_status: Maryland's 130 dispensaries and Delaware's 14, because neither regulator publishes a status at all. Empty must never be read as Active.
+
+## New Jersey: the permit PDFs (captured 12 Nov 2026, master table not yet rebuilt)
+
+The CRC's permitted-businesses page gives organisation, business types, locations and an
+expiration YEAR. Each of its 517 rows also links a permit PDF, and that is where the licence
+numbers live. 41 links sit in the Medicinal table and 476 in the Personal-Use table; one permit
+per PDF page, so a multi-class operator's packet holds several (Verano: RE000001, RE000030,
+RE000002, C000009, M000007).
+
+What a permit carries that the HTML list does not: the licence number, the Commission's own class
+wording, the full street address, the county in print, and a full expiration date. 655/655 rows
+have a street address, a county and an ISO expiry — the current NJ rows in the master table have
+none of the first, 498/586 of the second, and a bare year for the third.
+
+| CRC's own class wording | Licences |
+|---|---|
+| CLASS 5 - RETAILER | 381 |
+| CLASS 2 - MANUFACTURER | 86 |
+| CLASS 1 - CULTIVATOR | 76 |
+| MEDICAL RETAILER | 57 |
+| MEDICAL CULTIVATOR | 24 |
+| MEDICAL MANUFACTURER | 13 |
+| CLASS 3 - WHOLESALER | 7 |
+| CLASS 6 - DELIVERY | 7 |
+| CLASS 4 - DISTRIBUTOR | 4 |
+
+Programme comes from the statute each permit cites, not from the licence class: 560 cite the
+CREAMM Act (P.L.2021, C.16) and are Adult Use, 95 cite the Jake Honig Act (P.L.2019, C.153) and
+are Medical. All 21 New Jersey counties appear.
+
+**Consumption-area endorsements are not licences.** Five pages are endorsements rather than
+permits, numbered from the retailer's own licence number plus -CA000n: RE000163-CA0001
+(Gynsyng, Merchantville), RE000164-CA0002 (High Rollers, Atlantic City), RE000290-CA0003
+(SunnyTien, Atlantic City), RE000692-CA0004 (URB'N, Newark), RE000052-CA0005 (Xena NJ, Jersey
+City). Each carries its own consumption-area address and expiry. They are kept as their own
+`record_kind` and named on the licence they attach to; counting them as licences would inflate
+the licence count, and they are the first real data behind HANDOFF's Consumption Lounge type.
+
+**A licence number belongs to the premises, as in Washington.** Two numbers each appear on two
+permits at the same address, under different holders — and must not be merged:
+- RE000774, 102A E Front St, Plainfield (Union): CANNAVERDE DISPENSARY LLC expiring 2027-12-04
+  and FOUR20 DISPENSARY LLC expiring 2026-03-04 — different holder *and* different expiry.
+- RE001037, 4306 US 130, Willingboro (Burlington): AUTHORIZED DEALER DISPENSARY IV LLC and THE
+  VAULT DISPENSARY, same expiry 2027-01-26 — reads as a trading-name change.
+So 655 licences carry 653 distinct numbers, and any licence_id built on the number needs a local
+suffix the way NY's duplicate Location IDs do.
+
+**A past expiry does not mean a dead licence.** 72 of the 655 permits print an expiry already
+past (earliest 2025-07-10), yet the CRC publishes all 517 businesses under its own heading
+"Active Cannabis Business Permits & Licenses". The regulator's framing is the source for Active;
+the expiry is recorded and flagged. Neither may be read as the other.
+
+**11 permits disagree with the CRC's own County/Municipality table** (of 406 whose town appears in
+it; that table lists only the 230 municipalities that have acted on cannabis, so the other 249
+towns cannot be tested against it). Some are the same-name collision HANDOFF warns about rather
+than an error — Franklin Borough in Sussex against Franklin Township in Warren (4 rows, Ascend),
+and Ocean Township in Monmouth against Ocean Township in Ocean (W000005, Alta Leaf). Others look
+like a genuine slip on the permit: Clementon printed as Gloucester (2 rows, Honeygrove South),
+Roselle as Middlesex (M000144), Passaic as Morris (M000127), Carlstadt as Passaic (RE000850),
+North Bergen as Bergen (C000356). **Not resolved yet, and not rewritten.** The permits carry full
+street addresses, so the Census geocoder — the same official route fill_counties.py already uses,
+cached in data/raw/census_county_lookup.csv — can settle all 11 and cover the untestable 249. Do
+that before any permit county is written into the master table.
+
+**The existing 586 NJ rows cannot be matched one-to-one**, which is the heart of the decision in
+Next item 3. They are organisation-by-location rows expanded from organisation-level business
+types, so of the 655 permits: 491 match exactly one existing row, 135 land on a town where
+several existing rows share it, and 29 name a town the CRC's own HTML table does not list for
+that organisation (e.g. MRE001003 at Paulsboro, where the table lists only Egg Harbor,
+Hammonton and Winslow). 130 existing rows have no permit at all, and no permit describes a
+facility with no row. Towns need care in any join: the CRC abbreviates them on the permit
+("EGG HBR TWP", "EDGEWATER PRK") and spells them out in the HTML ("Egg Harbor Township"), so
+scripts/reconcile_nj_permits.py matches an abbreviation only against the full names the CRC
+itself lists for that same organisation, accepting it only when it is a letter-by-letter
+subsequence and exactly one candidate fits. No expansion table was invented.
+
+83 of NJ's 88 county gaps are closable from a permit for the same organisation and town.
+
+**Talaria is settled**: W000018, CLASS 3 - WHOLESALER, Talaria NJ LLC, 950 Mount Holly Rd,
+Edgewater Park (Burlington), expires 2026-11-25. It was the one loose end waiting on a number.
+
+The permits carry no personal data: a scan of the set found no email address and no phone number,
+and the only individuals named are the Commission's own signing officers. No private-column
+implications.
 
 ## Connecticut: the traditional eight counties (decided 12 Nov 2026)
 

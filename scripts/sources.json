@@ -686,5 +686,17 @@
     "filename": "grand_rapids_cannabis_licensed_locations.geojson",
     "format": "geojson",
     "note": "CITY DATA, NOT A STATE ROSTER. The one cannabis map embed found across the 26 remaining states turned out to be owned by mrojas@grand_rapids.mi.us \u2014 the City of Grand Rapids, not Michigan's CRA. It covers Grand Rapids only, so it must NOT be presented as Michigan's licence list. Kept because HANDOFF's site plan wants local pages: the same app carries sensitive-use buffers, allowed zone districts and 1000ft/2000ft licence buffers, which is exactly the local-rules material the city pages need. Michigan's state roster is still only in its eLicense portal."
+  },
+  {
+    "id": "nj-crc-permit-pdfs",
+    "state": "new-jersey",
+    "part5_ref": "NJ 5 \u2014 CRC Permitted & Licensed Businesses, per-business permit PDFs",
+    "url": "https://www.nj.gov/cannabis/businesses/permitted/",
+    "format": "pdf-set",
+    "fetched_by": "scripts/fetch_nj_permits.py",
+    "urls_from": "data/raw/new-jersey/crc_permitted_businesses_2026-11-12.html",
+    "url_must_match": "^https://www\\.nj\\.gov/cannabis/documents/businesses/Permits( |%20)and( |%20)Renewals/.+\\.pdf$",
+    "dest_subdir": "permits",
+    "note": "517 per-business permit PDFs, one link per row of the two tables on the CRC permitted-businesses page: 41 in the Medicinal Cannabis Businesses table and 476 in the Personal-Use table. Every URL is READ OUT OF the saved HTML named in urls_from and must match url_must_match - none is constructed or guessed, so a business whose row carries no link stays unfetched and is recorded as such. These are the only place NJ publishes a licence number: the HTML table gives organisation, business types, locations and expiration YEAR only, while each PDF is the issued permit carrying LICENSE/PERMIT NUMBER, NJ's own class wording, the facility address with its county, and a full expiration date. One permit per PDF page, so a multi-class operator's packet holds several (Verano: RE000001, RE000030, RE000002, C000009, M000007). Each file is logged to data/raw/manifest.csv on its own row."
   }
 ]

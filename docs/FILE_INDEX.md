@@ -119,7 +119,12 @@ Notes:
 | data/raw/census_county_lookup.csv | Cached Census geocoder results: address -> county, with the matched address and status |
 | data/raw/census_counties_by_state.csv | 3,229 official counties across 56 states, from Census TIGERweb — the reference verify.py checks against |
 | data/raw/discovered_sources.csv | What the discovery crawl found: 2,615 rows of candidate data files per state |
-| scripts/verify.py | Re-runnable check: private data not tracked, allowlist matches the domain list, every raw file hashes and opens, master table integrity, NY row-vs-licence reconciliation |
+| scripts/verify.py | Re-runnable check: private data not tracked, allowlist matches the domain list, every raw file hashes and opens, master table integrity, NY row-vs-licence reconciliation. Also verifies file-set sources (one declared source, many files) as a set |
+| scripts/fetch_nj_permits.py | Downloads NJ's 517 per-business permit PDFs, resolving every URL out of the saved CRC page and logging one manifest row per file. Writes _link_index.csv with each link's table-row context |
+| scripts/parse_nj_permits.py | Reads those PDFs into data/clean/nj_crc_permits.csv — one row per permit page, licences and consumption-area endorsements kept apart |
+| scripts/reconcile_nj_permits.py | Reports how the permits line up with the NJ rows already in the master table, and which county gaps they close. Changes nothing |
+| data/clean/nj_crc_permits.csv | 660 rows, 29 columns: 655 NJ licences with the CRC's real numbers, class wording, street address, county and full expiry, plus 5 consumption-area endorsements |
+| data/raw/new-jersey/permits/ | The 517 permit PDFs as published, plus _link_index.csv naming the page row each came from |
 | data/raw/manifest.csv | Append-only provenance log: one row per fetch attempt with bytes, sha256, status and reason. The LAST row for an id is its current state |
 | .claude/settings.json | WebFetch allow rules for all 1,242 official hosts, plus the two build scripts |
 

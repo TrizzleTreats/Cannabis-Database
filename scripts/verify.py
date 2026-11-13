@@ -59,13 +59,21 @@ check(not any("einpresswire" in a for a in allow), "no secondary news host in th
 # -------------------------------------------------------- raw provenance
 head("Every captured raw file exists, hashes match and opens as declared")
 declared = {s["id"] for s in json.loads((ROOT / "scripts/sources.json").read_text())}
-latest, retired = {}, set()
+latest, retired, members = {}, set(), {}
 for r in csv.DictReader(open(ROOT / "data/raw/manifest.csv")):
     # The manifest is an append-only log. An id that is no longer declared in
     # sources.json was superseded (a source redefined, e.g. Colorado's sheets
     # re-declared per tab), so its rows describe files that no longer exist.
+    #
+    # One declared source can be a SET of files rather than one file: New
+    # Jersey's 517 per-business permit PDFs are declared once and logged
+    # per file as "<declared id>:<filename>", so each keeps its own bytes and
+    # sha256. Those are grouped and checked as a set, not listed one by one.
+    set_id = r["id"].split(":", 1)[0]
     if r["id"] in declared:
         latest[r["id"]] = r
+    elif ":" in r["id"] and set_id in declared:
+        members.setdefault(set_id, {})[r["id"]] = r
     else:
         retired.add(r["id"])
 if retired:
@@ -114,6 +122,37 @@ for r in sorted(latest.values(), key=lambda x: (x["state"], x["id"])):
             continue
     print(f"  ok {r['id']:30} {int(r['bytes']):>10,} B  {detail}")
     captured += 1
+
+# File sets: one declared source, many files. Each is checked for existence,
+# hash and format; the set is reported as one line so 517 PDFs do not drown
+# everything else, with any file that fails named individually.
+for set_id, rows in sorted(members.items()):
+    ok_n = total_bytes = 0
+    problems = []
+    for r in sorted(rows.values(), key=lambda x: x["id"]):
+        if not r["status"].startswith(("ok", "skipped")):
+            problems.append(f"{r['filename']}: {r['status'][:40]}")
+            continue
+        p = ROOT / "data/raw" / r["state"] / r["filename"]
+        if not p.exists():
+            problems.append(f"{r['filename']}: not on disk")
+            continue
+        b = p.read_bytes()
+        if r["sha256"] and hashlib.sha256(b).hexdigest() != r["sha256"]:
+            problems.append(f"{r['filename']}: sha256 does not match the manifest")
+            continue
+        if r["format"] == "pdf" and not b.startswith(b"%PDF"):
+            problems.append(f"{r['filename']}: not a PDF")
+            continue
+        ok_n += 1
+        total_bytes += len(b)
+    check(not problems, f"{set_id} — all {len(rows)} files present, hashed and open",
+          f"{ok_n}/{len(rows)} ok, {total_bytes:,} B")
+    for why in problems[:10]:
+        print(f"     -- {why}")
+    if len(problems) > 10:
+        print(f"     -- ... and {len(problems) - 10} more")
+    captured += ok_n
 print(f"  => {captured} captured and verified, {missing} not captured")
 
 # --------------------------------------------------------- clean tables
