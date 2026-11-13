@@ -370,6 +370,7 @@ else:
     stale = [r for r in njrows if r["county_source"].startswith("US Census geocoder")]
     check(not stale, "no NJ county_source invites a fill_counties revisit",
           f"({len(stale)} rows would be re-processed and relabelled)" if stale else "")
+
     # Against each row's own capture date, so this number does not drift with
     # the clock while the underlying PDFs sit unchanged.
     past = [r for r in njrows if len(r["expiry_date"]) == 10 and r["expiry_date"] < r["data_as_of"]]
@@ -379,6 +380,48 @@ else:
           f"{len(past)} lapsed as of capture, {len(flagged)} flagged")
     print(f"  -- those {len(past)} print an expiry that had already passed when captured, while "
           f"the CRC still lists the business as active; never reconciled")
+
+# fill_counties.py re-processes any row whose county_source starts with "US
+# Census geocoder". That is correct for a county it filled from a plain
+# address lookup, and wrong for one already adjudicated against another source
+# — those must lead with the source that settled them. It bit New Jersey and
+# then Connecticut, so the rule is checked for every state, not just one.
+head("A row must not both carry a county and say its county is unavailable")
+# 107 rows did: the county arrived later from a different source (the ACS2021
+# town map, or a re-geocode with the premises state) while the earlier no-match
+# note stayed behind, leaving a live caveat on a value that no longer needed
+# one — the placeholder-as-published-value CLAUDE.md forbids.
+contradictory = collections.Counter()
+for name in TABLES:
+    path = ROOT / "data/clean" / name
+    if not path.exists():
+        continue
+    for r in csv.DictReader(open(path, encoding="utf-8")):
+        if r["county"] and "county unavailable=" in r["extra_details"]:
+            contradictory[r["state"]] += 1
+check(not contradictory, "no row asserts a county and denies it",
+      f"({sum(contradictory.values())} rows: {dict(contradictory)})" if contradictory else "")
+
+head("An adjudicated county must not invite a fill_counties revisit")
+REVISIT = "US Census geocoder"
+adjudicated, plain = [], 0
+for name in TABLES:
+    path = ROOT / "data/clean" / name
+    if not path.exists():
+        continue
+    for r in csv.DictReader(open(path, encoding="utf-8")):
+        src = r["county_source"]
+        if not src.startswith(REVISIT):
+            continue
+        # A plain lookup says only that it matched an address. Anything that
+        # also cites a second source, or a correction, was adjudicated.
+        if re.search(r"correct|subdivision|ACS2021|disputed|permit", src, re.I):
+            adjudicated.append((r["state"], r["licence_id"], src[:70]))
+        else:
+            plain += 1
+print(f"  -- {plain} rows carry a plain geocoder lookup, which is meant to be revisited")
+check(not adjudicated, "no adjudicated county_source starts with the revisit prefix",
+      f"({len(adjudicated)}: {adjudicated[:2]})" if adjudicated else "")
 
 head("New York: row count is not a licence count")
 p = ROOT / "data/raw/new-york/jskf-tt3q_ocm_licences_2026-11-12.csv"

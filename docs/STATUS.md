@@ -1,4 +1,4 @@
-# Status (12 November 2026)
+# Status (13 November 2026)
 
 ## Done
 - Research and audits for all 50 states + DC, federal, the national business directory and all 10 regional business directories (California separate).
@@ -18,14 +18,14 @@
   - The mapping lives in `scripts/standard_types.py` and is imported by both the applier and verify.py, so the check and the write cannot drift. It **refuses to write** if any row carries a category it does not know, rather than defaulting — a blank in a search column would read as "no such licence" instead of "not classified yet".
   - These are derived columns and the three builders do not write them, so `python3 scripts/add_standard_type.py --apply` has to be re-run after any rebuild. verify.py fails loudly if the column is missing or stale, which is the guard; the failure names the command to run. The new checks were tested by corrupting rows and by dropping the columns, and they do fail.
   - **Surfaced in passing, not fixed:** the 2 Vermont `Integrated` rows are a licence class Act 176 repealed on 1 July 2026 (§ 909 repealed; §901(d) now lists six types). The VT report already flags one legacy integrated licensee in a Sept 2026 secondary count as transitional-VERIFY. Their status is worth a check against the CCB daily portal.
-  - data/clean/nj_crc_permits.csv was deliberately left alone: it is not one of the three 41-column tables, it has its own schema, and it is still awaiting the Next item 3 decision on how it lands in the master table. It will need a standard type when it does.
+  - data/clean/nj_crc_permits.csv keeps its own schema and is not one of the three 43-column tables, so it carries no standard_type itself. The NJ rows built FROM it do: `python3 scripts/add_standard_type.py --apply` is the last step of the New Jersey pipeline.
 
 ## Next
 1. Post-election re-checks: Idaho HJR 4 (3 Nov 2026 ballot) and any other state with a 2026 cannabis measure; update Part 0 and Part 9 of those reports once results are certified.
-2. The remaining 1,133 county gaps (CA 275, CO 240, NY 196, NJ 88, TX 85, HI 64, FL 59, IL 36, ME 23, PA 22, CT 13, MO 11, AL 9, VA 4, MD 3, MA 2, RI 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish.
+2. The remaining **1,005** county gaps (CA 275, CO 240, NY 196, HI 64, FL 59, TX 51, IL 36, ME 23, PA 22, MO 11, AL 9, CT 5, VA 4, MD 3, MA 2, RI 2, NJ 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish. Down from 1,133: New Jersey's permits closed 86, Connecticut's villages 8, and fixing the wrong-state geocode query closed 34 in Texas.
 3. Resolve the licence numbers PA, MD and DE do not publish in their public lists — they publish none anywhere found so far. **NJ is DONE**: all 655 licences carry the CRC's real numbers (see "New Jersey: rebuilt from the permit PDFs" below).
 4. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
-5. Fill the 13 Connecticut rows still without a county. They are village and borough names that are not towns (Terryville is in Plymouth, Cornwall Bridge in Cornwall, Mystic spans Stonington and Groton, Kensington is in Berlin, Baltic in Sprague) plus a few out-of-state towns. A village-to-town mapping would close them.
+5. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 6. De-duplicate the business table across directories and merge national firms under parent profiles (Baker Donelson, HUB, Brink's, Holland & Hart and the like appear in several regional directories). Also add California's website, phone and address from the rewritten-directory prose, and review the 22 entries flagged as holding a state licence.
 7. Build the site.
 
@@ -222,7 +222,55 @@ Current Census sources cannot supply them: TIGER lists only the Planning Regions
 
 That took CT from 391 rows with a county to **443**, leaving 13. scripts/verify.py now **fails** if a Planning Region ever appears in a CT row, and checks CT against the traditional eight rather than the current Census list.
 
-The 13 left are village and borough names rather than towns — Terryville is in Plymouth, Cornwall Bridge in Cornwall, Mystic spans Stonington and Groton, Kensington is in Berlin, Baltic in Sprague — plus a few genuinely out-of-state towns. A village-to-town mapping would close them.
+**Closed on 13 Nov 2026**, and not by the town mapping this once called for — see "Connecticut's
+villages" below. The Census geocoder's County Subdivisions layer resolves a village to its
+municipality at address level, which beat the village-level assumption: 56 River Rd, Cornwall
+Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
+Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
+
+## Connecticut's villages, and a geocoder asked the wrong question (13 Nov 2026)
+
+Connecticut's last 13 county-less rows were two different problems wearing one label.
+
+**Seven were villages and boroughs, not towns** — Terryville, Mystic, Cornwall Bridge, Kensington,
+Baltic. The route that closed them uses the Census geocoder's **County Subdivisions** layer, which
+the build had not been reading. CT's Counties layer is useless here (it returns "Naugatuck Valley
+Planning Region", the post-2022 vocabulary this project does not use), but the very same response
+names the county subdivision — "Plymouth town" — which IS a Connecticut town and maps straight to a
+traditional county through the cached ACS2021 table. Two official sources, no invention.
+
+Address-level resolution turned out to be better than the assumption recorded here earlier:
+- Terryville → Plymouth → Litchfield, as expected.
+- Mystic → Stonington → New London. Mystic spans Stonington and Groton, and 37 Willow Street
+  settles which, where a village-level mapping could only have said "one of two".
+- Cornwall Bridge → **two different towns**. 226 Kent Rd S is in Cornwall; 56 River Rd is in
+  **Sharon**, across the Housatonic. Both are Litchfield, so the county is unaffected, but the
+  earlier note that "Cornwall Bridge is in Cornwall" was not true of every address in it.
+- Kensington → Berlin → Hartford, and Baltic → Sprague → New London, as expected.
+
+**The other six are premises in other states**, and they exposed a real bug: the geocoder was
+being asked about the *licensing* state, not the state the premises are in. Connecticut's
+hemp-consumables credential is held by out-of-state manufacturers, so the build was asking for
+"4811 Dusharme Dr, Brooklyn Center, **CT**" — which of course returns no match, and that no-match
+was recorded as though the address were unfindable. Asked about Minnesota it resolves immediately
+to Hennepin. The query now takes the state from the address itself and falls back to the licensing
+state. Only these six rows were affected across all three tables, and the fix also closed 34 Texas
+rows whose cached lookups were re-run.
+
+Five remain, and they are genuine: Peachtree Corners GA (whose street field contains a ZIP, not a
+street), Hancock NY, Deep Gap NC, Stoneham MA and Charlotte Amalie **VI** — the Census address
+geocoder does not cover the US Virgin Islands. Each says so on the row.
+
+**107 rows asserted a county and denied it in the same breath.** CT 72, TX 34, MA 1 carried a
+county *and* a leftover "county unavailable=" note, because the county had arrived later from a
+different source while the earlier no-match note stayed behind — a live caveat on a settled value,
+which is the placeholder-as-published-value CLAUDE.md forbids. Every fill now clears the note as
+part of setting the county, the gap-note branch no longer fires on a row that already has one, and
+verify.py fails if any row ever asserts a county and denies it again.
+
+That also fixed a misleading count: fill_counties reported Connecticut as 24 gaps when it had 5,
+because a row whose `county_source` invites a revisit passed through the unfilled branch on every
+run. The figure is now counted from the rows themselves.
 
 ## The business directory: 355 to 2,087 entries
 

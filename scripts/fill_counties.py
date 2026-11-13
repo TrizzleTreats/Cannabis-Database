@@ -72,8 +72,47 @@ def geocodable(r):
     return bool(re.match(r"^\s*\d", r["street_address"] or "")) and bool(r["town"].strip())
 
 
+ADDRESS_STATE = re.compile(r",\s*([A-Z]{2})\s*,\s*\d+\s*$")
+
+
+def premises_state(r):
+    """The state the PREMISES are in, which is not always the licensing state.
+
+    Connecticut's hemp-consumables credential is held by manufacturers in other
+    states, so a CT row can carry a Minnesota address. Geocoding it as "4811
+    Dusharme Dr, Brooklyn Center, CT" returns no match, and that no-match was
+    being recorded as though the address were unfindable, when asking about
+    Minnesota finds it immediately. The address's own state wins when it states
+    one; the licensing state is the fallback.
+    """
+    found = ADDRESS_STATE.search((r["street_address"] or "").strip())
+    return found.group(1) if found else r["state"]
+
+
 def key_of(r):
-    return "|".join((split_street(r["street_address"], r["town"]), r["town"].strip(), r["state"]))
+    return "|".join((split_street(r["street_address"], r["town"]), r["town"].strip(),
+                     premises_state(r)))
+
+
+def drop_gap_note(r):
+    """Remove any "county unavailable=" note from a row that now has a county.
+
+    A row cannot both carry a county and say its county is unavailable, and 107
+    rows did: the county arrived later from a different source (the ACS2021 town
+    map, or a re-geocode) while the earlier no-match note stayed behind. That is
+    exactly the placeholder-as-published-value CLAUDE.md forbids, and it reads
+    as a live caveat on a value that no longer needs one.
+    """
+    if not r["extra_details"]:
+        return
+    r["extra_details"] = "; ".join(x for x in r["extra_details"].split("; ")
+                                   if not x.startswith("county unavailable="))
+
+
+def set_county(r, county, source):
+    """Set a county, its source, and clear any stale gap note together."""
+    r["county"], r["county_source"] = county, source
+    drop_gap_note(r)
 
 
 def load_cache():
@@ -87,13 +126,27 @@ def save_cache(cache):
     CACHE.parent.mkdir(parents=True, exist_ok=True)
     with open(CACHE, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["key", "street", "town", "state", "county",
-                                          "matched_address", "status", "fetched_at"])
+                                          "county_subdivision", "matched_address", "status",
+                                          "fetched_at"])
         w.writeheader()
         for k in sorted(cache):
-            w.writerow(cache[k])
+            # Rows cached before county_subdivision existed simply have none.
+            w.writerow({f: cache[k].get(f, "") for f in w.fieldnames})
 
 
-def geocode(street, town, state):
+def geocode_full(street, town, state):
+    """(county, county_subdivision, matched_address, status).
+
+    The County Subdivisions layer is what makes Connecticut tractable. CT's
+    county-equivalents are Planning Regions since 2022, so the Counties layer
+    returns "Naugatuck Valley Planning Region" — a vocabulary this project does
+    not use. The same response names the county subdivision, "Plymouth town",
+    which IS a Connecticut town and so can be mapped to a traditional county
+    through the ACS2021 table. It also resolves a village or borough to the
+    municipality that contains it, at address level: "15 Container Dr,
+    Terryville" is in Plymouth, and two Cornwall Bridge addresses turn out to
+    sit in different towns, Cornwall and Sharon, either side of the Housatonic.
+    """
     q = urllib.parse.urlencode({"street": street, "city": town, "state": state,
                                 "benchmark": BENCHMARK, "vintage": VINTAGE, "format": "json"})
     req = urllib.request.Request(f"{GEOCODER}?{q}", headers={"User-Agent": UA})
@@ -102,13 +155,29 @@ def geocode(street, town, state):
         d = json.loads(r.read().decode("utf-8", "replace"))
     m = (d.get("result") or {}).get("addressMatches") or []
     if not m:
-        return "", "", "no match"
+        return "", "", "", "no match"
     g = m[0].get("geographies") or {}
     counties = g.get("Counties") or []
     name = (counties[0].get("NAME") if counties else "") or ""
     # Census writes "El Paso County"; the tables hold the bare name.
     name = re.sub(r"\s+(County|Parish|Borough|Census Area|Municipality|City and Borough)$", "", name)
-    return name, m[0].get("matchedAddress", ""), "ok" if name else "matched but no county"
+    subs = g.get("County Subdivisions") or []
+    sub = (subs[0].get("NAME") if subs else "") or ""
+    return name, sub, m[0].get("matchedAddress", ""), "ok" if name else "matched but no county"
+
+
+def geocode(street, town, state):
+    """(county, matched_address, status) — the long-standing three-value form."""
+    county, _sub, matched, status = geocode_full(street, town, state)
+    return county, matched, status
+
+
+CT_SUBDIVISION = re.compile(r"\s+(town|city|borough)$", re.I)
+
+
+def ct_town_of(subdivision):
+    """"Plymouth town" -> "plymouth", the key ct_town_counties() uses."""
+    return CT_SUBDIVISION.sub("", (subdivision or "").strip()).strip().lower()
 
 
 NJ_SUFFIX = re.compile(r"\s+(twp|township|boro|borough|city|town|village)\.?$", re.I)
@@ -342,6 +411,15 @@ def main():
 
     if a.geocode:
         pending = [k for k in keys if k not in cache]
+        # Entries cached before the County Subdivisions layer was read hold no
+        # subdivision, and Connecticut's villages cannot be resolved without
+        # one. Re-fetch just those rather than discarding a 2,700-entry cache.
+        stale = [k for k in keys if k in cache and cache[k].get("status") == "ok"
+                 and not cache[k].get("county_subdivision")]
+        if stale:
+            print(f"  {len(stale)} cached addresses predate the county-subdivision "
+                  f"layer and will be re-fetched")
+            pending = pending + stale
         if a.limit:
             pending = pending[: a.limit]
         print(f"geocoding {len(pending)} addresses against the Census geocoder "
@@ -350,11 +428,11 @@ def main():
         for i, k in enumerate(pending, 1):
             street, town, state = k.split("|")
             try:
-                county, matched, status = geocode(street, town, state)
+                county, sub, matched, status = geocode_full(street, town, state)
             except Exception as exc:
-                county, matched, status = "", "", f"error: {type(exc).__name__}"
+                county, sub, matched, status = "", "", "", f"error: {type(exc).__name__}"
             cache[k] = dict(key=k, street=street, town=town, state=state, county=county,
-                            matched_address=matched, status=status,
+                            county_subdivision=sub, matched_address=matched, status=status,
                             fetched_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
             done += 1 if county else 0
             fail += 0 if county else 1
@@ -371,6 +449,7 @@ def main():
         nj = nj_municipality_counties()
         print(f"NJ municipality->county pairs from the CRC table: {len(nj)}")
         filled, unfilled = collections.Counter(), collections.Counter()
+        contradictions = collections.Counter()
         for name, rows in all_rows.items():
             changed = 0
             for r in rows:
@@ -382,10 +461,10 @@ def main():
                 # Connecticut first: its county comes from the traditional-county
                 # town map, never from the geocoder's Planning Region.
                 if r["state"] == "CT" and r["town"].strip().lower() in ct_towns:
-                    r["county"] = ct_towns[r["town"].strip().lower()]
-                    r["county_source"] = ("Census ACS2021 county subdivisions, matched on town — "
-                                          "Connecticut's traditional eight counties, the vocabulary "
-                                          "this project uses")
+                    set_county(r, ct_towns[r["town"].strip().lower()],
+                               "Census ACS2021 county subdivisions, matched on town — "
+                               "Connecticut's traditional eight counties, the vocabulary "
+                               "this project uses")
                     filled["CT"] += 1
                     changed += 1
                     continue
@@ -395,6 +474,37 @@ def main():
                 # The rest of the CT rows, and ct_towns.csv, carry the
                 # traditional county names, and mixing the two vocabularies in
                 # one column would be worse than leaving the gap visible.
+                # A CT row whose place name is not a town — Terryville, Mystic,
+                # Cornwall Bridge, Kensington, Baltic are villages and boroughs.
+                # The geocoder's Counties layer is a Planning Region and unusable,
+                # but the same response names the county SUBDIVISION, which is a
+                # real CT town, and that maps to a traditional county. Resolved at
+                # address level, so a village split across two towns is settled by
+                # the address rather than assumed.
+                if (r["state"] == "CT" and hit and hit.get("county_subdivision")
+                        and ct_town_of(hit["county_subdivision"]) in ct_towns):
+                    muni = CT_SUBDIVISION.sub("", hit["county_subdivision"].strip()).strip()
+                    ct_county = ct_towns[ct_town_of(hit["county_subdivision"])]
+                    # Deliberately NOT led by "US Census geocoder": the revisit
+                    # rule below re-processes any row whose county_source starts
+                    # that way, and this one is already settled. ACS2021 is also
+                    # the more accurate lead — it is what supplies the county.
+                    set_county(r, ct_county,
+                               f"Census ACS2021 for Connecticut's traditional county, after the "
+                               f"Census geocoder ({BENCHMARK}/{VINTAGE}) resolved the address to "
+                               f"county subdivision '{hit['county_subdivision']}' — the geocoder's "
+                               f"own Counties layer gives a Planning Region, which this project "
+                               f"does not use")
+                    if not r["location_basis"]:
+                        r["location_basis"] = ("village or borough resolved to its containing "
+                                               "municipality by address")
+                    note = (f"municipality={muni}; place as listed={r['town']} is a village or "
+                            f"borough rather than a Connecticut town")
+                    if "municipality=" not in r["extra_details"]:
+                        r["extra_details"] = "; ".join(x for x in (r["extra_details"], note) if x)
+                    filled["CT"] += 1
+                    changed += 1
+                    continue
                 if r["state"] == "CT" and hit and "Planning Region" in (hit["county"] or ""):
                     why = ("county unavailable=the Census geocoder returns Connecticut's post-2022 "
                            f"Planning Region ({hit['county']}) rather than a traditional county, and "
@@ -406,9 +516,9 @@ def main():
                     unfilled["CT"] += 1
                     continue
                 if hit and hit["county"]:
-                    r["county"] = hit["county"]
-                    r["county_source"] = (f"US Census geocoder ({BENCHMARK}/{VINTAGE}), "
-                                          f"matched {hit['matched_address']}")
+                    set_county(r, hit["county"],
+                               f"US Census geocoder ({BENCHMARK}/{VINTAGE}), "
+                               f"matched {hit['matched_address']}")
                     # A licence can have premises in another state entirely —
                     # Connecticut's hemp-consumables credential is held by
                     # manufacturers in Buffalo, Atlanta, Bend and Chattanooga.
@@ -425,10 +535,16 @@ def main():
                         filled[r["state"]] += 1
                     changed += 1
                 elif r["state"] == "NJ" and any(v in nj for v in nj_variants(r["town"])):
-                    r["county"] = next(nj[v] for v in nj_variants(r["town"]) if v in nj)
-                    r["county_source"] = "NJ CRC Government Relations table (County against Municipality)"
+                    set_county(r, next(nj[v] for v in nj_variants(r["town"]) if v in nj),
+                               "NJ CRC Government Relations table (County against Municipality)")
                     filled["NJ"] += 1
                     changed += 1
+                elif r["county"]:
+                    # Reached on a revisit: the row already has a county that
+                    # this pass did not improve on, so there is no gap to
+                    # explain. Writing a "county unavailable" note here is what
+                    # put a live caveat on 107 settled values.
+                    pass
                 else:
                     # Say WHY a county is still missing, so a blank is never
                     # mistaken for an oversight.
@@ -450,6 +566,16 @@ def main():
                         r["extra_details"] = "; ".join(x for x in (r["extra_details"], why) if x)
                         changed += 1
                     unfilled[r["state"]] += 1
+            # A row that HAS a county must not also say its county is
+            # unavailable. 107 did, because the county arrived later from a
+            # different source while the earlier no-match note stayed behind.
+            # Swept here rather than only at the fill sites, because a row
+            # already holding a county is never revisited by the fill.
+            for r in rows:
+                if r["county"] and "county unavailable=" in r["extra_details"]:
+                    drop_gap_note(r)
+                    contradictions[r["state"]] += 1
+                    changed += 1
             if changed:
                 cols = list(rows[0].keys())
                 with open(ROOT / "data/clean" / name, "w", newline="", encoding="utf-8") as f:
@@ -481,9 +607,18 @@ def main():
             print("county_source back-filled for carried-forward rows:", dict(carried.most_common()))
 
         print("\nfilled by state:", dict(filled.most_common()))
+        # Counted from the rows themselves, not accumulated during the walk: a
+        # row whose county_source invites a revisit passes through the unfilled
+        # branch on every run even when it already has a county, which made
+        # Connecticut read as 24 gaps when it had 5.
+        unfilled = collections.Counter(
+            r["state"] for rows in all_rows.values() for r in rows if not r["county"])
         print("total filled:", sum(filled.values()))
         print("still without a county (each row now says why):", dict(unfilled.most_common()))
         print("total still without:", sum(unfilled.values()))
+        if contradictions:
+            print(f"stale 'county unavailable' notes cleared from rows that now have a "
+                  f"county: {dict(contradictions)} (total {sum(contradictions.values())})")
 
 
     if a.canonicalise:
