@@ -12,7 +12,6 @@ from standard_types import CATEGORY_TO_TYPES, STANDARD_TYPES, types_for
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 fails = []
-TODAY_ISO = __import__("datetime").date.today().isoformat()
 
 
 def head(t):
@@ -371,9 +370,15 @@ else:
     stale = [r for r in njrows if r["county_source"].startswith("US Census geocoder")]
     check(not stale, "no NJ county_source invites a fill_counties revisit",
           f"({len(stale)} rows would be re-processed and relabelled)" if stale else "")
-    past = sum(1 for r in njrows if len(r["expiry_date"]) == 10 and r["expiry_date"] < TODAY_ISO)
-    print(f"  -- {past} NJ rows print an expiry already past while the CRC still lists the "
-          f"business as active; flagged per row, never reconciled")
+    # Against each row's own capture date, so this number does not drift with
+    # the clock while the underlying PDFs sit unchanged.
+    past = [r for r in njrows if len(r["expiry_date"]) == 10 and r["expiry_date"] < r["data_as_of"]]
+    flagged = [r for r in past if "expiry had passed" in r["extra_details"]]
+    check(len(past) == len(flagged),
+          "every NJ row with a lapsed expiry says so on the row",
+          f"{len(past)} lapsed as of capture, {len(flagged)} flagged")
+    print(f"  -- those {len(past)} print an expiry that had already passed when captured, while "
+          f"the CRC still lists the business as active; never reconciled")
 
 head("New York: row count is not a licence count")
 p = ROOT / "data/raw/new-york/jskf-tt3q_ocm_licences_2026-11-12.csv"

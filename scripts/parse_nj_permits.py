@@ -21,14 +21,14 @@ Two things this deliberately does NOT do:
 Usage:
   python3 scripts/parse_nj_permits.py [--out data/clean/nj_crc_permits.csv]
 """
-import argparse, csv, hashlib, pathlib, re, sys
-from datetime import date
+import argparse, csv, hashlib, json, pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PERMIT_DIR = ROOT / "data" / "raw" / "new-jersey" / "permits"
 LINK_INDEX = PERMIT_DIR / "_link_index.csv"
 COUNTIES = ROOT / "data" / "raw" / "census_counties_by_state.csv"
 SOURCE_PAGE = "https://www.nj.gov/cannabis/businesses/permitted/"
+SOURCE_ID = "nj-crc-permit-pdfs"
 
 FIELDS = ["record_kind", "permit_number", "licence_class_state", "term", "program",
           "program_basis", "facility_name", "street_address", "address_line_2", "town",
@@ -56,6 +56,29 @@ PROGRAMS = [
                 "(N.J.S.A. 24:6I-1 et seq)",
      re.compile(r"JAKE\s+HONIG|24:6I-1\s+ET\s+SEQ", re.I)),
 ]
+
+
+def captured_on():
+    """The date this data is "as of" — the day the CRC list was captured.
+
+    NOT date.today(): a parse is not a capture, and stamping the clock would
+    silently move every row's date to whenever someone last re-ran this script,
+    which is exactly the drift CLAUDE.md's "every fact carries a source and a
+    date" rule exists to prevent. Nor the manifest's fetched_at, which is UTC
+    and so reads a day later than the local session that captured these files,
+    putting New Jersey a day out of step with the rest of a table built in one
+    sitting.
+
+    The vintage of a permit is the vintage of the list it was linked from, and
+    that date is declared in sources.json as part of the saved page's filename.
+    """
+    for src in json.loads((ROOT / "scripts" / "sources.json").read_text()):
+        if src["id"] == SOURCE_ID:
+            found = re.search(r"(\d{4}-\d{2}-\d{2})", src["urls_from"])
+            if not found:
+                sys.exit(f"no capture date in the declared urls_from: {src['urls_from']}")
+            return found.group(1)
+    sys.exit(f"{SOURCE_ID} is not declared in scripts/sources.json")
 
 
 def official_counties():
@@ -275,7 +298,7 @@ def main():
     with open(LINK_INDEX, newline="", encoding="utf-8") as f:
         links = list(csv.DictReader(f))
 
-    today = date.today().isoformat()
+    today = captured_on()
     rows, missing, unparsed = [], [], []
     for link in links:
         path = PERMIT_DIR / link["filename"]

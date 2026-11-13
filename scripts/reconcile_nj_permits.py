@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
-"""Reconcile New Jersey's permit PDFs against the NJ rows already in the table.
+"""Reconcile New Jersey's permit PDFs against the NJ rows in the master table.
 
-This changes nothing. It answers the questions that have to be settled before
-the master table is touched:
+This changes nothing. It reports:
 
-  * how many permits the PDFs actually publish, and how many distinct numbers
-  * which of the 517 listed organisations have a permit PDF and which do not
-  * how the permits line up with the existing organisation-x-location rows
-  * how many of NJ's county gaps a permit closes
-  * which permits describe a facility the current table has no row for
+  * what the permit PDFs publish - how many licences, how many distinct
+    numbers, which organisations, and the consumption-area endorsements that
+    are NOT licences
+  * that every permit reaches the table and no row claims a number the permits
+    do not publish, with the row count decomposing exactly
+  * what the table now carries that the CRC's HTML list never did
+  * every county and where it came from, including the ones the Census geocoder
+    corrected and the one still disputed
 
-The join is on organisation plus town, and the towns need care: the CRC
-abbreviates them on the permit ("EGG HBR TWP") while spelling them out in the
-HTML table ("Egg Harbor Township"). The matching rules live in scripts/nj_towns.py,
-shared with the builder and the county check so no two of them can disagree.
-Anything they cannot resolve confidently is reported as unresolved, not guessed.
+Before New Jersey was rebuilt from the permits this joined on organisation and
+town, because the table held no licence numbers to join on. It holds them now,
+so the join is on the number - the only key here that cannot be ambiguous. A
+number printed on two permits at one premises carries a ~n suffix, stripped
+before comparing, so this script needs no town matching of its own - those
+rules live in scripts/nj_towns.py, shared by the builder and the county check.
 
 Usage:
   python3 scripts/reconcile_nj_permits.py
 """
 import csv, pathlib, sys
-from collections import Counter, defaultdict
-
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from nj_towns import is_abbrev_of, norm_org, norm_town, resolve_town
+from collections import Counter
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PERMITS = ROOT / "data" / "clean" / "nj_crc_permits.csv"
@@ -48,7 +48,8 @@ def main():
     print("----------------------------")
     print(f"  permits parsed                     {len(permits)}")
     print(f"  distinct permit numbers            {len({p['permit_number'] for p in permits})}")
-    print(f"  organisations with >=1 permit      {len({p['link_organisation'] for p in permits})}")
+    print(f"  organisations with >=1 permit      "
+          f"{len({p['link_organisation'] for p in permits})} (as the CRC labels them)")
     print(f"  PDFs that yielded them             {len({p['pdf_filename'] for p in permits})}")
     per_pdf = Counter(p["pdf_filename"] for p in permits)
     print(f"  permits per PDF                    "

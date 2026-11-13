@@ -514,10 +514,15 @@ def build_nj(blank, unmapped):
             flags["town spelling not matched"] = (
                 f"the permit prints '{r['town']}'; the CRC's HTML lists "
                 f"{sorted(listed.get(key, set())) or 'no locations'} for this organisation ({why})")
-        if r["expiration_date"] and r["expiration_date"] < TODAY:
-            flags["permit expiry has passed"] = (
-                f"{r['expiration_date']}, yet the CRC still publishes this business under "
-                f"'{NJ_ACTIVE}' — the two are not reconciled and neither is read off the other")
+        # Judged against the data's own capture date, not the clock: the row is a
+        # snapshot, so "has passed" has to mean "had passed when this was
+        # captured". Comparing with today would make the built file say something
+        # different every day it is rebuilt from the same unchanged PDFs.
+        if r["expiration_date"] and r["expiration_date"] < r["data_as_of"]:
+            flags["permit expiry had passed when this was captured"] = (
+                f"expired {r['expiration_date']}, captured {r['data_as_of']}, yet the CRC "
+                f"still publishes this business under '{NJ_ACTIVE}' — the two are not "
+                f"reconciled and neither is read off the other")
         ends = endorsed.get(num, [])
 
         row = dict(blank)
