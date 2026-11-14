@@ -259,8 +259,31 @@ Still blocked on a person with a browser, and nothing else:
   columns only.
 - **New Hampshire** — the DHHS PDF its 7 hand-transcribed ATC rows came from. Those are the only 7
   rows of 50,697 whose source document is not on disk to re-verify against.
-- **26 regulators that publish no licensee list** — these need a data request, which has to come
-  from a person with a reply address. Claude can draft all 26.
+- **26 regulators that publish no licensee list** — **the 26 letters are drafted**, in
+  `outreach/data-requests/` (scripts/draft_data_requests.py). A person still has to send them: a
+  records request needs a real requester and a reply address.
+  - The ask is written to work whatever a state licenses — every licence, permit or registration
+    under any cannabis, marijuana or hemp programme — rather than naming programmes that may not
+    exist there. It requests the regulator's own licence number, its own type and status wording,
+    legal name, DBA, premises address **including county**, and issue and expiry dates.
+  - It asks for **nothing exempt**: no personal contact details, no owners, no application
+    materials, no security plans, nothing about patients or employees. That is this project's own
+    privacy rule, and it also makes the request cheap to fulfil and hard to refuse.
+  - **No statute is cited and no address is invented.** Every state's public-records law has its
+    own name and number; a request citing the wrong one invites a brush-off and misinforms the
+    sender. Both are marked slots.
+  - 21 letters name a candidate agency extracted from that state's own audited report; **5 are
+    deliberately blank** (ID, KS, LA, MS, WY) because nothing in the report named a cannabis body
+    well enough to use. Michigan, Minnesota, Oklahoma and Arizona take their agency from STATUS
+    instead, which is more current — the Michigan report still calls the CRA by its former name,
+    "Bureau of Marijuana Regulation".
+  - **The known limit, stated on each letter it applies to:** a name lifted from report prose
+    cannot distinguish a body that licenses today from one proposed in a bill, and these are
+    precisely the jurisdictions with no licence data, several of which run no programme at all.
+    Two extraction faults were caught and fixed before this shipped — Mississippi's letter was
+    addressed to the *Alabama* Medical Cannabis Commission, which its report mentions
+    comparatively, and four letters carried sentence fragments as the recipient ("Office of
+    Medical Cannabis ceased accepting permit").
 
 ## Maryland publishes licence numbers after all (14 Nov 2026)
 

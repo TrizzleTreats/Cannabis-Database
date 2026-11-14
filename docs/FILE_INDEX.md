@@ -118,6 +118,8 @@ Notes:
 | scripts/merge_business_profiles.py | Groups the 2,087 entries into 1,945 one-per-business profiles, national firms under a parent, filling a primary's blanks from its own group. Deletes nothing |
 | scripts/review_business_licence_matches.py | Gives each of the 22 licence matches a verdict on evidence — legal name vs trading name, and whether the geography agrees — and records the reason |
 | scripts/match_businesses_to_licences.py | Matches directory entries against the licence tables by normalised name |
+| scripts/draft_data_requests.py | Drafts a public-records request for each of the 26 jurisdictions that publish no licensee list. Cites no statute and invents no address — both are marked for the sender to fill, because a wrong one is worse than a blank |
+| outreach/data-requests/ | The 26 letters plus a README index. 21 name a candidate agency extracted from that state's own audited report; 5 are deliberately blank |
 | scripts/build_review_worksheet.py | Gathers every decision that needs a person into data/clean/review_worksheet.csv — one row per decision with the question, the page to open and what the record says now. Changes nothing |
 | data/clean/review_worksheet.csv | 805 decisions: 16 licence matches, 2 Vermont licences in a repealed class, 787 unverified directory entries. 18 are priority 1 |
 | data/clean/business_licence_matches.csv | The 22 directory entries whose name matches a licensee, with their licence ids and a reviewed verdict and reason for each |
