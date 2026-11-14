@@ -11,7 +11,7 @@ Each letter needs three things added before it goes out — the agency confirmed
 | Alaska (AK) | Marijuana Control Board | checked — see the letter |
 | Arizona (AZ) | Bureau of Marijuana Licensing, Licensing Division, Arizona Department of Health Services (ADHS) | **VERIFIED** on the agency's own site |
 | Arkansas (AR) | Medical Marijuana Commission | from the report, unverified |
-| Georgia (GA) | Georgia Cannabis Commission | checked — see the letter |
+| Georgia (GA) | GA Access to Medical Cannabis Commission | **VERIFIED** on the agency's own site |
 | Idaho (ID) | **not filled in — find it** | FIND THE AGENCY |
 | Indiana (IN) | Indiana Cannabis Commission | from the report, unverified |
 | Iowa (IA) | Iowa Department of Health and Human Services — medical cannabis programme (no distinct bureau or office name is given on its site) | **VERIFIED** on the agency's own site |
@@ -20,7 +20,7 @@ Each letter needs three things added before it goes out — the agency confirmed
 | Louisiana (LA) | Louisiana Board of Pharmacy | **VERIFIED** on the agency's own site |
 | Michigan (MI) | Bureau of Marijuana Regulation | checked — see the letter |
 | Minnesota (MN) | Office of Cannabis Management (OCM) | **VERIFIED** on the agency's own site |
-| Mississippi (MS) | **not filled in — find it** | checked — see the letter |
+| Mississippi (MS) | Mississippi Medical Cannabis Program (MMCP), Mississippi State Department of Health — but DISPENSARY licensing sits with the Department of Revenue's ABC division (dor.ms.gov/abc/medical-cannabis), so a complete picture needs both | **VERIFIED** on the agency's own site |
 | Montana (MT) | Cannabis & Alcohol Regulation Division (CARD), Montana Department of Revenue | **VERIFIED** on the agency's own site |
 | Nebraska (NE) | Nebraska Medical Cannabis Commission | **VERIFIED** on the agency's own site |
 | New Mexico (NM) | Cannabis Control Division, New Mexico Regulation & Licensing Department (NMRLD) | **VERIFIED** on the agency's own site |
@@ -35,8 +35,8 @@ Each letter needs three things added before it goes out — the agency confirmed
 | Wisconsin (WI) | Office of Medical Cannabis Regulation | from the report, unverified |
 | Wyoming (WY) | **not filled in — find it** | FIND THE AGENCY |
 
-**12 of 26 are verified against the agency's own site on 14 November 2026** — the agency, what it licenses, and the route to send to. A further 5 were checked and the result is recorded in the letter: a 403 to automated clients, a host missing from this project's allowlist, or an agency that turned out to run no cannabis programme.
+**14 of 26 are verified against the agency's own site on 14 November 2026** — the agency, what it licenses, and the route to send to. A further 3 were checked and the result is recorded in the letter: a 403 to automated clients, a host missing from this project's allowlist, or an agency that turned out to run no cannabis programme.
 
-22 of 26 name a cannabis, marijuana or hemp body in their own title, which is the only basis on which a recipient is filled in here. 4 are left blank for you to fill: ID, KS, MS, WY. A blank is deliberate — a letter addressed to the wrong agency is worse than one addressed to none.
+23 of 26 name a cannabis, marijuana or hemp body in their own title, which is the only basis on which a recipient is filled in here. 3 are left blank for you to fill: ID, KS, WY. A blank is deliberate — a letter addressed to the wrong agency is worse than one addressed to none.
 
 The ask is deliberately narrow and asks for nothing exempt — no personal contact details, no owners, no application materials, no patient or employee data. That is this project's own privacy rule, and it also makes the request cheap to fulfil and hard to refuse.

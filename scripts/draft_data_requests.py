@@ -177,6 +177,27 @@ VERIFIED = {
            "No open-records link on the programme site.\n"
            "  Contact: medmarijuana@nd.gov · 701-328-1311",
            "https://mmregistration.health.nd.gov/"),
+    "GA": ("GA Access to Medical Cannabis Commission",
+           "licenses Class 1 Production, Class 2 Production and Dispensing. The Georgia "
+           "Department of Public Health separately runs the patient registry card, so it is NOT "
+           "the right recipient for a licensee list",
+           "No open-records page on its site; it publishes a Verify A License lookup at "
+           "https://www.gmcc.ga.gov/licensing/verify-a-license (one record at a time).\n"
+           "  Contact: https://www.gmcc.ga.gov/contact-us · 470-227-0331\n"
+           "  254 Washington Street, Fourth Floor Suite 420, Atlanta, GA 30334",
+           "https://www.gmcc.ga.gov/home"),
+    "MS": ("Mississippi Medical Cannabis Program (MMCP), Mississippi State Department of Health "
+           "— but DISPENSARY licensing sits with the Department of Revenue's ABC division "
+           "(dor.ms.gov/abc/medical-cannabis), so a complete picture needs both",
+           "MSDH licenses cultivation and processing; MDOR ABC licenses dispensaries",
+           "No records-request page found. It publishes a Business Search and a Verify License "
+           "lookup, and a Transparency Portal at https://data.mmcp.ms.gov/ — which this project "
+           "checked: its datasets are AGGREGATE counts and ANONYMISED per-record data (record "
+           "type, status, county) with no business name and no licence number, so the roster is "
+           "still unpublished. Say so in the letter; it shows you have looked.\n"
+           "  Contact: MCLicensing@msdh.ms.gov · MCRegistration@msdh.ms.gov · (601) 206-1540\n"
+           "  570 East Woodrow Wilson Dr, Jackson, MS 39216",
+           "https://www.mmcp.ms.gov/"),
     "IA": ("Iowa Department of Health and Human Services — medical cannabis programme (no "
            "distinct bureau or office name is given on its site)",
            "not stated on the department's own pages",
@@ -200,13 +221,6 @@ CHECKED_NEGATIVE = {
           "Office of Emergency Medical Services, Chief Medical Examiner and Rural Health "
           "Transformation. The report's fragment suggests its Office of Medical Cannabis "
           "\"ceased accepting permit\" applications, so check whether it still licenses at all.",
-    "GA": "dph.georgia.gov runs the patient CARD (it raised the card fee on 3 Nov 2026) but does "
-          "not say who licenses producers and dispensaries. The body that does — the Georgia "
-          "Access to Medical Cannabis Commission — is at gmcc.georgia.gov, which is NOT in this "
-          "project's allowlist, so it could not be fetched. Add that host to check it.",
-    "MS": "Mississippi's medical cannabis programme sits with its Department of Health, whose "
-          "hosts (msdh.ms.gov, medicalcannabis.ms.gov) are NOT in this project's allowlist. "
-          "www.mdac.ms.gov, which is, is the agriculture department. Add a host to check.",
 }
 STATED = {}
 

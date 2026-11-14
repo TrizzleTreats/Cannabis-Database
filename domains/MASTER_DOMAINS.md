@@ -2,7 +2,7 @@
 
 Built 12 November 2026 from the official sources cited in the audited state reports (Regions 1–9) and the audited federal report, merged with the New England and Mid-Atlantic lists made in the earlier chat. These are the sites Claude Code needs access to for licence data, laws, rules and local codes. News sites, blogs, law firms, directories and unofficial law copies (Justia, FindLaw, LegiScan, Wikipedia) are deliberately left out.
 
-**Total unique sites:** 1256 (a plain one-per-line copy is in all-domains.txt).
+**Total unique sites:** 1257 (a plain one-per-line copy is in all-domains.txt).
 
 ## Federal
 ```
@@ -129,9 +129,9 @@ capitol.tn.gov, publications.tnsosfiles.com, revenue.support.tn.gov, sos.tn.gov,
 admincode.legislature.state.al.us, agi.alabama.gov, aiac.alabama.gov, alabcboard.gov, alison.legislature.state.al.us, amcc.alabama.gov, arc-sos.state.al.us, classic.clinicaltrials.gov, hemppermits.agi.alabama.gov, judicial.alabama.gov, pci-nsn.gov, www.alabamaag.gov, www.alabamapublichealth.gov, www.alacourt.gov, www.albme.gov, www.alea.gov, www.legislature.state.al.us, www.revenue.alabama.gov, www.sos.alabama.gov
 ```
 
-### Mississippi (17)
+### Mississippi (18)
 ```
-agnet.mdac.ms.gov, billstatus.ls.state.ms.us, choctaw.org, corp.sos.ms.gov, dor.ms.gov, dor2.uat.msi.ms.gov, index.ls.state.ms.us, sos.ms.gov, www.ago.ms.gov, www.dor.ms.gov, www.dps.ms.gov, www.lbo.ms.gov, www.legislature.ms.gov, www.mdac.ms.gov, www.mdeq.ms.gov, www.mmcp.ms.gov, www.sos.ms.gov
+agnet.mdac.ms.gov, billstatus.ls.state.ms.us, choctaw.org, corp.sos.ms.gov, data.mmcp.ms.gov, dor.ms.gov, dor2.uat.msi.ms.gov, index.ls.state.ms.us, sos.ms.gov, www.ago.ms.gov, www.dor.ms.gov, www.dps.ms.gov, www.lbo.ms.gov, www.legislature.ms.gov, www.mdac.ms.gov, www.mdeq.ms.gov, www.mmcp.ms.gov, www.sos.ms.gov
 ```
 
 ### Louisiana (21)

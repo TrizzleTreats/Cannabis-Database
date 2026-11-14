@@ -2,8 +2,6 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
-      "Bash(python3 scripts/fetch_raw.py:*)",
-      "Bash(python3 scripts/build_new_england.py:*)",
       "WebFetch(domain:abc.ky.gov)",
       "WebFetch(domain:abca.dc.gov)",
       "WebFetch(domain:abca.wv.gov)",
@@ -220,6 +218,7 @@
       "WebFetch(domain:data.ct.gov)",
       "WebFetch(domain:data.delaware.gov)",
       "WebFetch(domain:data.mass.gov)",
+      "WebFetch(domain:data.mmcp.ms.gov)",
       "WebFetch(domain:data.nass.usda.gov)",
       "WebFetch(domain:data.nj.gov)",
       "WebFetch(domain:data.ny.gov)",
@@ -1259,7 +1258,9 @@
       "WebFetch(domain:www4.honolulu.gov)",
       "WebFetch(domain:www5.lasvegasnevada.gov)",
       "WebFetch(domain:wyoleg.gov)",
-      "WebFetch(domain:wyomingbankingdivision.wyo.gov)"
+      "WebFetch(domain:wyomingbankingdivision.wyo.gov)",
+      "Bash(python3 scripts/fetch_raw.py:*)",
+      "Bash(python3 scripts/build_new_england.py:*)"
     ]
   }
 }

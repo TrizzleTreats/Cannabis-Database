@@ -1,6 +1,6 @@
 14 November 2026
 
-[ the agency that licenses cannabis, marijuana or hemp in this state ]
+Mississippi Medical Cannabis Program (MMCP), Mississippi State Department of Health — but DISPENSARY licensing sits with the Department of Revenue's ABC division (dor.ms.gov/abc/medical-cannabis), so a complete picture needs both
 Mississippi
 
 **Public records request — list of licensed cannabis, marijuana and hemp businesses**
@@ -82,10 +82,11 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** NOT FILLED IN. Nothing in this project's report for this state names a cannabis, marijuana or hemp body in a licensing context, so no recipient is guessed here. The other agencies the report does name are listed below.
-    **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
-  * **Already checked on its own site; this was the result:** Mississippi's medical cannabis programme sits with its Department of Health, whose hosts (msdh.ms.gov, medicalcannabis.ms.gov) are NOT in this project's allowlist. www.mdac.ms.gov, which is, is the agriculture department. Add a host to check.
-  * **Confirm where to send it.** Most agencies have a records-request page or a designated officer, and some want a web form rather than an email. This draft does not guess an address.
+  * **Agency — verified.** VERIFIED 14 Nov 2026 against the agency's own site, https://www.mmcp.ms.gov/ — it MSDH licenses cultivation and processing; MDOR ABC licenses dispensaries.
+  * **Where to send it — verified.**
+  No records-request page found. It publishes a Business Search and a Verify License lookup, and a Transparency Portal at https://data.mmcp.ms.gov/ — which this project checked: its datasets are AGGREGATE counts and ANONYMISED per-record data (record type, status, county) with no business name and no licence number, so the roster is still unpublished. Say so in the letter; it shows you have looked.
+  Contact: MCLicensing@msdh.ms.gov · MCRegistration@msdh.ms.gov · (601) 206-1540
+  570 East Woodrow Wilson Dr, Jackson, MS 39216
   * **Add the statute.** One line, from the agency's own records page. This
     letter deliberately leaves it blank rather than guess it.
 

@@ -4,7 +4,7 @@
 - Research and audits for all 50 states + DC, federal, the national business directory and all 10 regional business directories (California separate).
 - Every report checked for completeness in Claude chat. Re-checked in Claude Code on 12 Nov 2026: all 64 files in docs/FILE_INDEX.md are present, none missing, none truncated, nothing on disk outside the index.
 - Git repository started (local only, no remote). data/private/ is git-ignored and nothing under it is tracked. CLAUDE.md now names the private columns that live inside tracked data/clean/ files, so the public build has something authoritative to strip against.
-- Master list of 1,242 official sites, allowed to Claude Code in .claude/settings.json as WebFetch(domain:...) rules. Four hosts were added during the build: paauditor.b-cdn.net, content.govdelivery.com, www.arcgis.com, maryland.maps.arcgis.com. einpresswire.com was deliberately left out as a secondary news reprint.
+- Master list of official sites, allowed to Claude Code in .claude/settings.json as WebFetch(domain:...) rules — **1,257 hosts**. Five were added during the build: paauditor.b-cdn.net, content.govdelivery.com, www.arcgis.com, maryland.maps.arcgis.com, and data.mmcp.ms.gov (Mississippi's cannabis transparency portal, 14 Nov 2026). einpresswire.com was deliberately left out as a secondary news reprint.
 - New England licence table rebuilt from data/raw/ on 12 Nov 2026 (scripts/build_new_england.py): 3,917 to 4,267 rows. CT 253 to 498, MA 967 to 1,072; ME, VT, RI and NH carried forward unchanged because their raw files hold nothing the table did not already have. A `standard_status` column was added so one search spans all six states.
 - Mid-Atlantic raw licence data captured for all six jurisdictions (scripts/fetch_raw.py, declared in scripts/sources.json, logged in data/raw/manifest.csv). 23 of 24 declared sources fetched.
 - Mid-Atlantic clean table built: data/clean/mid_atlantic_licences.csv, 4,236 rows (scripts/build_mid_atlantic.py). NY 3,056, NJ 678, PA 197, MD 191, DC 100, DE 14. Same columns as the New England table, in the same order, so the two union cleanly. NJ was rebuilt from its permit PDFs on 12 Nov 2026 (586 → 678) and PA's dispensary source moved to the DOH PDF (181 → 197).
@@ -272,9 +272,9 @@ Still blocked on a person with a browser, and nothing else:
   - **No statute is cited and no address is invented.** Every state's public-records law has its
     own name and number; a request citing the wrong one invites a brush-off and misinforms the
     sender. Both are marked slots.
-  - **12 of the 26 are now VERIFIED against the agency's own site (14 Nov 2026)** — the agency, what
+  - **14 of the 26 are now VERIFIED against the agency's own site (14 Nov 2026)** — the agency, what
     it licenses in its own words, and the route to send to: AZ, IA, KY, LA, MN, MT, ND, NE, NM, OK,
-    SD, UT. Those letters carry a real records-request URL or form where the agency publishes one,
+    SD, UT, GA, MS. Those letters carry a real records-request URL or form where the agency publishes one,
     and say plainly where it does not.
   - **Verifying corrected four letters that would otherwise have gone to the wrong place:**
     - **Kentucky** was addressed to Alcoholic Beverage Control, which states on its own site that
@@ -290,12 +290,31 @@ Still blocked on a person with a browser, and nothing else:
     the CAPTCHA that blocked this project was in front of one page, not the data itself; check the
     licensing-data page before sending anything. And South Dakota issues **certificates**, not
     licences, which is the word to use when asking it.
-  - **5 more were checked and the result recorded in the letter rather than left open:** Michigan
-    and Alaska return HTTP 403 to automated clients (michigan.gov/cra, commerce.alaska.gov/web/amco);
-    West Virginia's health department names no cannabis office at all on its homepage; and Georgia's
-    and Mississippi's licensing bodies sit on hosts **not in this project's allowlist**
-    (gmcc.georgia.gov, msdh.ms.gov / medicalcannabis.ms.gov) — two hosts to approve if you want
-    them checked.
+  - **Georgia and Mississippi are verified too, and getting there corrected a mistake of mine.** I
+    reported both as blocked on hosts missing from the allowlist, naming gmcc.georgia.gov,
+    msdh.ms.gov and medicalcannabis.ms.gov. **Those were hostnames I had invented**; gmcc.georgia.gov
+    does not resolve at all. The real hosts — **www.gmcc.ga.gov** (resolved from the link on
+    dph.georgia.gov's own medical-cannabis page) and **www.mmcp.ms.gov** (cited in Mississippi's own
+    audited report) — **were already in the allowlist the whole time.** Nothing needed adding for
+    them; I had checked names I made up and reported their absence as a blocker. Exactly one genuine
+    addition came out of it: **data.mmcp.ms.gov**, taken verbatim from the MMCP site, bringing the
+    allowlist to 1,257.
+    - Georgia: the GA Access to Medical Cannabis Commission licenses Class 1 Production, Class 2
+      Production and Dispensing. The Department of Public Health runs only the patient card, so it
+      was never the right recipient.
+    - Mississippi: MSDH runs the MMCP and licenses cultivation and processing, while **dispensary
+      licensing sits with the Department of Revenue's ABC division** — two recipients, not one. Its
+      Transparency Portal was checked through the Socrata catalog API: the datasets are aggregate
+      counts and anonymised per-record rows (record type, status, county) with **no business name
+      and no licence number**, so the roster really is unpublished. The letter says so, which shows
+      the agency the ask is informed.
+    - A trap worth recording: the unscoped Socrata catalog API federates across every Socrata
+      domain, so a first call returned Dallas Police and NHTSA datasets. It has to be scoped with
+      `?domains=<host>&search_context=<host>` or it tells you about somebody else's data.
+  - **3 more were checked and the result recorded in the letter rather than left open:** Michigan
+    and Alaska return HTTP 403 to automated clients (michigan.gov/cra,
+    commerce.alaska.gov/web/amco), and West Virginia's health department names no cannabis office
+    at all on its homepage.
   - The remaining 9 keep a candidate agency extracted from that state's own audited report, marked
     unverified; 4 are deliberately blank (ID, KS, MS, WY). Most of those 9 are states that license
     no cannabis at all, where the real recipient is probably an agriculture department's hemp
