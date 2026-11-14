@@ -80,16 +80,135 @@ KNOWN = {
 # States whose licence universe is hemp registration rather than cannabis licensing.
 HEMP_ONLY = {"ID", "KS", "WY", "IN"}
 
-# Where STATUS already states the agency, that beats anything extracted from
-# prose. Michigan is the clearest case: the reports still carry "Bureau of
-# Marijuana Regulation", the body's former name, while STATUS records the
-# current Cannabis Regulatory Agency.
-STATED = {
-    "MI": "Cannabis Regulatory Agency (CRA)",
-    "MN": "Office of Cannabis Management (OCM)",
-    "OK": "Oklahoma Medical Marijuana Authority (OMMA)",
-    "AZ": "Arizona Department of Health Services (ADHS)",
+# Verified against each agency's OWN site on 14 November 2026. This beats both
+# the reports' prose and STATUS, and it carries the route to send to — which is
+# the thing a letter cannot be sent without. `route` is quoted verbatim from the
+# agency's own page; where an agency publishes no records-request page, that is
+# recorded as such rather than left to look like an oversight.
+#
+# Four of these corrected the drafted letter outright:
+#   KY  was addressed to Alcoholic Beverage Control, which told us on its own
+#       site that it runs no cannabis programme. The licensing body is the
+#       Office of Medical Cannabis, in a different cabinet entirely.
+#   UT  was addressed to a "Cannabis Establishment Review Board". Business
+#       licensing is the Department of Agriculture and Food's.
+#   MT  was "Cannabis Control Division"; the division's own name is Cannabis &
+#       Alcohol Regulation Division.
+#   AZ  was the department; the licensing body inside it is the Bureau of
+#       Marijuana Licensing.
+VERIFIED = {
+    "SD": ("South Dakota Medical Cannabis Program, South Dakota Department of Health",
+           "issues CERTIFICATES — their word, not licences — for dispensaries, testing "
+           "facilities, cultivators and manufacturers",
+           "Records request: https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0\n"
+           "  Contact: MCQuestions@state.sd.us · 605-773-3361\n"
+           "  600 East Capitol Avenue, Pierre, SD 57501",
+           "https://doh.sd.gov/programs/medical-cannabis"),
+    "NE": ("Nebraska Medical Cannabis Commission",
+           "licensing is live and it is accepting applications",
+           "No records-request page found on its site.\n"
+           "  Contact: mcc.contact@nebraska.gov · 402-471-1531\n"
+           "  https://mcc.nebraska.gov/contact-us",
+           "https://mcc.nebraska.gov/"),
+    "OK": ("Oklahoma Medical Marijuana Authority (OMMA), state agency 455",
+           "licenses growers, processors, dispensaries, transporters, testing laboratories, "
+           "waste disposal facilities, research and education",
+           "Open Records Act request: https://oklahoma.gov/omma/help/open-records-request.html\n"
+           "  Contact: https://oklahoma.gov/omma/contact-us.html\n"
+           "  PO Box 262266, Oklahoma City, OK 73126-2266",
+           "https://oklahoma.gov/omma.html"),
+    "MT": ("Cannabis & Alcohol Regulation Division (CARD), Montana Department of Revenue",
+           "licenses growers, manufacturers, dispensaries and testing labs, and issues worker "
+           "permits",
+           "No records-request page found on the division's own pages.\n"
+           "  Contact: https://revenue.mt.gov/contact/index",
+           "https://revenue.mt.gov/"),
+    "AZ": ("Bureau of Marijuana Licensing, Licensing Division, Arizona Department of Health "
+           "Services (ADHS)",
+           "licenses medical dispensaries and laboratories and adult-use marijuana "
+           "establishments and facility agents",
+           "Records request: https://www.azdhs.gov/director/request-info-records/index.php\n"
+           "  Contact: 602-542-1025",
+           "https://www.azdhs.gov/licensing/marijuana/index.php"),
+    "NM": ("Cannabis Control Division, New Mexico Regulation & Licensing Department (NMRLD)",
+           "administers the regulatory structure for all commercial cannabis operations in the "
+           "state",
+           "Inspection of Public Records (IPRA): "
+           "https://www.rld.nm.gov/about-us/public-information-hub/inspection-of-public-records/\n"
+           "  Contact: https://www.rld.nm.gov/contact-us/\n"
+           "  2550 Cerrillos Road, Santa Fe, NM 87505",
+           "https://www.rld.nm.gov/cannabis/"),
+    "MN": ("Office of Cannabis Management (OCM)",
+           "licenses retailers, cultivators, manufacturers, testing facilities, transporters "
+           "and other types",
+           "Data requests: https://mn.gov/ocm/connect/data-requests/index.jsp\n"
+           "  Contact: https://mn.gov/ocm/connect/contact-us/index.jsp\n"
+           "  Note it also publishes a Public Licensing Data page at "
+           "https://mn.gov/ocm/public-licensing-data/index.jsp — worth checking first, since the "
+           "page this project could not read was behind a CAPTCHA rather than unpublished",
+           "https://mn.gov/ocm/"),
+    "KY": ("Office of Medical Cannabis, Cabinet for Health and Family Services",
+           "licenses cultivators, processors, producers, safety compliance facilities and "
+           "dispensaries",
+           "No dedicated open-records page; it uses a contact form.\n"
+           "  Form: https://secure.kentucky.gov/formservices/CHFS/KYMEDCAN/\n"
+           "  833-727-2828 · Office of Medical Cannabis, 500 Mero Street, Frankfort, KY 40601",
+           "https://kymedcan.ky.gov/"),
+    "LA": ("Louisiana Board of Pharmacy",
+           "issues Therapeutic Marijuana Pharmacy Permits. Medical marijuana PRODUCTION is "
+           "licensed by a different Louisiana agency, which the Board's own site does not name "
+           "— worth asking it to forward that part",
+           "Custodian of Records: https://www.pharmacy.la.gov/page/881\n"
+           "  Contact: https://www.pharmacy.la.gov/page/contact-information\n"
+           "  3388 Brentwood Drive, Baton Rouge, LA 70809 · 225-925-6496",
+           "https://www.pharmacy.la.gov/"),
+    "UT": ("SPLIT — the Utah Department of Agriculture and Food (UDAF) licenses cannabis "
+           "businesses; the Center for Medical Cannabis, Utah Department of Health and Human "
+           "Services, runs the medical programme. Send to UDAF for a licensee list",
+           "business licensing sits with UDAF, NOT with the health programme",
+           "No GRAMA page found on the medical-cannabis site.\n"
+           "  Medical programme contact: https://medicalcannabis.utah.gov/contact-us/ · "
+           "801-538-6504",
+           "https://medicalcannabis.utah.gov/"),
+    "ND": ("North Dakota Medical Marijuana Program (the division's own name is not stated on "
+           "its site; its department is North Dakota Health and Human Services)",
+           "the registration site covers patients and caregivers; whether it licenses "
+           "dispensaries and manufacturing facilities is not stated there",
+           "No open-records link on the programme site.\n"
+           "  Contact: medmarijuana@nd.gov · 701-328-1311",
+           "https://mmregistration.health.nd.gov/"),
+    "IA": ("Iowa Department of Health and Human Services — medical cannabis programme (no "
+           "distinct bureau or office name is given on its site)",
+           "not stated on the department's own pages",
+           "No cannabis-specific records link.\n"
+           "  Programme page: https://www.iowa.gov/health-prevention/medical-cannabis\n"
+           "  General: (800) 972-2017",
+           "https://hhs.iowa.gov/"),
 }
+
+# Checked on its own site and the answer was negative or blocked. Recorded so
+# the next person does not repeat the attempt.
+CHECKED_NEGATIVE = {
+    "MI": "www.michigan.gov/cra returns HTTP 403 to an automated client, so the Cannabis "
+          "Regulatory Agency could not be confirmed from its own site. The name is the one "
+          "this project's STATUS records, and the report's \"Bureau of Marijuana Regulation\" "
+          "is its former name.",
+    "AK": "commerce.alaska.gov/web/amco returns HTTP 403 to an automated client, so the Alcohol "
+          "& Marijuana Control Office could not be confirmed from its own site.",
+    "WV": "health.wv.gov names no cannabis office anywhere on its homepage, listing only the "
+          "Bureau for Public Health, Center for Threat Preparedness, Health Care Authority, "
+          "Office of Emergency Medical Services, Chief Medical Examiner and Rural Health "
+          "Transformation. The report's fragment suggests its Office of Medical Cannabis "
+          "\"ceased accepting permit\" applications, so check whether it still licenses at all.",
+    "GA": "dph.georgia.gov runs the patient CARD (it raised the card fee on 3 Nov 2026) but does "
+          "not say who licenses producers and dispensaries. The body that does — the Georgia "
+          "Access to Medical Cannabis Commission — is at gmcc.georgia.gov, which is NOT in this "
+          "project's allowlist, so it could not be fetched. Add that host to check it.",
+    "MS": "Mississippi's medical cannabis programme sits with its Department of Health, whose "
+          "hosts (msdh.ms.gov, medicalcannabis.ms.gov) are NOT in this project's allowlist. "
+          "www.mdac.ms.gov, which is, is the agriculture department. Add a host to check.",
+}
+STATED = {}
 
 AGENCY_RE = re.compile(
     r"((?:[A-Z][A-Za-z'&.\-]{2,} ){0,4}"
@@ -265,11 +384,9 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** {agency_note}{proposed_caution}
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+{send_block}
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
 {evidence}
@@ -287,16 +404,18 @@ def main():
     index, low = [], []
     for code, state in sorted(STATES.items(), key=lambda kv: kv[1]):
         cands, src = candidates(code)
-        stated = STATED.get(code)
+        ver = VERIFIED.get(code)
+        stated = ver[0] if ver else STATED.get(code)
         onsubject = [(n, c) for n, c in cands if ON_SUBJECT.search(n)]
         best = stated or (onsubject[0][0] if onsubject else "")
         shaky = not best
         agency = best or "[ the agency that licenses cannabis, marijuana or hemp in this state ]"
 
-        if stated:
-            note = (f"“{stated}” — recorded in this project's own STATUS, which is more current "
-                    f"than the state report (the report still uses an earlier name for it). "
-                    f"Confirm the records-request route, not the agency.")
+        if ver:
+            note = (f"VERIFIED 14 Nov 2026 against the agency's own site, {ver[3]} — it {ver[1]}.")
+        elif stated:
+            note = (f"“{stated}” — recorded in this project's own STATUS. Confirm the "
+                    f"records-request route, not the agency.")
         elif onsubject:
             note = (f"“{best}” names cannabis, marijuana or hemp in its own title and is "
                     f"cited {onsubject[0][1]}x in a licensing context in this project's audited "
@@ -328,18 +447,29 @@ def main():
 
         # Only a name lifted out of the reports' prose carries this risk. A name
         # from STATED is one the project itself records and has checked.
-        proposed_caution = "" if stated else (
+        proposed_caution = "" if (stated or ver) else (
             "\n    **This name came out of the report's prose, which cannot tell a body that "
             "licenses today from one proposed in a bill** — and that matters here, because these "
             "are the 26 jurisdictions with no licence data and several run no programme at all. "
             "If it turns out to be proposed rather than operating, the live recipient is almost "
             "certainly the agriculture or health department that runs the state's hemp programme.")
+        if ver:
+            send_block = ("  * **Agency — verified.** " + note + "\n"
+                          "  * **Where to send it — verified.**\n  " + ver[2])
+        else:
+            neg = CHECKED_NEGATIVE.get(code)
+            send_block = ("  * **Confirm the agency.** " + note + proposed_caution + "\n"
+                          + ("  * **Already checked on its own site; this was the result:** "
+                             + neg + "\n" if neg else "")
+                          + "  * **Confirm where to send it.** Most agencies have a "
+                            "records-request page or a designated officer, and some want a web "
+                            "form rather than an email. This draft does not guess an address.")
         text = BODY.format(today=args.today, agency=agency, state=state, fields=FIELDS,
                            why=why, agency_note=note, evidence=evidence,
-                           proposed_caution=proposed_caution)
+                           send_block=send_block)
         path = out / f"{code}-{SLUG[code]}.md"
         path.write_text(text, encoding="utf-8")
-        index.append((code, state, best, shaky))
+        index.append((code, state, best, shaky, bool(ver), code in CHECKED_NEGATIVE))
         if shaky:
             low.append(code)
 
@@ -360,10 +490,19 @@ def main():
               "department rather than any cannabis body.", "",
               "| State | Candidate agency from this project's own report | Confidence |",
               "|---|---|---|"]
-    for code, state, best, shaky in index:
-        readme.append(f"| {state} ({code}) | {best or '**not filled in — find it**'} | "
-                      f"{'FIND THE AGENCY' if shaky else 'named in the letter'} |")
-    readme += ["", f"{len(index) - len(low)} of {len(index)} name a cannabis, marijuana or hemp "
+    for code, state, best, shaky, verified, negative in index:
+        mark = ("**VERIFIED** on the agency's own site" if verified
+                else "checked — see the letter" if negative
+                else "FIND THE AGENCY" if shaky else "from the report, unverified")
+        readme.append(f"| {state} ({code}) | {best or '**not filled in — find it**'} | {mark} |")
+    nver = sum(1 for r in index if r[4])
+    nneg = sum(1 for r in index if r[5])
+    readme += ["", f"**{nver} of {len(index)} are verified against the agency's own site on "
+                   f"14 November 2026** — the agency, what it licenses, and the route to send to. "
+                   f"A further {nneg} were checked and the result is recorded in the letter: a 403 "
+                   f"to automated clients, a host missing from this project's allowlist, or an "
+                   f"agency that turned out to run no cannabis programme.", ""]
+    readme += [f"{len(index) - len(low)} of {len(index)} name a cannabis, marijuana or hemp "
                    f"body in their own title, which is the only basis on which a recipient is "
                    f"filled in here. {len(low)} are left blank for you to fill: "
                    f"{', '.join(low)}. A blank is deliberate — a letter addressed to the wrong "

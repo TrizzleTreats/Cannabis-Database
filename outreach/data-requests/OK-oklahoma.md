@@ -1,6 +1,6 @@
 14 November 2026
 
-Oklahoma Medical Marijuana Authority (OMMA)
+Oklahoma Medical Marijuana Authority (OMMA), state agency 455
 Oklahoma
 
 **Public records request — list of licensed cannabis, marijuana and hemp businesses**
@@ -82,11 +82,13 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** “Oklahoma Medical Marijuana Authority (OMMA)” — recorded in this project's own STATUS, which is more current than the state report (the report still uses an earlier name for it). Confirm the records-request route, not the agency.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Agency — verified.** VERIFIED 14 Nov 2026 against the agency's own site, https://oklahoma.gov/omma.html — it licenses growers, processors, dispensaries, transporters, testing laboratories, waste disposal facilities, research and education.
+  * **Where to send it — verified.**
+  Open Records Act request: https://oklahoma.gov/omma/help/open-records-request.html
+  Contact: https://oklahoma.gov/omma/contact-us.html
+  PO Box 262266, Oklahoma City, OK 73126-2266
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Oklahoma Medical Marijuana Authority — named 4x in a licensing context

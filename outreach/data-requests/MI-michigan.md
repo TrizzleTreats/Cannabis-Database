@@ -1,6 +1,6 @@
 14 November 2026
 
-Cannabis Regulatory Agency (CRA)
+Bureau of Marijuana Regulation
 Michigan
 
 **Public records request — list of licensed cannabis, marijuana and hemp businesses**
@@ -82,11 +82,12 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** “Cannabis Regulatory Agency (CRA)” — recorded in this project's own STATUS, which is more current than the state report (the report still uses an earlier name for it). Confirm the records-request route, not the agency.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Confirm the agency.** “Bureau of Marijuana Regulation” names cannabis, marijuana or hemp in its own title and is cited 3x in a licensing context in this project's audited report. Worth a glance, not a re-research.
+    **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
+  * **Already checked on its own site; this was the result:** www.michigan.gov/cra returns HTTP 403 to an automated client, so the Cannabis Regulatory Agency could not be confirmed from its own site. The name is the one this project's STATUS records, and the report's "Bureau of Marijuana Regulation" is its former name.
+  * **Confirm where to send it.** Most agencies have a records-request page or a designated officer, and some want a web form rather than an email. This draft does not guess an address.
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Bureau of Marijuana Regulation — named 3x in a licensing context

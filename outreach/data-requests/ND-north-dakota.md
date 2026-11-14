@@ -1,6 +1,6 @@
 14 November 2026
 
-Medical Cannabis Commission
+North Dakota Medical Marijuana Program (the division's own name is not stated on its site; its department is North Dakota Health and Human Services)
 North Dakota
 
 **Public records request — list of licensed cannabis, marijuana and hemp businesses**
@@ -82,12 +82,12 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** “Medical Cannabis Commission” names cannabis, marijuana or hemp in its own title and is cited 2x in a licensing context in this project's audited report. Worth a glance, not a re-research.
-    **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Agency — verified.** VERIFIED 14 Nov 2026 against the agency's own site, https://mmregistration.health.nd.gov/ — it the registration site covers patients and caregivers; whether it licenses dispensaries and manufacturing facilities is not stated there.
+  * **Where to send it — verified.**
+  No open-records link on the programme site.
+  Contact: medmarijuana@nd.gov · 701-328-1311
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Medical Cannabis Commission — named 2x in a licensing context

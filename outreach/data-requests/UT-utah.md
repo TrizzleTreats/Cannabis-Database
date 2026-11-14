@@ -1,6 +1,6 @@
 14 November 2026
 
-Cannabis Establishment Review Board
+SPLIT — the Utah Department of Agriculture and Food (UDAF) licenses cannabis businesses; the Center for Medical Cannabis, Utah Department of Health and Human Services, runs the medical programme. Send to UDAF for a licensee list
 Utah
 
 **Public records request — list of licensed cannabis, marijuana and hemp businesses**
@@ -82,12 +82,12 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** “Cannabis Establishment Review Board” names cannabis, marijuana or hemp in its own title and is cited 1x in a licensing context in this project's audited report. Worth a glance, not a re-research.
-    **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Agency — verified.** VERIFIED 14 Nov 2026 against the agency's own site, https://medicalcannabis.utah.gov/ — it business licensing sits with UDAF, NOT with the health programme.
+  * **Where to send it — verified.**
+  No GRAMA page found on the medical-cannabis site.
+  Medical programme contact: https://medicalcannabis.utah.gov/contact-us/ · 801-538-6504
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Cannabis Establishment Review Board — named 1x in a licensing context

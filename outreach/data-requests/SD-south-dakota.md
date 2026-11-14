@@ -1,6 +1,6 @@
 14 November 2026
 
-Office of Medical Cannabis
+South Dakota Medical Cannabis Program, South Dakota Department of Health
 South Dakota
 
 **Public records request — list of licensed cannabis, marijuana and hemp businesses**
@@ -82,12 +82,13 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** “Office of Medical Cannabis” names cannabis, marijuana or hemp in its own title and is cited 1x in a licensing context in this project's audited report. Worth a glance, not a re-research.
-    **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Agency — verified.** VERIFIED 14 Nov 2026 against the agency's own site, https://doh.sd.gov/programs/medical-cannabis — it issues CERTIFICATES — their word, not licences — for dispensaries, testing facilities, cultivators and manufacturers.
+  * **Where to send it — verified.**
+  Records request: https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0
+  Contact: MCQuestions@state.sd.us · 605-773-3361
+  600 East Capitol Avenue, Pierre, SD 57501
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Office of Medical Cannabis — named 1x in a licensing context

@@ -86,10 +86,9 @@ Yours sincerely,
 
   * **Confirm the agency.** NOT FILLED IN. Nothing in this project's report for this state names a cannabis, marijuana or hemp body in a licensing context, so no recipient is guessed here — expected, because this state licenses no cannabis beyond hemp, so the right recipient is most likely its agriculture department's hemp programme.
     **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Confirm where to send it.** Most agencies have a records-request page or a designated officer, and some want a web form rather than an email. This draft does not guess an address.
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Department of Health — named 3x in a licensing context

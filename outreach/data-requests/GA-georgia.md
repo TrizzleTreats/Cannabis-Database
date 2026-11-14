@@ -84,10 +84,10 @@ Yours sincerely,
 
   * **Confirm the agency.** “Georgia Cannabis Commission” names cannabis, marijuana or hemp in its own title and is cited 2x in a licensing context in this project's audited report. Worth a glance, not a re-research.
     **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Already checked on its own site; this was the result:** dph.georgia.gov runs the patient CARD (it raised the card fee on 3 Nov 2026) but does not say who licenses producers and dispensaries. The body that does — the Georgia Access to Medical Cannabis Commission — is at gmcc.georgia.gov, which is NOT in this project's allowlist, so it could not be fetched. Add that host to check it.
+  * **Confirm where to send it.** Most agencies have a records-request page or a designated officer, and some want a web form rather than an email. This draft does not guess an address.
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Georgia Cannabis Commission — named 2x in a licensing context

@@ -82,12 +82,13 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** “Nebraska Medical Cannabis Commission” names cannabis, marijuana or hemp in its own title and is cited 16x in a licensing context in this project's audited report. Worth a glance, not a re-research.
-    **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Agency — verified.** VERIFIED 14 Nov 2026 against the agency's own site, https://mcc.nebraska.gov/ — it licensing is live and it is accepting applications.
+  * **Where to send it — verified.**
+  No records-request page found on its site.
+  Contact: mcc.contact@nebraska.gov · 402-471-1531
+  https://mcc.nebraska.gov/contact-us
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Nebraska Medical Cannabis Commission — named 16x in a licensing context

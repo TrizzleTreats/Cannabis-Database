@@ -1,6 +1,6 @@
 14 November 2026
 
-[ the agency that licenses cannabis, marijuana or hemp in this state ]
+Louisiana Board of Pharmacy
 Louisiana
 
 **Public records request — list of licensed cannabis, marijuana and hemp businesses**
@@ -82,12 +82,13 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** NOT FILLED IN. Nothing in this project's report for this state names a cannabis, marijuana or hemp body in a licensing context, so no recipient is guessed here. The other agencies the report does name are listed below.
-    **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Agency — verified.** VERIFIED 14 Nov 2026 against the agency's own site, https://www.pharmacy.la.gov/ — it issues Therapeutic Marijuana Pharmacy Permits. Medical marijuana PRODUCTION is licensed by a different Louisiana agency, which the Board's own site does not name — worth asking it to forward that part.
+  * **Where to send it — verified.**
+  Custodian of Records: https://www.pharmacy.la.gov/page/881
+  Contact: https://www.pharmacy.la.gov/page/contact-information
+  3388 Brentwood Drive, Baton Rouge, LA 70809 · 225-925-6496
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Department of Revenue — named 8x in a licensing context

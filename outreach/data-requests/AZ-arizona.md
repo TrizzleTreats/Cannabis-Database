@@ -1,6 +1,6 @@
 14 November 2026
 
-Arizona Department of Health Services (ADHS)
+Bureau of Marijuana Licensing, Licensing Division, Arizona Department of Health Services (ADHS)
 Arizona
 
 **Public records request — list of licensed cannabis, marijuana and hemp businesses**
@@ -82,11 +82,12 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** “Arizona Department of Health Services (ADHS)” — recorded in this project's own STATUS, which is more current than the state report (the report still uses an earlier name for it). Confirm the records-request route, not the agency.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Agency — verified.** VERIFIED 14 Nov 2026 against the agency's own site, https://www.azdhs.gov/licensing/marijuana/index.php — it licenses medical dispensaries and laboratories and adult-use marijuana establishments and facility agents.
+  * **Where to send it — verified.**
+  Records request: https://www.azdhs.gov/director/request-info-records/index.php
+  Contact: 602-542-1025
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Bureau of Marijuana Licensing — named 3x in a licensing context

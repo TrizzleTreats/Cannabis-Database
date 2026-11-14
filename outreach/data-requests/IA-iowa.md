@@ -1,6 +1,6 @@
 14 November 2026
 
-Bureau of Cannabis Regulation
+Iowa Department of Health and Human Services — medical cannabis programme (no distinct bureau or office name is given on its site)
 Iowa
 
 **Public records request — list of licensed cannabis, marijuana and hemp businesses**
@@ -82,12 +82,13 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** “Bureau of Cannabis Regulation” names cannabis, marijuana or hemp in its own title and is cited 3x in a licensing context in this project's audited report. Worth a glance, not a re-research.
-    **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Agency — verified.** VERIFIED 14 Nov 2026 against the agency's own site, https://hhs.iowa.gov/ — it not stated on the department's own pages.
+  * **Where to send it — verified.**
+  No cannabis-specific records link.
+  Programme page: https://www.iowa.gov/health-prevention/medical-cannabis
+  General: (800) 972-2017
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Bureau of Cannabis Regulation — named 3x in a licensing context

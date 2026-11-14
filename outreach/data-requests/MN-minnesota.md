@@ -82,11 +82,13 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** “Office of Cannabis Management (OCM)” — recorded in this project's own STATUS, which is more current than the state report (the report still uses an earlier name for it). Confirm the records-request route, not the agency.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Agency — verified.** VERIFIED 14 Nov 2026 against the agency's own site, https://mn.gov/ocm/ — it licenses retailers, cultivators, manufacturers, testing facilities, transporters and other types.
+  * **Where to send it — verified.**
+  Data requests: https://mn.gov/ocm/connect/data-requests/index.jsp
+  Contact: https://mn.gov/ocm/connect/contact-us/index.jsp
+  Note it also publishes a Public Licensing Data page at https://mn.gov/ocm/public-licensing-data/index.jsp — worth checking first, since the page this project could not read was behind a CAPTCHA rather than unpublished
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * Office of Cannabis Management — named 1x in a licensing context

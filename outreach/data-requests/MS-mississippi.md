@@ -84,10 +84,10 @@ Yours sincerely,
 
   * **Confirm the agency.** NOT FILLED IN. Nothing in this project's report for this state names a cannabis, marijuana or hemp body in a licensing context, so no recipient is guessed here. The other agencies the report does name are listed below.
     **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
-  * **Confirm where to send it.** Most agencies have a records-request page or a
-    designated officer, and some require a web form rather than an email. This
-    draft does not guess an address.
-  * **Add the statute.** One line, from that same records page.
+  * **Already checked on its own site; this was the result:** Mississippi's medical cannabis programme sits with its Department of Health, whose hosts (msdh.ms.gov, medicalcannabis.ms.gov) are NOT in this project's allowlist. www.mdac.ms.gov, which is, is the agriculture department. Add a host to check.
+  * **Confirm where to send it.** Most agencies have a records-request page or a designated officer, and some want a web form rather than an email. This draft does not guess an address.
+  * **Add the statute.** One line, from the agency's own records page. This
+    letter deliberately leaves it blank rather than guess it.
 
 Evidence this project has for the ask, if you are challenged on it:
   * The Mississippi Department of Agriculture & Commerce — named 7x in a licensing context

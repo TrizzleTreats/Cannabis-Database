@@ -272,11 +272,34 @@ Still blocked on a person with a browser, and nothing else:
   - **No statute is cited and no address is invented.** Every state's public-records law has its
     own name and number; a request citing the wrong one invites a brush-off and misinforms the
     sender. Both are marked slots.
-  - 21 letters name a candidate agency extracted from that state's own audited report; **5 are
-    deliberately blank** (ID, KS, LA, MS, WY) because nothing in the report named a cannabis body
-    well enough to use. Michigan, Minnesota, Oklahoma and Arizona take their agency from STATUS
-    instead, which is more current — the Michigan report still calls the CRA by its former name,
-    "Bureau of Marijuana Regulation".
+  - **12 of the 26 are now VERIFIED against the agency's own site (14 Nov 2026)** — the agency, what
+    it licenses in its own words, and the route to send to: AZ, IA, KY, LA, MN, MT, ND, NE, NM, OK,
+    SD, UT. Those letters carry a real records-request URL or form where the agency publishes one,
+    and say plainly where it does not.
+  - **Verifying corrected four letters that would otherwise have gone to the wrong place:**
+    - **Kentucky** was addressed to Alcoholic Beverage Control, which states on its own site that
+      it runs no cannabis programme. The licensing body is the Office of Medical Cannabis, in the
+      Cabinet for Health and Family Services.
+    - **Utah** was addressed to a "Cannabis Establishment Review Board". Business licensing is the
+      Department of Agriculture and Food's; the health department runs the patient programme.
+    - **Montana**'s division is the Cannabis & Alcohol Regulation Division (CARD), not the
+      "Cannabis Control Division".
+    - **Arizona**'s licensing body inside ADHS is the Bureau of Marijuana Licensing.
+  - **Two findings worth more than the letters.** Minnesota publishes a **Data Requests** page
+    (https://mn.gov/ocm/connect/data-requests/index.jsp) and a **Public Licensing Data** page — so
+    the CAPTCHA that blocked this project was in front of one page, not the data itself; check the
+    licensing-data page before sending anything. And South Dakota issues **certificates**, not
+    licences, which is the word to use when asking it.
+  - **5 more were checked and the result recorded in the letter rather than left open:** Michigan
+    and Alaska return HTTP 403 to automated clients (michigan.gov/cra, commerce.alaska.gov/web/amco);
+    West Virginia's health department names no cannabis office at all on its homepage; and Georgia's
+    and Mississippi's licensing bodies sit on hosts **not in this project's allowlist**
+    (gmcc.georgia.gov, msdh.ms.gov / medicalcannabis.ms.gov) — two hosts to approve if you want
+    them checked.
+  - The remaining 9 keep a candidate agency extracted from that state's own audited report, marked
+    unverified; 4 are deliberately blank (ID, KS, MS, WY). Most of those 9 are states that license
+    no cannabis at all, where the real recipient is probably an agriculture department's hemp
+    programme.
   - **The known limit, stated on each letter it applies to:** a name lifted from report prose
     cannot distinguish a body that licenses today from one proposed in a bill, and these are
     precisely the jurisdictions with no licence data, several of which run no programme at all.
