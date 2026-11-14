@@ -338,6 +338,146 @@ else:
     print("  (county reference not built yet)")
 
 # ------------------------------------------------------ NY reconciliation
+head("No private data reaches the public site build")
+site_data = ROOT / "site" / "data"
+site_files = sorted(site_data.rglob("*.json")) if site_data.exists() else []
+if not site_files:
+    print("  -- site/data/ not built; nothing to check "
+          "(run scripts/build_site_data.py)")
+else:
+    PRIVATE_COLS = ["contact_name", "contact_phone", "contact_email", "owners",
+                    "key_people_private"]
+    # Two tests, because the weaker one alone is not enough. A column NAME check
+    # catches a whole field being copied across. A VALUE check catches the same
+    # data arriving under a different key, which is what would actually happen
+    # if someone mapped owners into a "principals" field.
+    key_hits, value_hits, scanned = [], [], 0
+    blobs = {}
+    for f in site_files:
+        text = f.read_text(encoding="utf-8")
+        blobs[f] = text
+        scanned += len(text)
+        for col in PRIVATE_COLS:
+            if f'"{col}"' in text:
+                key_hits.append((f.name, col))
+    check(not key_hits, "no private column name appears as a key in site/data",
+          f"({key_hits[:3]})" if key_hits else f"{len(site_files)} files, {scanned:,} bytes")
+
+    # Real values, sampled from the clean tables. Emails and full phone numbers
+    # are distinctive enough to be proof. Owner and contact NAMES are not
+    # value-tested: a sole proprietor's licence legal_name is legitimately their
+    # own name, so a name test would report the public column as a leak. Those
+    # two rest on the key test and on the build's allowlist.
+    #
+    # Every private email and phone number is tested, not a sample. An earlier
+    # version sampled 400 per column and searched the site text for each; it
+    # capped out on New England and so never tested one of the 20,842
+    # regions_3_to_9 emails, which means it would have missed a leak of any of
+    # them. Inverting it — pull every email- and phone-shaped string OUT of the
+    # site files, then intersect with the private set — tests all of them and
+    # costs one pass over the text.
+    #
+    # A value that is independently PUBLIC somewhere is excluded, because it
+    # proves nothing either way. Blue Skies Unlimited publishes 413-539-3059 as
+    # its own business line in the directory, and the same number is the
+    # regulator's contact_phone on two Massachusetts licences, because that
+    # consultant is the listed contact for his clients' applications. The site
+    # publishes the first and never the second. So the invariant is narrower
+    # than "no private value appears": no value that exists ONLY in a private
+    # column may appear.
+    EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
+    PHONE = re.compile(r"(?:\+1[\s.-]*)?(?:\(\d{3}\)|\d{3})[\s.-]*\d{3}[\s.-]*\d{4}")
+
+    def contacts(text):
+        return {m.group(0).strip().lower() for m in EMAIL.finditer(text)} | \
+               {re.sub(r"[^0-9]", "", m.group(0))[-10:] for m in PHONE.finditer(text)}
+
+    private_only, public_values = set(), set()
+    sources = [ROOT / "data/clean" / n for n in TABLES] + \
+              [ROOT / "data/clean/businesses_master.csv"]
+    for path in sources:
+        if not path.exists():
+            continue
+        for r in csv.DictReader(open(path, encoding="utf-8")):
+            for col, v in r.items():
+                v = (v or "").strip()
+                if not v:
+                    continue
+                (private_only if col in PRIVATE_COLS else public_values).update(contacts(v))
+    shared = private_only & public_values
+    private_only -= public_values
+    if shared:
+        print(f"  -- {len(shared)} private contact values are also published in a public "
+              f"column elsewhere in the clean data, so they prove nothing either way and "
+              f"are excluded")
+    in_site = set()
+    for text in blobs.values():
+        in_site |= contacts(text)
+    leaked = sorted(private_only & in_site)
+    check(not leaked,
+          f"none of {len(private_only):,} private-only contact values appears in site/data",
+          f"({len(leaked)} leaked, e.g. {leaked[:3]})" if leaked
+          else f"every private email and phone tested, against {len(in_site):,} found in the build")
+
+    summary_path = site_data / "summary.json"
+    if summary_path.exists():
+        srec = json.loads(summary_path.read_text())
+        held = srec.get("businesses", {}).get("held_back_unverified")
+        print(f"  -- {srec.get('totals', {}).get('licences', '?'):,} licences published across "
+              f"{len(srec.get('states', {}))} jurisdictions; "
+              f"{srec.get('businesses', {}).get('publishable', '?')} business profiles, "
+              f"{held} held back as unverified")
+
+head("The site pages and the built data agree")
+pages = sorted((ROOT / "site").glob("*.html"))
+if not pages or not (ROOT / "site/data/summary.json").exists():
+    print("  -- site pages or data not built; nothing to check")
+else:
+    # The pages name their table columns in OPERATOR_COLUMNS / SERVICE_COLUMNS.
+    # A key that the build stopped emitting would silently render as an em dash
+    # in every row rather than failing, so the contract is checked here.
+    db = (ROOT / "site/database.html").read_text()
+    def column_keys(block_name):
+        m = re.search(block_name + r"\s*=\s*\[(.*?)\];", db, re.S)
+        return re.findall(r'key:\s*"([^"]+)"', m.group(1)) if m else []
+    op_keys, svc_keys = column_keys("OPERATOR_COLUMNS"), column_keys("SERVICE_COLUMNS")
+    check(bool(op_keys) and bool(svc_keys), "the database page declares its table columns",
+          f"{len(op_keys)} operator, {len(svc_keys)} service")
+
+    state_files = sorted((ROOT / "site/data/licences").glob("*.json"))
+    state_files = [f for f in state_files if not f.name.endswith(".detail.json")]
+    missing_op = set(op_keys)
+    for f in state_files:
+        rows = json.loads(f.read_text())["licences"]
+        missing_op -= {k for r in rows for k in r}
+    check(not missing_op, "every operator column exists in the built licence data",
+          f"(absent everywhere: {sorted(missing_op)})" if missing_op else
+          f"{len(op_keys)} columns across {len(state_files)} states")
+
+    biz = json.loads((ROOT / "site/data/businesses.json").read_text())["businesses"]
+    missing_svc = set(svc_keys) - {k for r in biz for k in r}
+    check(not missing_svc, "every service column exists in the built business data",
+          f"(absent: {sorted(missing_svc)})" if missing_svc else f"{len(svc_keys)} columns")
+
+    # The page's default filter must agree with the count the build published,
+    # or the results header tells the reader a different number than the table.
+    srec = json.loads((ROOT / "site/data/summary.json").read_text())
+    drift = []
+    for f in state_files:
+        rows = json.loads(f.read_text())["licences"]
+        live = sum(1 for r in rows
+                   if r.get("standard_status") in ("Active", "Provisional"))
+        expected = srec["states"][f.stem]["default_search_set"]
+        if live != expected:
+            drift.append((f.stem, live, expected))
+    check(not drift, "the default Active+Provisional view matches the published count",
+          f"({drift[:3]})" if drift else f"checked all {len(state_files)} states")
+
+    # Every page carries the disclaimer, which mountFooter() provides.
+    nofooter = [f.name for f in pages if "mountFooter" not in f.read_text()]
+    check(not nofooter, "every page mounts the legal-information footer",
+          f"(missing on {nofooter})" if nofooter else f"{len(pages)} pages")
+
 head("The business directory groups into one profile per business")
 bpath = ROOT / "data/clean/businesses_master.csv"
 if not bpath.exists():

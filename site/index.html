@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>US Cannabis &amp; Hemp Law</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <h1>US cannabis and hemp law,<br>state by state.</h1>
+    <p class="lede">
+      A free, public record of who is licensed to grow, make, move and sell cannabis and hemp in
+      the United States — and of the businesses that serve them. Every figure comes from an
+      official government source and carries the date it was read.
+    </p>
+    <div class="cta-row">
+      <a class="cta" href="database.html">Search the database</a>
+      <a class="cta secondary" href="federal.html">Federal law</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <h2>What is in here today</h2>
+  <div class="stats" id="stats"><p class="loading">Loading…</p></div>
+  <p class="note" id="coverage"></p>
+
+  <h2>The map is not built yet</h2>
+  <p class="note">
+    This page is meant to open with a clickable map of the United States, coloured by whether a
+    state allows medical cannabis, adult use, both, or neither. That colour is a statement about
+    the law, so it needs a sourced legal status for each of the 51 jurisdictions, quoted from that
+    state's own statute and regulator rather than inferred from whether this project happens to
+    hold licence data for it. Texas, for example, licenses no adult-use or broad medical operator
+    but does run a limited medical programme — so colouring the map from licence coverage would
+    misstate the law in several states.
+    The research exists in the audited state reports; turning it into a status with a citation per
+    state is the next job, and the map goes in once it is done.
+  </p>
+
+  <h2>Licences, by jurisdiction</h2>
+  <p class="note">
+    The regulators publish separately and on different dates, so these counts are not a single
+    national figure and must not be added into one. 26 jurisdictions publish no licensee list at
+    all — they answer one lookup at a time, which cannot be enumerated.
+  </p>
+  <div class="table-scroll">
+    <table id="states">
+      <thead><tr>
+        <th>State</th><th class="num">Licences</th><th class="num">Active + Provisional</th>
+        <th class="num">Counties</th><th>Most common type</th><th>Read</th>
+      </tr></thead>
+      <tbody><tr><td colspan="6" class="loading">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+  <h2>Businesses that serve the industry</h2>
+  <p class="note" id="biz"></p>
+</main>
+
+<script type="module">
+import { loadJSON, fmt, el, mountFooter, mountTopbar } from "./assets/app.js";
+
+mountTopbar(document.body, "index.html");
+mountFooter(document.body);
+
+const summary = await loadJSON("summary.json");
+const t = summary.totals;
+
+const stat = (n, label) => el("div", { class: "stat" }, el("b", { text: fmt(n) }), el("span", { text: label }));
+document.getElementById("stats").replaceChildren(
+  stat(t.licences, "licence records"),
+  stat(t.jurisdictions_with_licence_data, "jurisdictions with a published list"),
+  stat(t.licences_with_a_county, "records placed in a county"),
+  stat(summary.businesses.publishable, "service businesses"),
+);
+
+const pct = (t.licences_with_a_county / t.licences * 100).toFixed(1);
+document.getElementById("coverage").textContent =
+  `${pct}% of licence records carry a county, and every county on every row carries the source `
+  + `it came from. The ${fmt(t.licences - t.licences_with_a_county)} without one each say why — `
+  + `usually that the regulator publishes no address to resolve.`;
+
+const biz = summary.businesses;
+document.getElementById("biz").textContent =
+  `${fmt(biz.directory_entries)} audited directory entries describe ${fmt(biz.profiles)} businesses — `
+  + `a national firm appears in several regional directories, so the entries are grouped into one `
+  + `profile each. ${fmt(biz.publishable)} are published; ${fmt(biz.held_back_unverified)} are held `
+  + `back because an audit could not verify them, and stay off the public site until someone checks them.`;
+
+const rows = Object.entries(summary.states).sort((a, b) => b[1].licences - a[1].licences);
+document.querySelector("#states tbody").replaceChildren(...rows.map(([code, s]) => {
+  const top = Object.entries(s.standard_type)[0];
+  const read = typeof s.data_as_of === "string" ? s.data_as_of
+    : `${s.data_as_of.earliest} – ${s.data_as_of.latest}`;
+  return el("tr", {},
+    el("td", {}, el("a", { href: `database.html?state=${code}` }, code)),
+    el("td", { class: "num", text: fmt(s.licences) }),
+    el("td", { class: "num", text: fmt(s.default_search_set) }),
+    el("td", { class: "num", text: s.counties ? fmt(s.counties) : "—" }),
+    el("td", {}, top ? `${top[0]} (${fmt(top[1])})` : "—"),
+    el("td", { text: read }));
+}));
+</script>
+</body>
+</html>

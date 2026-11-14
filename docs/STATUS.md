@@ -29,7 +29,7 @@
 4. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 5. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 6. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-7. Build the site.
+7. Build the site — STARTED (13 Nov 2026). The public data build and the Database page are done; see "The site" below. Still to build: the home page's legal-status map (blocked on per-state sourced status, which is the next real job), the state pages and their county maps, the federal page, and profile pages.
 
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
@@ -229,6 +229,70 @@ villages" below. The Census geocoder's County Subdivisions layer resolves a vill
 municipality at address level, which beat the village-level assumption: 56 River Rd, Cornwall
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
+
+## The site: the public build, and the Database page (13 Nov 2026)
+
+**The public data build is the safety-critical part, and it uses an allowlist.** The clean tables
+hold 35,520 premises phone numbers, 20,842 emails and 21,276 owner records, and CLAUDE.md requires
+the public build to drop the private columns *explicitly*. scripts/build_site_data.py therefore
+names the columns that may be published rather than the ones that may not: a denylist fails open —
+add a private column next year and it ships — while an allowlist fails closed, so a new column is
+absent from the site until someone decides it is public. 39 of the 43 licence columns and 25 of the
+32 business columns are allowlisted, and the script refuses to write any object carrying a private
+key at any depth.
+
+Output is `site/data/`, git-ignored because it is generated from data/clean and 66 MB of it would
+churn on every rebuild — which also means a public build can never be committed by accident.
+Licences are written per state and split list/detail: California alone is 20,984 rows, and its
+detail file is 20 MB, so a results table loads the 6 MB list and the full record only when a row
+is opened.
+
+CLAUDE.md's "unverified entries stay off the public site until checked" is enforced here too:
+of 1,945 business profiles, **1,158 are published and 787 are held back**. The held-back entries
+are written to their own file rather than dropped, so the count stays visible and nothing is lost.
+
+**verify.py proves no private data reaches the build, two ways.** A column-name test catches a
+whole field being copied across. A value test catches the same data arriving under a different
+key, which is what would actually happen if someone mapped `owners` into a "principals" field.
+Every private email and phone is tested — **27,455 values** — by pulling every contact-shaped
+string out of the built JSON and intersecting, not by sampling. An earlier version sampled 400 per
+column, capped out on New England, and so never tested one of the 20,842 regions_3_to_9 emails: it
+would have missed a leak of any of them. Both tests were confirmed to fail on an injected leak,
+including one hidden under an innocuous key name.
+
+**One real cross-contamination surfaced, and it is not a leak.** 413-539-3059 is Blue Skies
+Unlimited's own published business line in the New England directory, *and* the regulator's
+contact_phone on two Massachusetts licences (Ezdelivery LLC, Clovercraft llc) — that consultant is
+the listed contact for his clients' applications. The site publishes the first and never the
+second. So the invariant is narrower than "no private value appears": no value that exists ONLY in
+a private column may appear. 75 values are excluded on that basis, and the exclusion is printed
+rather than silent.
+
+**The Database page is built** (`site/database.html`): the Licensed Operators / Industry Services
+toggle, search, type/status/county/category filters, sortable columns, a detail panel, CSV export
+of exactly what is on screen, and filters in the URL so a state page can later open it already
+narrowed. The default view is Active + Provisional, as HANDOFF specifies. The regulator's own
+licence name and status sit beside the standard ones, and a licence with no published status shows
+"not published" rather than anything that could read as Active.
+
+**What is NOT built, and why.** HANDOFF's home page opens with a US map coloured by legal status.
+That colour is a statement about the law, so it needs a sourced status for each of the 51
+jurisdictions, quoted from that state's own statute and regulator — not inferred from whether this
+project holds licence data. Texas licenses no adult-use or broad medical operator but does run a
+limited medical programme, so colouring from licence coverage would misstate the law in several
+states. The research is in the audited reports, which carry a "Legal status." paragraph each, but
+it is prose; turning 51 of those into a status with a citation is the next job, and the home page
+says so on its face rather than shipping a map that guesses.
+
+**Verification.** The browser pane went unresponsive partway through, so the pages were not
+confirmed by screenshot. They were confirmed another way: the inline module scripts parse, and the
+real module was exercised in node against the real built data — CT's default view is 223 rows
+against the build's published 223, every table column has data, sort and search work, and CSV
+escaping was tested directly (a comma stays inside its quotes, an inner quote doubles). verify.py
+now also holds the page/data contract: every column the page renders must exist in the built data,
+the default view must match the published count, and every page must mount the footer. Note Bash
+cannot reach localhost in this sandbox — a connection opens and the response never arrives — so
+the server log and the browser are the only usable evidence there.
 
 ## The business directory: profiles, California's contact detail (13 Nov 2026)
 

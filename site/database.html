@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Database — US Cannabis &amp; Hemp Law</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="wide" id="main">
+  <h2 id="heading">Database</h2>
+  <p class="note" id="blurb"></p>
+
+  <div class="panel" style="margin-top:1rem">
+    <div class="toolbar">
+      <div class="field">
+        <label>Showing</label>
+        <div class="segmented" id="mode">
+          <button type="button" data-mode="operators" aria-pressed="true">Licensed operators</button>
+          <button type="button" data-mode="services" aria-pressed="false">Industry services</button>
+        </div>
+      </div>
+      <div class="field" id="state-field">
+        <label for="state">State</label>
+        <select id="state"></select>
+      </div>
+      <div class="field">
+        <label for="q">Search</label>
+        <input type="search" id="q" placeholder="Name, trading name, town, licence number…">
+      </div>
+      <div class="field" id="type-field">
+        <label for="type">Type</label>
+        <select id="type"></select>
+      </div>
+      <div class="field" id="status-field">
+        <label for="status">Status</label>
+        <select id="status"></select>
+      </div>
+      <div class="field" id="county-field">
+        <label for="county">County</label>
+        <select id="county"></select>
+      </div>
+      <div class="field" id="category-field" hidden>
+        <label for="category">Category</label>
+        <select id="category"></select>
+      </div>
+      <button type="button" class="plain" id="reset">Reset</button>
+      <button type="button" class="plain" id="export">Export CSV</button>
+    </div>
+  </div>
+
+  <p class="result-meta" id="meta"></p>
+  <div class="layout" id="layout">
+    <div class="table-scroll" id="table-host"><p class="loading">Loading…</p></div>
+  </div>
+</main>
+
+<script type="module">
+import { loadJSON, fmt, el, statusBadge, readParams, writeParams, debounce,
+         toCSV, download, sortRows, mountFooter, mountTopbar } from "./assets/app.js";
+
+const DEFAULTS = { mode: "operators", state: "", q: "", type: "", status: "Active + Provisional",
+                   county: "", category: "", sort: "legal_name", dir: "ascending" };
+const S = readParams(DEFAULTS);
+const $ = (id) => document.getElementById(id);
+
+let summary = null;
+let rows = [];          // the loaded set for the current mode/state
+let detailCache = {};   // state -> full detail records, loaded on demand
+let chosen = null;
+
+const OPERATOR_COLUMNS = [
+  { key: "licence_id", label: "Licence no.", cls: "id" },
+  { key: "legal_name", label: "Licensee" },
+  { key: "dba", label: "Trading as" },
+  { key: "licence_type", label: "Licence type (the state's own name)" },
+  { key: "standard_type", label: "Type" },
+  { key: "town", label: "Town" },
+  { key: "county", label: "County" },
+  { key: "standard_status", label: "Status" },
+  { key: "expiry_date", label: "Expires" },
+];
+const SERVICE_COLUMNS = [
+  { key: "business_name", label: "Business" },
+  { key: "category", label: "Category" },
+  { key: "home_state", label: "Based" },
+  { key: "states_served", label: "Serves" },
+  { key: "website", label: "Website" },
+];
+
+const columns = () => (S.mode === "operators" ? OPERATOR_COLUMNS : SERVICE_COLUMNS);
+
+function fillSelect(node, values, { all = "All", chosenValue = "" } = {}) {
+  node.replaceChildren();
+  node.append(el("option", { value: "", text: all }));
+  for (const [value, count] of values) {
+    node.append(el("option", { value, text: count === undefined ? value : `${value} (${fmt(count)})` }));
+  }
+  node.value = chosenValue;
+}
+
+async function ensureRows() {
+  if (S.mode === "services") {
+    if (!rows.__services) {
+      const data = await loadJSON("businesses.json");
+      rows = data.businesses;
+      rows.__services = true;
+    }
+    return;
+  }
+  const state = S.state;
+  if (!state) { rows = []; return; }
+  if (rows.__state !== state) {
+    const data = await loadJSON(`licences/${state}.json`);
+    rows = data.licences;
+    rows.__state = state;
+  }
+}
+
+function matches(r) {
+  const q = S.q.trim().toLowerCase();
+  if (q) {
+    const hay = (S.mode === "operators"
+      ? [r.licence_id, r.legal_name, r.dba, r.town, r.county, r.licence_type]
+      : [r.business_name, r.category, r.description, r.states_served, r.home_state])
+      .filter(Boolean).join(" ").toLowerCase();
+    if (!hay.includes(q)) return false;
+  }
+  if (S.mode === "operators") {
+    if (S.type && r.standard_type !== S.type) return false;
+    if (S.county && r.county !== S.county) return false;
+    if (S.status === "Active + Provisional") {
+      if (r.standard_status !== "Active" && r.standard_status !== "Provisional") return false;
+    } else if (S.status && (r.standard_status || "") !== S.status) return false;
+  } else if (S.category && r.category !== S.category) {
+    return false;
+  }
+  return true;
+}
+
+function renderTable(visible) {
+  const host = $("table-host");
+  if (!S.state && S.mode === "operators") {
+    host.replaceChildren(el("p", { class: "empty" },
+      "Choose a state to search its licences. ",
+      el("br"), el("br"),
+      `${fmt(summary.totals.licences)} licences are published across `
+      + `${Object.keys(summary.states).length} jurisdictions; the rest do not publish a `
+      + "licensee list at all."));
+    return;
+  }
+  if (!visible.length) {
+    host.replaceChildren(el("p", { class: "empty", text: "Nothing matches those filters." }));
+    return;
+  }
+  const head = el("tr", {}, columns().map((c) =>
+    el("th", {
+      "aria-sort": S.sort === c.key ? S.dir : "none",
+      onclick: () => {
+        S.dir = (S.sort === c.key && S.dir === "ascending") ? "descending" : "ascending";
+        S.sort = c.key;
+        apply();
+      },
+    }, c.label)));
+
+  const shown = visible.slice(0, 500);
+  const body = shown.map((r) => {
+    const cells = columns().map((c) => {
+      if (c.key === "standard_status") return el("td", {}, statusBadge(r.standard_status, r.status));
+      if (c.key === "website" && r.website) {
+        return el("td", {}, el("a", { href: r.website, target: "_blank", rel: "noopener" },
+          r.website.replace(/^https?:\/\//, "").replace(/\/$/, "")));
+      }
+      return el("td", { class: c.cls || "" }, r[c.key] || "—");
+    });
+    const tr = el("tr", {
+      class: chosen === r ? "chosen" : "",
+      onclick: () => { chosen = r; openDetail(r); apply(); },
+    }, cells);
+    return tr;
+  });
+
+  host.replaceChildren(el("table", {}, el("thead", {}, head), el("tbody", {}, body)));
+  if (visible.length > shown.length) {
+    host.append(el("p", { class: "result-meta", style: "padding:0 .7rem 0.7rem" },
+      `Showing the first ${fmt(shown.length)} of ${fmt(visible.length)} — narrow the filters, `
+      + "or export the full set to CSV."));
+  }
+}
+
+async function openDetail(r) {
+  const layout = $("layout");
+  let panel = document.querySelector(".detail");
+  if (!panel) {
+    panel = el("aside", { class: "detail" });
+    layout.append(panel);
+    layout.classList.add("with-detail");
+  }
+  if (S.mode === "services") return renderServiceDetail(panel, r);
+
+  panel.replaceChildren(el("p", { class: "loading", text: "Loading the full record…" }));
+  if (!detailCache[S.state]) {
+    const data = await loadJSON(`licences/${S.state}.detail.json`);
+    detailCache[S.state] = Object.fromEntries(data.licences.map((x) => [x.licence_id, x]));
+  }
+  renderLicenceDetail(panel, detailCache[S.state][r.licence_id] || r);
+}
+
+const row = (label, value) => (value ? [el("dt", { text: label }), el("dd", {}, value)] : []);
+
+function renderLicenceDetail(panel, d) {
+  // extra_details is "key=value; key=value" — the per-row flags the build wrote.
+  const flags = (d.extra_details || "").split("; ").filter(Boolean);
+  panel.replaceChildren(
+    el("h3", { text: d.legal_name || "(the regulator publishes no name)" }),
+    el("p", { class: "sub" }, [d.dba && `trading as ${d.dba}`, d.licence_id].filter(Boolean).join(" · ")),
+    el("dl", {},
+      row("Licence type", d.licence_type),
+      row("Standard type", d.standard_types_all || d.standard_type),
+      row("Programme", d.program),
+      row("Status", d.status),
+      row("Standard status", d.standard_status || "not published"),
+      row("Tier", d.tier),
+      row("Issued", d.issue_date),
+      row("First issued", d.first_issue_date),
+      row("Expires", d.expiry_date),
+      row("Address", [d.street_address, d.town, d.county && `${d.county} County`].filter(Boolean).join(", ")),
+      row("Town as listed", d.town_as_listed !== d.town ? d.town_as_listed : ""),
+      row("County source", d.county_source),
+      row("Location basis", d.location_basis),
+      row("Website", d.website && el("a", { href: d.website, target: "_blank", rel: "noopener" }, d.website)),
+      row("Part of", d.linked_group && `${d.linked_group} (${d.licences_in_group} licences)`),
+    ),
+    flags.length
+      ? el("div", { class: "flags" },
+          el("b", { text: "What this row says about itself" }),
+          el("ul", { style: "margin:.4rem 0 0; padding-left:1.1rem" },
+            flags.map((f) => el("li", { text: f }))))
+      : null,
+    el("p", { class: "source" },
+      d.source || "",
+      d.source_url ? [" — ", el("a", { href: d.source_url, target: "_blank", rel: "noopener" }, "source")] : "",
+      d.data_as_of ? ` · read ${d.data_as_of}` : ""),
+  );
+}
+
+function renderServiceDetail(panel, b) {
+  const regions = (b.entries_in_profile || "1") !== "1"
+    ? `${b.entries_in_profile} directory entries: ${b.regions_in_profile}` : b.region;
+  panel.replaceChildren(
+    el("h3", { text: b.business_name }),
+    el("p", { class: "sub" }, [b.category, b.scope].filter(Boolean).join(" · ")),
+    el("dl", {},
+      row("What they do", b.description),
+      row("Sub-type", b.sub_type),
+      row("Cannabis focus", b.cannabis_focus),
+      row("Based", b.home_state),
+      row("Serves", b.states_served),
+      row("Phone", b.phone),
+      row("Email", b.email && el("a", { href: `mailto:${b.email}` }, b.email)),
+      row("Address", b.address),
+      row("Website", b.website && el("a", { href: b.website, target: "_blank", rel: "noopener" }, b.website)),
+      row("Credentials", b.credentials),
+      row("Listed in", regions),
+      row("Audit verdict", b.audit_verdict),
+    ),
+    b.audit_note ? el("div", { class: "flags" },
+      el("b", { text: "Audit note" }), el("p", { style: "margin:.3rem 0 0" }, b.audit_note)) : null,
+    el("p", { class: "source" }, b.sources || "", b.last_checked ? ` · checked ${b.last_checked}` : ""),
+  );
+}
+
+function refreshFilters(visible) {
+  if (S.mode === "operators") {
+    const st = summary.states[S.state];
+    fillSelect($("type"), st ? Object.entries(st.standard_type) : [], { chosenValue: S.type });
+    const statuses = st ? Object.keys(st.standard_status) : [];
+    const sel = $("status");
+    sel.replaceChildren();
+    sel.append(el("option", { value: "Active + Provisional", text: "Active + Provisional (default)" }));
+    sel.append(el("option", { value: "", text: "Any status" }));
+    for (const s of statuses) {
+      sel.append(el("option", { value: s, text: `${s} (${fmt(st.standard_status[s])})` }));
+    }
+    sel.value = S.status;
+    const counties = [...new Set(rows.map((r) => r.county).filter(Boolean))].sort();
+    fillSelect($("county"), counties.map((c) => [c, undefined]), { chosenValue: S.county });
+  } else {
+    fillSelect($("category"), Object.entries(summary.businesses.by_category),
+               { chosenValue: S.category });
+  }
+}
+
+function setModeChrome() {
+  const operators = S.mode === "operators";
+  for (const b of $("mode").children) b.setAttribute("aria-pressed", String(b.dataset.mode === S.mode));
+  for (const id of ["state-field", "type-field", "status-field", "county-field"]) {
+    $(id).hidden = !operators;
+  }
+  $("category-field").hidden = operators;
+  $("blurb").textContent = operators
+    ? "Every licensed cannabis and hemp operator this project has been able to read from an "
+      + "official source, with the regulator's own licence name and status beside the standard "
+      + "ones used for search. Choose a state: the regulators publish separately, so the data is "
+      + "held per state."
+    : "Businesses that serve the industry rather than hold a licence — lawyers, accountants, "
+      + "insurers, security, packaging and the rest. Entries an audit left unverified are not "
+      + "published here.";
+  if (!operators) { S.sort = "business_name"; }
+  else if (S.sort === "business_name") { S.sort = "legal_name"; }
+}
+
+async function apply() {
+  writeParams(S, DEFAULTS);
+  setModeChrome();
+  try {
+    await ensureRows();
+  } catch (err) {
+    $("table-host").replaceChildren(el("p", { class: "empty" },
+      `Could not load the data (${err.message}). Run scripts/build_site_data.py.`));
+    return;
+  }
+  const visible = sortRows(rows.filter(matches), S.sort, S.dir);
+  refreshFilters(visible);
+  renderTable(visible);
+  const total = S.mode === "operators"
+    ? (summary.states[S.state]?.licences ?? 0) : summary.businesses.publishable;
+  const noun = S.mode === "operators" ? "licences" : "businesses";
+  const filtered = S.mode === "operators" && S.status === "Active + Provisional"
+    ? " — the default view shows Active and Provisional only" : "";
+  $("meta").textContent = S.mode === "operators" && !S.state
+    ? "" : `${fmt(visible.length)} of ${fmt(total)} ${noun}${filtered}`;
+  window.__visible = visible;
+}
+
+function wire() {
+  $("mode").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-mode]");
+    if (!b) return;
+    S.mode = b.dataset.mode;
+    chosen = null;
+    document.querySelector(".detail")?.remove();
+    $("layout").classList.remove("with-detail");
+    rows = [];
+    apply();
+  });
+  $("state").addEventListener("change", (e) => { S.state = e.target.value; S.county = ""; apply(); });
+  $("q").addEventListener("input", debounce((e) => { S.q = e.target.value; apply(); }));
+  for (const [id, key] of [["type", "type"], ["status", "status"], ["county", "county"],
+                           ["category", "category"]]) {
+    $(id).addEventListener("change", (e) => { S[key] = e.target.value; apply(); });
+  }
+  $("reset").addEventListener("click", () => {
+    Object.assign(S, DEFAULTS, { mode: S.mode, state: S.state });
+    $("q").value = "";
+    apply();
+  });
+  $("export").addEventListener("click", () => {
+    const cols = columns().map((c) => ({ label: c.label, get: (r) => r[c.key] ?? "" }));
+    const name = S.mode === "operators" ? `licences-${S.state || "all"}.csv` : "industry-services.csv";
+    download(name, toCSV(window.__visible || [], cols));
+  });
+}
+
+(async function start() {
+  mountTopbar(document.body, "database.html");
+  mountFooter(document.body);
+  summary = await loadJSON("summary.json");
+  const states = Object.entries(summary.states)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([code, s]) => [code, s.licences]);
+  fillSelect($("state"), states, { all: "Choose a state…", chosenValue: S.state });
+  $("q").value = S.q;
+  wire();
+  await apply();
+})();
+</script>
+</body>
+</html>

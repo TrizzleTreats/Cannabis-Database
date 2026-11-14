@@ -122,6 +122,9 @@ Notes:
 | data/raw/census_county_lookup.csv | Cached Census geocoder results: address -> county and county subdivision, with the matched address and status |
 | data/raw/census_counties_by_state.csv | 3,229 official counties across 56 states, from Census TIGERweb — the reference verify.py checks against |
 | data/raw/discovered_sources.csv | What the discovery crawl found: 2,615 rows of candidate data files per state |
+| scripts/build_site_data.py | Builds the public data in site/data/ from data/clean, on an ALLOWLIST of publishable columns so a new private column cannot leak by default. Licences per state, split list/detail; unverified business entries written separately and not published |
+| site/index.html, site/database.html, site/terms.html | The site. Home (coverage + per-state table), the Database page (operators/services toggle, search, filters, sort, detail, CSV export, filters in the URL) and the terms/sources page |
+| site/assets/app.js, site/assets/style.css | Shared front-end helpers and styles. No framework and no build step — the data is static JSON |
 | scripts/verify.py | Re-runnable check: private data not tracked, allowlist matches the domain list, every raw file hashes and opens, master table integrity, every row's `standard_type` one of the 16 and still matching the recorded mapping, one shared column set across the three tables, county validity, NY row-vs-licence reconciliation. Also verifies file-set sources (one declared source, many files) as a set |
 | scripts/fetch_nj_permits.py | Downloads NJ's 517 per-business permit PDFs, resolving every URL out of the saved CRC page and logging one manifest row per file. Writes _link_index.csv with each link's table-row context |
 | scripts/parse_nj_permits.py | Reads those PDFs into data/clean/nj_crc_permits.csv — one row per permit page, licences and consumption-area endorsements kept apart |
