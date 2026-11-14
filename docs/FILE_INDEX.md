@@ -111,7 +111,7 @@ Notes:
 | scripts/build_mid_atlantic.py | Builds data/clean/mid_atlantic_licences.csv from data/raw/ for NY, PA, NJ, DE, MD and DC |
 | scripts/build_states.py | Spec-driven builder for data/clean/regions_3_to_9_licences.csv — one declarative spec per state |
 | scripts/discover_sources.py | Walks the licensee pages the reports cite and records the data files they link to |
-| scripts/xlsx_reader.py | Reads .xlsx without openpyxl (shared strings, inline strings, 1900-epoch date serials) |
+| scripts/xlsx_reader.py | Reads .xlsx straight from its zip (shared strings, inline strings, 1900-epoch date serials). Sheets are addressable by NAME, not just index, because regulators reorganise their tabs |
 | scripts/fill_counties.py | Fills, canonicalises and validates the county column from the Census geocoder and NJ's CRC table. Reads the geocoder's County Subdivisions layer too, which is what resolves a Connecticut village to its town and so to a traditional county; asks about the state the premises are in rather than the licensing state; and clears a stale "county unavailable" note whenever it supplies a county |
 | scripts/build_businesses.py | Parses all 11 audited business directories into data/clean/businesses_master.csv. Appends by region; `--refresh REGION` drops and re-parses one. Unescapes until stable, because the California report is double-escaped |
 | scripts/fill_california_contacts.py | Reads website, phone, email, address, description and private people out of the California report's PART 2 prose (four layouts), which the audit table does not carry. Treats every "Not published"/"Verify" value as absent |
@@ -150,8 +150,7 @@ Notes:
 | new-york | 1 | OCM licences (3,056 rows, 2,286 distinct licence numbers, 385 rows with no licence number = proximity-protected applicants). Hemp producer list could not be fetched: HTTP 403 |
 | pennsylvania | 8 | Auditor General audit, dispensary PDF, 2024 biennial report, MMAB presentations for June and Sept 2026, and the three DOH index pages |
 
-data/clean/mid_atlantic_licences.csv — 4,175 rows, 43 columns (NY 3,056, NJ 678, PA 197, MD 130, DC 100, DE 14),
+data/clean/mid_atlantic_licences.csv — 4,236 rows, 43 columns (NY 3,056, NJ 678, PA 197, MD 191, DC 100, DE 14),
 built from these raw files. Same column set and order as new_england_licences.csv, so the two union cleanly.
-NY, DC and NJ publish licence numbers — NJ's come from its per-business permit PDFs, one row per permit, 655 of
-678 rows (the other 23 are locations the CRC lists but publishes no permit for). PA, MD and DE ids are still
-assigned locally and each row's `source` says so.
+NY, DC, NJ and MD publish licence numbers — NJ's come from its per-business permit PDFs, one row per permit, 655 of
+678 rows (the other 23 are locations the CRC lists but publishes no permit for). PA and DE ids are still assigned locally and each row's `source` says so.

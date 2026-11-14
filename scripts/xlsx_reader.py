@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Read .xlsx without openpyxl, which is not installed on this machine.
+"""Read .xlsx directly from its zip, without depending on openpyxl.
+
+(openpyxl is installed now, but this reader is what the build already uses, so
+it stays the single xlsx path rather than adding a second one.)
 
 An xlsx is a zip of XML, so the sheet and its shared-string table can be parsed
 directly. Enough of the format is handled for regulator exports: shared strings,
@@ -63,15 +66,41 @@ def sheet_paths(z):
     return sorted(names, key=lambda n: int(re.search(r"(\d+)", n).group(1)))
 
 
+def sheet_names(z):
+    """The workbook's sheet names, in the order sheet_paths returns them.
+
+    Addressing a sheet by name matters for regulator exports that get
+    reorganised: Maryland's MCA records in its own notes tab that it "updated
+    the look and feel of the licensee tabs", so a positional index would one
+    day read the wrong sheet and quietly build from it.
+    """
+    try:
+        root = ET.fromstring(z.read("xl/workbook.xml"))
+    except KeyError:
+        return []
+    return [el.get("name") for el in root.iter(f"{NS}sheet")]
+
+
+def resolve_sheet(z, sheet):
+    """A sheet name or index -> the index sheet_paths uses."""
+    if isinstance(sheet, int):
+        return sheet
+    names = sheet_names(z)
+    if sheet in names:
+        return names.index(sheet)
+    raise SystemExit(f"no sheet named {sheet!r}; this workbook has {names}")
+
+
 def read(path, sheet=0):
-    """Return a list of rows, each a list of strings."""
+    """Return a list of rows, each a list of strings. `sheet` is a name or index."""
     with zipfile.ZipFile(path) as z:
         strings = shared_strings(z)
         dstyles = date_styles(z)
         paths = sheet_paths(z)
         if not paths:
             raise SystemExit(f"{path}: no worksheets found")
-        root = ET.fromstring(z.read(paths[min(sheet, len(paths) - 1)]))
+        index = resolve_sheet(z, sheet)
+        root = ET.fromstring(z.read(paths[min(index, len(paths) - 1)]))
         rows = []
         for r in root.iter(f"{NS}row"):
             cells = {}

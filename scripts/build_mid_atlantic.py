@@ -30,6 +30,7 @@ import argparse, collections, csv, html, json, pathlib, re, sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from nj_towns import norm_org, norm_town, resolve_town, same_town
+import xlsx_reader
 from verify_nj_permit_counties import (AGREES, DIFFERS_CONFIRMED,
                                       DIFFERS_UNRESOLVED)
 
@@ -613,8 +614,44 @@ def build_nj(blank, unmapped):
 
 
 # ------------------------------------------------------------------ Maryland
-MD_SRC = f"MD MCA Dispensary Locator — {LOCAL_ID}"
-MD_URL = "https://cannabis.maryland.gov/Pages/Dispensary-Locator.aspx"
+# Maryland DOES publish licence numbers. Part 5 recorded the MCA data dashboard
+# as 404 and concluded otherwise, and the dashboard's own XLSX extract then sat
+# in data/raw/ unparsed because openpyxl was missing. Its "License Data" sheet
+# carries all 214 credentials with the MCA's own numbers, record types and start
+# and expiry dates, which the dispensary locator does not.
+MD_XLSX = "maryland/mca_dashboard_data_download_sep_2026.xlsx"
+MD_SRC = ("MD MCA Data Dashboard, Accessible Data Extract (Sept 2026) — the MCA's own "
+          "licence numbers, record types and licence dates")
+MD_URL = "https://cannabis.maryland.gov/Pages/Data-Dashboard.aspx"
+MD_LOCATOR_SRC = f"MD MCA Dispensary Locator — {LOCAL_ID}"
+MD_LOCATOR_URL = "https://cannabis.maryland.gov/Pages/Dispensary-Locator.aspx"
+
+# The MCA's Record Type -> this table's category. An "Ancillary Business
+# Registration" for a security guard agency or a waste hauler is a service
+# business, and HANDOFF puts those in the business directory rather than the
+# licence database, so they are counted and excluded rather than given a
+# standard type that does not exist for them. The five that are also an
+# Independent Testing Lab do have one.
+MD_RECORD_TYPE = {
+    "Dispensary Business": ("Retail Store", "Dispensary"),
+    "Grower Business": ("Cultivation", "Grower"),
+    "Processor Business": ("Manufacturing", "Processor"),
+    "Ancillary Business Registration; Independent Testing Lab":
+        ("Testing Lab", "Independent Testing Lab"),
+}
+MD_ANCILLARY = "Ancillary Business Registration"
+
+
+def md_sheet(name):
+    rows = xlsx_reader.read(str(RAW / MD_XLSX), name)
+    header = [c.strip() for c in rows[0]]
+    out = []
+    for r in rows[1:]:
+        if not any(c.strip() for c in r):
+            continue
+        out.append({header[i]: (r[i].strip() if i < len(r) else "")
+                    for i in range(len(header))})
+    return out
 
 
 # MCA writes addresses inconsistently: sometimes the town is comma-delimited,
@@ -651,56 +688,133 @@ def md_town(addr):
     return head[:cut].strip(" ,"), head[cut:].strip(" ,."), zipc, ""
 
 
-MD_SRC = f"MD MCA Dispensary Locator — {LOCAL_ID}"
-MD_URL = "https://cannabis.maryland.gov/Pages/Dispensary-Locator.aspx"
 
 
-def build_md(blank):
-    rows, unparsed = [], 0
-    tb = tables("maryland/mca_dispensary_locator_2026-11-12.html")[0]
-    for i, tr in enumerate(tb[1:], 1):
+def md_name_key(value):
+    """Match a dispensary to its locator row by trading name."""
+    v = re.sub(r"\(.*?\)", " ", (value or "").upper())
+    v = re.sub(r"[^A-Z0-9 ]", " ", v)
+    v = re.sub(r"\b(LLC|L L C|INC|LP|LLP|THE|DISPENSARY|CANNABIS|MARYLAND|MD|CO|CORP)\b", " ", v)
+    return re.sub(r"\s+", " ", v).strip()
+
+
+def build_md(blank, unmapped):
+    licences = md_sheet("License Data")
+    addresses = {r["License Number"]: r for r in md_sheet("Dispensaries Address Data")}
+    # 197 social-equity records, but only 45 carry a licence number: the other
+    # 152 read "Pending" in BOTH the number and the address, and their
+    # Region/Jurisdiction is a broad region ("Southern"), not a county. A
+    # conditional award is not a licence — CLAUDE.md forbids mixing approved
+    # with licensed — so they are counted here and not built as licence rows.
+    social, pending = {}, []
+    for r in md_sheet("Social Equity License Data"):
+        (social.setdefault(r["License Number"], r) if r["License Number"].lower() != "pending"
+         else pending.append(r))
+
+    # The locator is the only source for a dispensary's street address.
+    locator, unparsed = {}, 0
+    for tr in tables("maryland/mca_dispensary_locator_2026-11-12.html")[0][1:]:
         c = cells(tr)
         if len(c) < 3 or not c[0]:
             continue
-        # The header reads Dispensary | County | Address but the cells are
-        # Dispensary | Address | County. Positions are used, never header names.
-        name, addr, county = c[0], c[1], c[2]
-        delivery = "delivery only" in name.lower() or county.upper() == "NA"
-        if delivery:
-            # Address cell holds a service region ("Central*"), not a place, and
-            # the county cell holds "NA". Neither is a town or a county.
-            street, town, zipc, why = "", "", "", ""
-            region = addr
-            county = ""
+        # Header reads Dispensary | County | Address; cells are name, address,
+        # county. Positions are used, never header names.
+        locator.setdefault(md_name_key(c[0]), {"name": c[0], "addr": c[1], "county": c[2]})
+
+    rows, excluded, no_address = [], [], 0
+    for r in licences:
+        record = r["Record Type"]
+        if record == MD_ANCILLARY:
+            excluded.append(f'{r["Business Name"]} ({r["Registration Type"]})')
+            continue
+        mapped = MD_RECORD_TYPE.get(record)
+        if not mapped:
+            unmapped.append(("MD Record Type", record))
+            continue
+        category, own_name = mapped
+        tier = r["Business Type"] if r["Business Type"] in ("Standard", "Micro") else ""
+        # Maryland's "Micro" is the same activity at a smaller cap, not a
+        # microbusiness covering several activities — the call already settled
+        # for Connecticut's micro-cultivator. It belongs in `tier`.
+        dba = r["Location Name (Dispensary Only)"] or r["Trade Name"]
+        se = social.get(r["License #"], {})
+        extra = addresses.get(r["License #"], {})
+
+        street = town = county = ""
+        flags = {}
+        if record == "Dispensary Business":
+            hit = (locator.get(md_name_key(r["Location Name (Dispensary Only)"]))
+                   or locator.get(md_name_key(r["Trade Name"]))
+                   or locator.get(md_name_key(r["Business Name"])))
+            if hit:
+                street, town, zipc, why = md_town(hit["addr"])
+                county = "" if hit["county"].upper() == "NA" else hit["county"]
+                if why:
+                    unparsed += 1
+                    flags["address unparsed"] = why
+                flags["zip code"] = zipc
+            else:
+                no_address += 1
+                flags["no address"] = ("this licence is in the MCA's licence extract but its "
+                                       "trading name does not appear in the MCA's dispensary "
+                                       "locator, which is the only source for a street address")
         else:
-            region = ""
-            street, town, zipc, why = md_town(addr)
-            if why:
-                unparsed += 1
+            no_address += 1
+            flags["no address"] = (f"the MCA publishes no premises address for a {own_name.lower()} "
+                                   f"in either the licence extract or the locator")
+
+        if se.get("Operational?"):
+            # Operating is NOT a licence status. CLAUDE.md: never mix issued,
+            # approved, licensed, pending renewal and operating in one count.
+            flags["operational per MCA"] = (
+                f'{se["Operational?"]} — the MCA\'s own operational flag for this social-equity '
+                f'licence. A different measure from being licensed; not read as a status')
+
         row = dict(blank)
         row.update({
-            "licence_id": f"MD-DISP-{i:04d}", "state": "MD",
+            "licence_id": r["License #"], "state": "MD",
             "program": "Adult Use; Medical",
-            "category": "Delivery" if delivery else "Retail Store",
-            "licence_type": "Dispensary (delivery only)" if delivery else "Dispensary",
-            "legal_name": name, "holder_is_individual": "N",
+            "category": category,
+            "licence_type": f"{own_name}{' (micro)' if tier == 'Micro' else ''}",
+            "tier": tier,
+            "legal_name": r["Business Name"], "dba": dba if dba != r["Business Name"] else "",
+            "holder_is_individual": "N",
+            # The extract carries no status column at all, so standard_status is
+            # EMPTY and must never be read as Active.
             "status": "", "standard_status": "",
-            "street_address": "" if delivery else addr,
-            "town": town, "town_as_listed": town,
+            "issue_date": r["License Start Date"], "expiry_date": r["License Expiration Date"],
+            "street_address": street, "town": town, "town_as_listed": town,
             "county": county,
             "county_source": "MCA Dispensary Locator county column" if county else "",
-            "location_basis": "Delivery service area (no storefront)" if delivery else "Licensed premises",
+            "location_basis": "Licensed premises" if street else "",
+            "website": extra.get("URL", ""),
             "source": MD_SRC, "source_url": MD_URL, "data_as_of": TODAY,
             "extra_details": extras(
-                zip_code=zipc, street=street, service_region=region,
-                address_unparsed=why,
-                note="MCA publishes no licence number or status in the locator, and the table's header "
-                     "columns are mislabelled relative to its cells (cells are name, address, county). "
-                     "Maryland dispensaries serve both medical patients and adult-use customers."),
+                record_type=record,
+                registration_type=r["Registration Type"],
+                business_type=r["Business Type"] if r["Business Type"] != "N/A" else "",
+                latitude=extra.get("Lat", ""), longitude=extra.get("Long", ""),
+                social_equity_round=se.get("Licensing Round", ""),
+                social_equity_award=se.get("License Award Category", ""),
+                conditional_licence_issued=se.get("Date of Conditional License Issuance", ""),
+                address_source="MCA Dispensary Locator (the licence extract publishes none)"
+                               if street else "",
+                note="the MCA's licence extract publishes no status column, so standard_status is "
+                     "EMPTY — it must never be read as Active",
+                **flags),
         })
         rows.append(row)
+
+    print(f"  MD: {len(rows)} licences from the MCA extract "
+          f"({sum(1 for r in rows if r['street_address'])} with a street address, "
+          f"{no_address} without)")
     if unparsed:
-        print(f"  MD: {unparsed} addresses could not be split into street and town — town left empty")
+        print(f"  MD: {unparsed} locator addresses could not be split into street and town")
+    print(f"  MD: {len(excluded)} ancillary business registrations EXCLUDED from the licence "
+          f"table — a security guard agency or waste hauler is a service business, which HANDOFF "
+          f"puts in the directory")
+    print(f"  MD: {len(pending)} conditional social-equity awards NOT built as licences — they "
+          f"carry no licence number, no address and a region rather than a county")
     return rows
 
 
@@ -762,7 +876,7 @@ def main():
     dc = build_dc(blank, unmapped)
     pa = build_pa(blank)
     nj = build_nj(blank, unmapped)
-    md = build_md(blank)
+    md = build_md(blank, unmapped)
     de = build_de(blank)
     rows = ny + dc + pa + nj + md + de
     rows.sort(key=lambda r: (r["state"], r["licence_id"]))

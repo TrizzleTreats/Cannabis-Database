@@ -7,7 +7,7 @@
 - Master list of 1,242 official sites, allowed to Claude Code in .claude/settings.json as WebFetch(domain:...) rules. Four hosts were added during the build: paauditor.b-cdn.net, content.govdelivery.com, www.arcgis.com, maryland.maps.arcgis.com. einpresswire.com was deliberately left out as a secondary news reprint.
 - New England licence table rebuilt from data/raw/ on 12 Nov 2026 (scripts/build_new_england.py): 3,917 to 4,267 rows. CT 253 to 498, MA 967 to 1,072; ME, VT, RI and NH carried forward unchanged because their raw files hold nothing the table did not already have. A `standard_status` column was added so one search spans all six states.
 - Mid-Atlantic raw licence data captured for all six jurisdictions (scripts/fetch_raw.py, declared in scripts/sources.json, logged in data/raw/manifest.csv). 23 of 24 declared sources fetched.
-- Mid-Atlantic clean table built: data/clean/mid_atlantic_licences.csv, 4,175 rows (scripts/build_mid_atlantic.py). NY 3,056, NJ 678, PA 197, MD 130, DC 100, DE 14. Same columns as the New England table, in the same order, so the two union cleanly. NJ was rebuilt from its permit PDFs on 12 Nov 2026 (586 → 678) and PA's dispensary source moved to the DOH PDF (181 → 197).
+- Mid-Atlantic clean table built: data/clean/mid_atlantic_licences.csv, 4,236 rows (scripts/build_mid_atlantic.py). NY 3,056, NJ 678, PA 197, MD 191, DC 100, DE 14. Same columns as the New England table, in the same order, so the two union cleanly. NJ was rebuilt from its permit PDFs on 12 Nov 2026 (586 → 678) and PA's dispensary source moved to the DOH PDF (181 → 197).
 - Regions 3-9 started: data/clean/regions_3_to_9_licences.csv, 41,026 rows across 7 of 39 jurisdictions (scripts/build_states.py). CA 20,984, TX 12,853, OR 3,701, CO 1,832, WA 1,226, NV 345, AL 85. Same 41 columns as the other two tables, so all three union to 49,360 rows.
 - Business directory built: all 11 audited directories parsed into data/clean/businesses_master.csv, 355 to 2,087 entries, every row on HANDOFF's 17 standard categories (scripts/build_businesses.py). California 371, National 237, Great Lakes 196, Plains 192, Pacific 192, Southeast 189, Mid-Atlantic 173, Southwest 165, South Central 130, Mountain 124, New England 118.
 - Business-to-licence matching done (scripts/match_businesses_to_licences.py): 22 directory entries hold a state licence under the same name, flagged on the row with their licence numbers and written to data/clean/business_licence_matches.csv.
@@ -25,7 +25,7 @@
    - **The Idaho report is now past its own expiry and one of its statements is stale.** reports/regions/8-mountain/idaho/idaho-audited.html says on its face: "Do not carry this file forward after 3 November 2026 without replacing the HJR 4 passages with certified Secretary of State / VoteIdaho results." Its Part 0 / 1.9 wording — HJR 4 "on 3 Nov 2026 ballot, not yet voted on" — is no longer true: the vote has happened and only the result is pending. Part 1.2's discipline still holds exactly as written ("No constitutional amendment limiting legalisation currently in force; only PROPOSED HJR 4"), because an uncertified measure is not in force. The report is deliberately NOT edited yet: the plan is to replace those passages once there is a certified result to put in them, and a two-step edit would put an uncertified outcome into an audited file. Until then HJR 4 must be described as voted on 3 Nov 2026 with the result uncertified, never as pending a vote and never with an outcome.
    - Do not take a result from the unofficial county totals. A recount has already changed one county's count, and the project's rule against reconciling two differently-dated figures applies to election returns as much as to licence counts.
 2. The remaining **1,005** county gaps (CA 275, CO 240, NY 196, HI 64, FL 59, TX 51, IL 36, ME 23, PA 22, MO 11, AL 9, CT 5, VA 4, MD 3, MA 2, RI 2, NJ 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish. Down from 1,133: New Jersey's permits closed 86, Connecticut's villages 8, and fixing the wrong-state geocode query closed 34 in Texas.
-3. Resolve the licence numbers PA, MD and DE do not publish in their public lists — they publish none anywhere found so far. **NJ is DONE**: all 655 licences carry the CRC's real numbers (see "New Jersey: rebuilt from the permit PDFs" below).
+3. Resolve the licence numbers **PA and DE** do not publish — they publish none anywhere found so far. **NJ and MD are DONE**: NJ's 655 licences carry the CRC's real numbers, and MD's 191 carry the MCA's (see "New Jersey: rebuilt from the permit PDFs" and "Maryland publishes licence numbers after all" below).
 4. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 5. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 6. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
@@ -34,7 +34,7 @@
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
 - **CT**: ngch-56tr had been downloaded filtered to cannabis credential types only, so 280 hemp and THC-beverage credentials were missing — including the 104 live rows the master table was carrying with the wrong source label. Filter on `credential`, never `credentialtype`: types CSM and CSW are shared with "MANUFACTURER / WHOLESALER OF DRUGS, COSMETICS & MEDICAL DEVICES" and pull in roughly 4,300 unrelated pharmacy licences.
-- **MD**: Part 5 recorded the MCA data dashboard as 404 and concluded MCA publishes no downloadable registry. The dashboard is live and carries an "Accessible Data Extract" XLSX dated Sept 2026, and the Dispensary Locator holds a 130-row table with a county for each dispensary. Maryland is not a no-download state. Resolved paths: /Pages/Data-Dashboard.aspx, /Pages/Dispensary-Locator.aspx, /Pages/Industry_Licensees_and_Registrants.aspx.
+- **MD**: Part 5 recorded the MCA data dashboard as 404 and concluded MCA publishes no downloadable registry. The dashboard is live and carries an "Accessible Data Extract" XLSX dated Sept 2026, and the Dispensary Locator holds a 130-row table with a county for each dispensary. Maryland is not a no-download state. Resolved paths: /Pages/Data-Dashboard.aspx, /Pages/Dispensary-Locator.aspx, /Pages/Industry_Licensees_and_Registrants.aspx. **Taken further on 14 Nov 2026**: that XLSX is now parsed and is what Maryland is built from — see below.
 - **DC**: the retailer GIS layer Part 5 said not to guess is layer 31 of the Health_WebMercator MapServer — 79 retailers, 77 Active, 1 Safekeeping with Location, 1 Emergency Closure, with a ward for each. The non-retailer layer 33 gives the by-type counts Part 5 had to leave as VERIFY: 9 cultivation, 10 manufacturers, 1 courier, 1 testing lab, all Active.
 - **PA**: a 23 Sept 2026 MMAB presentation exists. The audit recorded that the page listed a Sept agenda but no presentation, so its 24 June 2026 metrics are no longer the latest. The DOH growers-processors page carries no permittee-list PDF at all — only guidance forms.
 - **MA**: licence MP281798 is Suspended as of 27 Oct 2026 but the old table showed it "Active; Final License; operating". Two further suspended licences were absent entirely. The rebuild represents all three.
@@ -106,7 +106,7 @@ Grand Rapids' layer is kept in data/raw/michigan-local-grand-rapids/ anyway: 110
 - **OH**: the DCC layer spells its own licence type three ways (Dual, Dual Use, Dual Use Dispensary) and its state two ways (Ohio, OH).
 - **HI**: 19 of 94 registrants are online-only with no premises address at all, and 6 are registered from outside Hawaii (CA, TN, LA). DOH publishes no county, which is correct — Hawaii has no municipal government below county level.
 - **Schema gaps surfaced by real data — now settled.** The standard licence types went from 14 to **16** (Event Organizer, Operator) and the standard statuses from 7 to **10** (Limited Operations, Inactive, Canceled), decided on 12 Nov 2026 and recorded in HANDOFF.md with the reasoning. Every regulator word that still has no standard of its own now has a fixed, documented mapping there rather than an improvised one. That took the rows carrying an approximated status from **3,358 down to 1** — Oregon's single "NOT APPROVED", which is a refused application rather than a licence and stays visible and flagged.
-- 144 rows have a deliberately EMPTY standard_status: Maryland's 130 dispensaries and Delaware's 14, because neither regulator publishes a status at all. Empty must never be read as Active.
+- 205 rows have a deliberately EMPTY standard_status: Maryland's 191 licences and Delaware's 14, because neither regulator publishes a status at all. Empty must never be read as Active. (Maryland's extract does carry licence start and expiry dates, which is not the same thing as a status.)
 
 ## New Jersey: rebuilt from the permit PDFs (12 Nov 2026)
 
@@ -229,6 +229,68 @@ villages" below. The Census geocoder's County Subdivisions layer resolves a vill
 municipality at address level, which beat the village-level assumption: 56 River Rd, Cornwall
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
+
+## Maryland publishes licence numbers after all (14 Nov 2026)
+
+Part 5 recorded the MCA data dashboard as a 404 and concluded Maryland published no downloadable
+registry. The 12 Nov build found the dashboard live and captured its "Accessible Data Extract"
+XLSX — then could not read it, because openpyxl was not installed, so it sat in data/raw/ and the
+table was built from the dispensary locator instead: 130 rows, no licence numbers, no dates, no
+statuses. The tooling is there now, and the extract is the real registry.
+
+| | before | after |
+|---|---|---|
+| MD rows | 130 (dispensaries only) | **191** (128 dispensary, 31 processor, 27 grower, 5 testing lab) |
+| real licence numbers | 0 | **191** |
+| issue dates | 0 | 190 |
+| expiry dates | 0 | 190 |
+| counties | 127 | 128 |
+| websites | 0 | 123 |
+| coordinates | 0 | 124 |
+
+The MCA's own "License Data Summary Metrics" tab states the total as 214 — 27 grower, 31 processor,
+128 dispensary, 5 testing lab, 23 ancillary — which the build reproduces exactly, so the parse is
+checked against the regulator's own arithmetic.
+
+Four judgements, each following a precedent already set here rather than a new rule:
+
+- **23 ancillary business registrations are NOT in the licence table.** They are security guard
+  agencies, waste haulers and the like, and HANDOFF puts a business that serves the industry in the
+  directory. There is also no standard type among the 16 that fits a security guard agency, and
+  inventing one in passing would be a schema change by the back door. They are counted and named
+  in the build output. The five that are *also* an Independent Testing Lab do have a standard type
+  and are included.
+- **Maryland's "Micro" is a tier, not a Microbusiness.** 8 licences are Micro (3 dispensary, 3
+  processor, 2 grower) and the rest Standard. A micro grower only grows, so this is the same call
+  already made for Connecticut's micro-cultivator: the activity decides the standard type, and
+  Standard/Micro goes in `tier`.
+- **152 conditional social-equity awards are not licences.** The Social Equity tab holds 197
+  records but only 45 licence numbers: the other 152 read "Pending" in both the number *and* the
+  address field, and their Region/Jurisdiction is a broad region ("Southern"), not a county.
+  CLAUDE.md forbids mixing approved with licensed, so they are counted in the build output and not
+  built as rows. Their award categories (75 Standard Dispensary, 39 Standard Processor, 26 Micro
+  Grower, 25 Micro Processor, 23 Standard Grower, 9 Micro Dispensary) and rounds (183 Social Equity
+  2024, 9 HB2, 5 2023 Expansion) are the programme summary HANDOFF's Licences tab wants.
+- **`standard_status` stays EMPTY for all 191.** The extract carries no status column. It carries
+  licence start and expiry dates, which are not a status, and the MCA's own operational flag — but
+  only for its 45 social-equity licences (37 Yes, 8 No). That flag is recorded per row and labelled
+  a different measure from being licensed, never read as one.
+
+What Maryland still does not publish: **a premises address for a grower, processor or testing lab.**
+63 of the 191 rows have none, in either the extract or the locator, and each says so. The locator
+is still the only address source for dispensaries, joined by trading name — 123 of 128 match, and
+the 5 that do not say so on the row.
+
+`scripts/xlsx_reader.py` now addresses sheets by NAME rather than index, because the MCA records in
+its own notes tab that it "updated the look and feel of the licensee tabs" — a positional index
+would one day read the wrong sheet and quietly build from it.
+
+**Colorado's dated zero is no longer counted as a gap.** `co-med-rd-cultivators-tab2` was reported
+"not captured: only 41 bytes". Those 41 bytes are `License Number,Date Updated` and `NA,11/2/2026`
+— the MED publishing, with a date, that it has no retail-and-medical dual cultivators to list. The
+byte-size rule was right to flag it; the conclusion drawn from it was wrong. Captured sources go
+from 575 to 576, and the 2 that remain are the New York hemp-producer files, which return HTTP 403
+to every scripted client and need a person with a browser.
 
 ## The site: the public build, and the Database page (13 Nov 2026)
 
@@ -465,7 +527,7 @@ These figures are different measures on different dates and must not be reconcil
 | DC | 79 retailers (77 Active) plus 21 non-retail facilities | ABCA August 2026 report: 66 total retailers | Different source and date; the GIS layer includes internet retailers. Do NOT treat 79 as a correction to 66 |
 | PA | 181 dispensary locations | MMAB: 196 locations operational (1 June 2026); Auditor General: 195 "actively" | PASDA's layer is DOH Jan 2025 vintage, well before both |
 | NJ | 586 organisation-location rows across 517 organisations | CRC: 541 businesses opened (Feb 2026); 397 licensed under CREAMM (Dec 2025) | CRC publishes organisations, not licences, and counts operating facilities in Metrc on a different basis |
-| MD | 130 dispensaries: 127 storefronts and 3 delivery-only | MCA Jan 2026 briefing: 109 dispensaries operating | Ten months later, and the locator lists licensed rather than operating stores |
+| MD | 191 licences: 128 dispensary, 31 processor, 27 grower, 5 testing lab (from the MCA's own licence extract, Sept 2026) | MCA Jan 2026 briefing: 109 dispensaries operating | Different measures: the extract counts credentials of every type, the briefing counts operating dispensaries eight months earlier. The MCA's own operational flag covers only its 45 social-equity licences (37 Yes, 8 No) and is recorded per row as a separate measure |
 | DE | 14 storefronts across 6 operator brands | The DE report read 13 addresses across 5 brands in Oct 2026 | A sixth brand now appears: Field Supply Cannabis & Provisions, 4555 Kirkwood Hwy, Wilmington |
 
 Data defects found in the official sources and recorded per row rather than silently repaired:
@@ -476,7 +538,7 @@ Data defects found in the official sources and recorded per row rather than sile
 
 ## Open loose ends
 - NY hemp producer list: agriculture.ny.gov returns HTTP 403 to programmatic clients and a file download to the browser pane, so neither the HTML list nor the PDF could be captured. Needs a manual download. Note it carries personal emails — private columns only.
-- MD dashboard extract (XLSX) is stored raw but unparsed: openpyxl is not installed.
+- ~~MD dashboard extract (XLSX) is stored raw but unparsed.~~ **PARSED 14 Nov 2026** — it is the source Maryland is now built from. See "Maryland publishes licence numbers after all" below.
 - MD dispensary locator also drives an ArcGIS instant app (appid 51f75b68c70f4c6d8ab0aa4f4de74f55 on maryland.maps.arcgis.com); its underlying feature service is not yet resolved.
 - PA hemp permit map is Power BI at cedatareporting.pa.gov and was not attempted; Part 5 records a live fetch returning only "Loading data...".
 - DC: the GIS retailer count (77 Active, Nov 2026) is NOT a correction to ABCA's 66 retailers (Aug 2026 report) — different source and date. Do not reconcile them into one number.

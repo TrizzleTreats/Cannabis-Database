@@ -496,7 +496,8 @@
     },
     "filename": "med_licensed_rd_cultivators_gid1589509634.csv",
     "format": "csv",
-    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page."
+    "note": "Colorado's MED publishes its licensee lists as nine public Google Sheets linked from med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities. EACH SHEET HAS TWO TABS \u2014 one medical, one retail \u2014 and a CSV export without an explicit gid silently returns only the first, which would make Colorado look medical-only. Every tab is therefore declared with its gid. Lists update monthly except testing facilities, which update as certifications renew. med.colorado.gov sits behind a Cloudflare bot check, so the sheet links had to be read through the browser pane; docs.google.com is not a .gov host but these are the regulator's own published lists, linked from its own page. EMPTY BY DESIGN, NOT A FAILED FETCH: this tab's only data row is 'NA,11/2/2026' \u2014 the MED publishing, with a date, that it has no retail-and-medical dual cultivators to list. 41 bytes is the correct content. min_bytes is lowered so a dated zero is not reported as a gap; the sniff rule that flagged it was right to, and the conclusion drawn from it was wrong.",
+    "min_bytes": 1
   },
   {
     "id": "co-med-stores-tab1",
