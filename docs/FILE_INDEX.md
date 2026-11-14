@@ -118,6 +118,8 @@ Notes:
 | scripts/merge_business_profiles.py | Groups the 2,087 entries into 1,945 one-per-business profiles, national firms under a parent, filling a primary's blanks from its own group. Deletes nothing |
 | scripts/review_business_licence_matches.py | Gives each of the 22 licence matches a verdict on evidence — legal name vs trading name, and whether the geography agrees — and records the reason |
 | scripts/match_businesses_to_licences.py | Matches directory entries against the licence tables by normalised name |
+| scripts/build_review_worksheet.py | Gathers every decision that needs a person into data/clean/review_worksheet.csv — one row per decision with the question, the page to open and what the record says now. Changes nothing |
+| data/clean/review_worksheet.csv | 805 decisions: 16 licence matches, 2 Vermont licences in a repealed class, 787 unverified directory entries. 18 are priority 1 |
 | data/clean/business_licence_matches.csv | The 22 directory entries whose name matches a licensee, with their licence ids and a reviewed verdict and reason for each |
 | data/raw/census_county_lookup.csv | Cached Census geocoder results: address -> county and county subdivision, with the matched address and status |
 | data/raw/census_counties_by_state.csv | 3,229 official counties across 56 states, from Census TIGERweb — the reference verify.py checks against |

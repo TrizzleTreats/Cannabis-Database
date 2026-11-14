@@ -699,5 +699,13 @@
     "url_must_match": "^https://www\\.nj\\.gov/cannabis/documents/businesses/Permits( |%20)and( |%20)Renewals/.+\\.pdf$",
     "dest_subdir": "permits",
     "note": "517 per-business permit PDFs, one link per row of the two tables on the CRC permitted-businesses page: 41 in the Medicinal Cannabis Businesses table and 476 in the Personal-Use table. Every URL is READ OUT OF the saved HTML named in urls_from and must match url_must_match - none is constructed or guessed, so a business whose row carries no link stays unfetched and is recorded as such. These are the only place NJ publishes a licence number: the HTML table gives organisation, business types, locations and expiration YEAR only, while each PDF is the issued permit carrying LICENSE/PERMIT NUMBER, NJ's own class wording, the facility address with its county, and a full expiration date. One permit per PDF page, so a multi-class operator's packet holds several (Verano: RE000001, RE000030, RE000002, C000009, M000007). Each file is logged to data/raw/manifest.csv on its own row."
+  },
+  {
+    "id": "pa-hemp-permit-sites",
+    "state": "pennsylvania",
+    "part5_ref": "PA 5 \u2014 PDA hemp permit sites (Power BI)",
+    "url": "https://cedatareporting.pa.gov/reports/powerbi/Public/AG/PI/PBI/PA%20Hemp%20Permit%20Sites",
+    "format": "UNAVAILABLE",
+    "note": "UNAVAILABLE as of 14 Nov 2026 \u2014 attempted and recorded rather than assumed. The report is a Power BI report hosted on a Power BI Report Server, and Part 5 recorded a live fetch returning only 'Loading data...', i.e. the rows are rendered client side. Tried on 14 Nov 2026: the report URL over http and https, plus the SSRS export parameters rs:Format=CSV and rs:Command=Render&rs:Format=CSV (which work for a paginated report but not for a .pbix). ALL timed out at the network level, and so did the host root https://cedatareporting.pa.gov/ \u2014 so the host did not respond to this network at all, which is NOT evidence about what it publishes. Needs the browser pane or a person on a different network. Pennsylvania therefore still has no hemp permit data; its 197 rows are medical dispensaries only."
   }
 ]

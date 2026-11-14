@@ -230,6 +230,38 @@ municipality at address level, which beat the village-level assumption: 56 River
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
 
+## What needs a person, in one worksheet (14 Nov 2026)
+
+`scripts/build_review_worksheet.py` gathers every decision a script cannot make into
+`data/clean/review_worksheet.csv` — **805 rows**, each with the question, the page to open and
+what the record says now. Filling in the `decision` column is what applies it.
+
+**18 are priority 1**, the ones that change what the database says:
+- **16 licence matches.** 11 match only a licensee's trading name (Treez, Nabis, High Times,
+  Cookies, incredibles, STIIIZY, Old Pal, Papa & Barkley, Harvest Moon Hydroponics, Healer,
+  CannaBiz Consulting Group) — HANDOFF's "operates under another company's licence", but which
+  brand it is needs a person. 4 match by legal name with no geography to check against (Green Acres
+  Organic Pharms, Simply Sol, New River Distilling, Treadwell Farms). 1 is A1 Organics, where the
+  evidence says different business and a person need only confirm the drop.
+- **2 Vermont licences in a class that no longer exists.** Vermont Patients Alliance (Middlesex)
+  and FWR, Inc. (Brandon) are `Integrated`, which Act 176 repealed on 1 July 2026 (§909 repealed;
+  §901(d) now lists six types). Their current class needs checking against the CCB portal.
+
+The remaining 787 are the directory entries an audit could not confirm. They are already held back
+from the public site, and a decision releases one.
+
+Still blocked on a person with a browser, and nothing else:
+- **Minnesota** — https://mn.gov/ocm/data-reports/application-data/ serves a Radware Bot Manager
+  hCaptcha. Solving one is off limits, so this is the only route. Save into data/raw/minnesota/.
+- **New York hemp producers** — both files return HTTP 403 to every scripted client:
+  `agriculture.ny.gov/system/files/documents/2025/12/licensed_hemp_producers.pdf` and
+  `agriculture.ny.gov/plant-industry/licensed-hemp-producers`. CONTAINS PERSONAL EMAILS — private
+  columns only.
+- **New Hampshire** — the DHHS PDF its 7 hand-transcribed ATC rows came from. Those are the only 7
+  rows of 50,697 whose source document is not on disk to re-verify against.
+- **26 regulators that publish no licensee list** — these need a data request, which has to come
+  from a person with a reply address. Claude can draft all 26.
+
 ## Maryland publishes licence numbers after all (14 Nov 2026)
 
 Part 5 recorded the MCA data dashboard as a 404 and concluded Maryland published no downloadable
@@ -539,8 +571,8 @@ Data defects found in the official sources and recorded per row rather than sile
 ## Open loose ends
 - NY hemp producer list: agriculture.ny.gov returns HTTP 403 to programmatic clients and a file download to the browser pane, so neither the HTML list nor the PDF could be captured. Needs a manual download. Note it carries personal emails — private columns only.
 - ~~MD dashboard extract (XLSX) is stored raw but unparsed.~~ **PARSED 14 Nov 2026** — it is the source Maryland is now built from. See "Maryland publishes licence numbers after all" below.
-- MD dispensary locator also drives an ArcGIS instant app (appid 51f75b68c70f4c6d8ab0aa4f4de74f55 on maryland.maps.arcgis.com); its underlying feature service is not yet resolved.
-- PA hemp permit map is Power BI at cedatareporting.pa.gov and was not attempted; Part 5 records a live fetch returning only "Loading data...".
+- MD dispensary locator also drives an ArcGIS instant app (appid 51f75b68c70f4c6d8ab0aa4f4de74f55 on maryland.maps.arcgis.com); its feature service is still unresolved, but the value of doing so dropped on 14 Nov 2026: Maryland is now built from the MCA's own licence extract, and the locator's addresses and counties are already parsed. The app would at most supply addresses for the 5 dispensaries whose trading name does not match the locator. It would NOT supply the 63 grower/processor/lab addresses, which the MCA does not publish anywhere.
+- PA hemp permit map: **attempted 14 Nov 2026 and recorded UNAVAILABLE** (`pa-hemp-permit-sites` in sources.json). It is a Power BI report on a Power BI Report Server, so its rows render client-side — Part 5 saw only "Loading data...". Tried the report URL over http and https and the SSRS export parameters `rs:Format=CSV` and `rs:Command=Render&rs:Format=CSV` (which work for a paginated report, not a .pbix). All timed out at the network level, and so did the host root, so the host did not respond to this network at all — which says nothing about what it publishes. Needs the browser pane or a person. PA still has no hemp data; its 197 rows are medical dispensaries only.
 - DC: the GIS retailer count (77 Active, Nov 2026) is NOT a correction to ABCA's 66 retailers (Aug 2026 report) — different source and date. Do not reconcile them into one number.
 - NY: the OCM dataset has 3,056 rows but only 2,286 distinct licence numbers, and 385 rows carry no licence number at all — those are applicants under proximity protection. Row count is not a licence count, and neither figure should be compared directly with the OCM 2025 Annual Report's 2,008 active (30 Nov 2025).
 - CT: 465 records in the fresh download are applications that never became licences (DENIED, EXPIRED APPLICATION / NSF PAYMENT DUE, WITHDRAWN, INSPECTION INCOMPLETE) and are excluded from the licence table. The rule is in scripts/build_new_england.py; it keys on statusreason, not status, because "EXPIRED APPLICATION / PROVISIONAL LICENSE EXPIRED" was a real licence.
