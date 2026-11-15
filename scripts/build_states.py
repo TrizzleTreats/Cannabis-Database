@@ -56,6 +56,15 @@ def title(s):
 NA_TOKENS = {"data not available", "not published", "na", "n/a", "none", "unknown", "not available", "-"}
 
 
+def extras(**kw):
+    """key=value pairs for extra_details, skipping anything empty.
+
+    Same shape build_mid_atlantic.py uses, so the field reads identically
+    whichever table a row came from.
+    """
+    return "; ".join(f"{k.replace('_', ' ')}={v}" for k, v in kw.items() if v not in ("", None))
+
+
 def na(s):
     """Blank the placeholder strings regulators ship instead of empty cells.
     Writing "Data Not Available" into a town column would publish it as a place."""
@@ -895,10 +904,118 @@ def build_hi(blank, warn):
     return rows
 
 
+
+# ------------------------------------------------------- USDA hemp producers
+# Where a state runs no USDA-approved hemp plan of its own, its hemp producers
+# are licensed FEDERALLY and appear in the USDA's own licensee list, not in any
+# state register. data/clean/usda_hemp_licensees_national.csv holds that list
+# (3,635 producers, USDA FOIA extract dated 5 May 2026) and it had never been
+# built into a licence table, so 25 jurisdictions read as having no licence data
+# at all while a real, dated, official licence universe for them sat on disk.
+#
+# Scope is deliberately narrow, because the USDA extract OVERLAPS state data:
+# 166 of its licence numbers already exist as licence_ids here — 153 Florida and
+# 13 Connecticut, the same businesses at the same towns. Florida's overlap hides
+# behind different name fields (FDACS publishes the responsible person where
+# USDA publishes the business), so a name check finds 6 where a number check
+# finds 153. Adding the list wholesale would therefore double-count.
+#
+# So only the 25 jurisdictions with NO licence data of their own are built from
+# it — 2,009 rows, verified to collide with nothing. The 1,623 USDA producers in
+# states that DO have their own data are left out and recorded in STATUS as an
+# open question, because deciding whether each is a licence the state list
+# missed or the same business under a different number is per-state work.
+USDA_FILE = ROOT / "data" / "clean" / "usda_hemp_licensees_national.csv"
+USDA_SRC = ("USDA AMS, list of USDA-licensed hemp producers (FOIA extract) — a FEDERAL hemp "
+            "producer licence, not a state licence")
+# Jurisdictions this table and its two siblings already carry licence data for.
+# A USDA row for one of these is NOT built; see the note above.
+USDA_SKIP_STATES = {"AL", "CA", "CO", "CT", "DC", "DE", "FL", "HI", "IL", "MA", "MD", "ME",
+                    "MO", "NH", "NJ", "NV", "NY", "OH", "OR", "PA", "RI", "TX", "VA", "VT", "WA"}
+USDA_STATE_CODE = {
+    "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA",
+    "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE", "District Of Columbia": "DC",
+    "Florida": "FL", "Georgia": "GA", "Hawaii": "HI", "Idaho": "ID", "Illinois": "IL",
+    "Indiana": "IN", "Iowa": "IA", "Kansas": "KS", "Kentucky": "KY", "Louisiana": "LA",
+    "Maine": "ME", "Maryland": "MD", "Massachusetts": "MA", "Michigan": "MI",
+    "Minnesota": "MN", "Mississippi": "MS", "Missouri": "MO", "Montana": "MT",
+    "Nebraska": "NE", "Nevada": "NV", "New Hampshire": "NH", "New Jersey": "NJ",
+    "New Mexico": "NM", "New York": "NY", "North Carolina": "NC", "North Dakota": "ND",
+    "Ohio": "OH", "Oklahoma": "OK", "Oregon": "OR", "Pennsylvania": "PA",
+    "Rhode Island": "RI", "South Carolina": "SC", "South Dakota": "SD", "Tennessee": "TN",
+    "Texas": "TX", "Utah": "UT", "Vermont": "VT", "Virginia": "VA", "Washington": "WA",
+    "West Virginia": "WV", "Wisconsin": "WI", "Wyoming": "WY",
+}
+
+
+def build_usda_hemp(blank, warn):
+    if not USDA_FILE.exists():
+        warn.append(("USDA hemp file", "missing"))
+        return []
+    with open(USDA_FILE, newline="", encoding="utf-8") as f:
+        src = list(csv.DictReader(f))
+    rows = []
+    for r in src:
+        name = clean(r.get("state_name"))
+        code = USDA_STATE_CODE.get(name.title())
+        if not code:
+            # Puerto Rico appears in the extract; this project covers the 50
+            # states and DC, so it is reported and left out rather than dropped
+            # silently.
+            warn.append(("USDA state outside the 50 states + DC", name))
+            continue
+        if code in USDA_SKIP_STATES:
+            continue
+        status = clean(r.get("status"))
+        # Both published values are live licences. "Active on Corrective Action
+        # Plan" is still active, so it maps to Active — and the regulator's own
+        # wording stays in `status`, with the plan noted so the distinction is
+        # not lost.
+        extra = {}
+        if "corrective action" in status.lower():
+            extra["corrective action plan"] = ("USDA records this producer as active ON a "
+                                               "corrective action plan — still licensed, and a "
+                                               "distinction the standard status cannot carry")
+        row = dict(blank)
+        row.update({
+            "licence_id": clean(r.get("licence_number")), "state": code,
+            "program": "Hemp", "category": "Hemp Grower",
+            "licence_type": "USDA Hemp Producer License",
+            "legal_name": title(na(r.get("account"))), "holder_is_individual": "",
+            "status": status, "standard_status": "Active" if status else "",
+            "issue_date": iso(r.get("issue_date")), "expiry_date": iso(r.get("expiration_date")),
+            "street_address": na(r.get("street")), "town": title(na(r.get("city"))),
+            "town_as_listed": na(r.get("city")),
+            "location_basis": "Producer address as published by USDA",
+            "source": USDA_SRC, "source_url": clean(r.get("source_url")),
+            "data_as_of": clean(r.get("data_as_of")),
+            "extra_details": extras(
+                zip_code=clean(r.get("zip")),
+                federal_licence=("this is a USDA licence issued under the federal hemp "
+                                 "production programme, because this state runs no "
+                                 "USDA-approved plan of its own — it is NOT a state licence"),
+                street_withheld=("USDA withholds the producer's street address; it publishes "
+                                 "city, state and ZIP only"
+                                 if not na(r.get("street")) else ""),
+                # Written here so fill_counties' generic note does not stand in
+                # for it: the blocker is specifically the missing street, and
+                # the published ZIP is what a later pass can use.
+                county_unavailable=("USDA publishes city, state and ZIP but withholds the street, "
+                                    "and the Census geocoder returns no match without one "
+                                    "(tested 14 Nov 2026 on city+ZIP: 0 matches). A ZIP-to-county "
+                                    "crosswalk is the official route, and must handle a ZIP that "
+                                    "spans counties rather than picking one silently"
+                                    if not na(r.get("street")) else ""),
+                **extra),
+        })
+        rows.append(row)
+    return rows
+
+
 BUILDERS = {"CA": build_ca, "OR": build_or, "WA": build_wa, "NV": build_nv,
             "TX": build_tx, "AL": build_al, "CO": build_co, "FL": build_fl,
             "VA": build_va, "IL": build_il, "OH": build_oh, "MO": build_mo,
-            "HI": build_hi}
+            "HI": build_hi, "USDA": build_usda_hemp}
 
 
 

@@ -8,7 +8,7 @@
 - New England licence table rebuilt from data/raw/ on 12 Nov 2026 (scripts/build_new_england.py): 3,917 to 4,267 rows. CT 253 to 498, MA 967 to 1,072; ME, VT, RI and NH carried forward unchanged because their raw files hold nothing the table did not already have. A `standard_status` column was added so one search spans all six states.
 - Mid-Atlantic raw licence data captured for all six jurisdictions (scripts/fetch_raw.py, declared in scripts/sources.json, logged in data/raw/manifest.csv). 23 of 24 declared sources fetched.
 - Mid-Atlantic clean table built: data/clean/mid_atlantic_licences.csv, 4,236 rows (scripts/build_mid_atlantic.py). NY 3,056, NJ 678, PA 197, MD 191, DC 100, DE 14. Same columns as the New England table, in the same order, so the two union cleanly. NJ was rebuilt from its permit PDFs on 12 Nov 2026 (586 → 678) and PA's dispensary source moved to the DOH PDF (181 → 197).
-- Regions 3-9 started: data/clean/regions_3_to_9_licences.csv, 41,026 rows across 7 of 39 jurisdictions (scripts/build_states.py). CA 20,984, TX 12,853, OR 3,701, CO 1,832, WA 1,226, NV 345, AL 85. Same 41 columns as the other two tables, so all three union to 49,360 rows.
+- Regions 3-9: data/clean/regions_3_to_9_licences.csv, 44,203 rows (scripts/build_states.py), one declarative spec per state plus a USDA federal-hemp spec. CA 20,984, TX 12,853, OR 3,701, CO 1,832, WA 1,226, FL 289, IL 289, MO 238, OH 232, NV 345, HI 94, AL 85, VA 26, and 2,009 USDA hemp producers across 25 further jurisdictions. Same column set as the other two tables; all three union to 52,706 rows across **50 of the 51 jurisdictions**.
 - Business directory built: all 11 audited directories parsed into data/clean/businesses_master.csv, 355 to 2,087 entries, every row on HANDOFF's 17 standard categories (scripts/build_businesses.py). California 371, National 237, Great Lakes 196, Plains 192, Pacific 192, Southeast 189, Mid-Atlantic 173, Southwest 165, South Central 130, Mountain 124, New England 118.
 - Business-to-licence matching done (scripts/match_businesses_to_licences.py): 22 directory entries hold a state licence under the same name, flagged on the row with their licence numbers and written to data/clean/business_licence_matches.csv.
 - USDA hemp list (May 2026) parsed.
@@ -26,11 +26,7 @@
    - Do not take a result from the unofficial county totals. A recount has already changed one county's count, and the project's rule against reconciling two differently-dated figures applies to election returns as much as to licence counts.
 2. The remaining **1,005** county gaps (CA 275, CO 240, NY 196, HI 64, FL 59, TX 51, IL 36, ME 23, PA 22, MO 11, AL 9, CT 5, VA 4, MD 3, MA 2, RI 2, NJ 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish. Down from 1,133: New Jersey's permits closed 86, Connecticut's villages 8, and fixing the wrong-state geocode query closed 34 in Texas.
 3. Resolve the licence numbers **PA and DE** do not publish — they publish none anywhere found so far. **NJ and MD are DONE**: NJ's 655 licences carry the CRC's real numbers, and MD's 191 carry the MCA's (see "New Jersey: rebuilt from the permit PDFs" and "Maryland publishes licence numbers after all" below).
-4. **BUILD THE USDA HEMP LIST INTO THE LICENCE TABLES — the biggest remaining win, and the data is already on disk.** Found 14 Nov 2026 while verifying the data-request recipients. `data/clean/usda_hemp_licensees_national.csv` holds 3,635 federally licensed hemp producers from the USDA's 5 May 2026 FOIA extract, and **2,009 of them are in 25 of the 26 jurisdictions this project records as having no licence data** (every one except Alaska). It has never been built into the three licence tables, so those states read as empty when a real, dated, official licence universe for them is sitting in data/clean.
-   - Per state: NC 666, WI 290, MN 194, TN 175, MS 119, IN 104, KS 83, GA 71, KY 51, NE 41, OK 34, IA 23, LA 22, SD 20, AZ 19, WV 19, UT 17, AR 13, MI 12, ID 9, NM 8, SC 6, MT 5, WY 5, ND 3.
-   - Every row carries a real federal licence number, the holder's name, city, ZIP, status (3,559 Active, 76 Active on Corrective Action Plan), issue and expiry dates, the source URL and the extract date. **Street is withheld by USDA** (118 of 3,635), so county cannot be geocoded at address level — a Census ZCTA-to-county crosswalk is the official route, with multi-county ZIPs flagged rather than guessed.
-   - It must be labelled for what it is: a **federal** USDA hemp producer licence, not a state licence. A state running its own USDA-approved plan licenses its own growers and they do NOT appear here — which is exactly why this list is the right licence universe for the states where USDA administers instead.
-   - **Wisconsin is the clean case.** DATCP's own hemp page states that from 1 January 2022 Wisconsin hemp growers are licensed by the USDA and DATCP discontinued its programme. So Wisconsin's 290 USDA producers ARE its hemp licence universe, and there may be nothing to ask the state for at all.
+4. DONE (14 Nov 2026) — see "The USDA hemp list: 25 jurisdictions to 50" below. 2,009 federal hemp licences built in, taking coverage from 25 of 51 jurisdictions to 50.
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
@@ -341,6 +337,72 @@ Still blocked on a person with a browser, and nothing else:
     addressed to the *Alabama* Medical Cannabis Commission, which its report mentions
     comparatively, and four letters carried sentence fragments as the recipient ("Office of
     Medical Cannabis ceased accepting permit").
+
+## The USDA hemp list: 25 jurisdictions to 50 (14 Nov 2026)
+
+Found while verifying the data-request recipients, by following Wisconsin's own statement that its
+growers are USDA-licensed. `data/clean/usda_hemp_licensees_national.csv` had held the USDA's 5 May
+2026 FOIA extract — 3,635 federally licensed hemp producers — since the earlier chat, and it had
+never been built into a licence table. So 25 jurisdictions read as having no licence data at all
+while a real, dated, official licence universe for them sat in data/clean.
+
+**2,009 rows are now built, and licence coverage goes from 25 of 51 jurisdictions to 50.** Only
+Alaska has none in the extract. NC 666, WI 290, MN 194, TN 175, MS 119, IN 104, KS 83, GA 71,
+KY 51, NE 41, OK 34, IA 23, LA 22, SD 20, AZ 19, WV 19, UT 17, AR 13, MI 12, ID 9, NM 8, SC 6,
+MT 5, WY 5, ND 3.
+
+**Scope is deliberately narrow, because the extract OVERLAPS state data.** 166 of its licence
+numbers already existed as licence_ids here — 153 Florida and 13 Connecticut, the same businesses
+at the same towns. Florida's overlap hides behind different name fields: FDACS publishes the
+responsible person where USDA publishes the business, so a name check finds 6 where a number check
+finds 153. Building the list wholesale would have double-counted. So only the 25 jurisdictions with
+no data of their own are built from it, verified against every existing licence_id to collide with
+nothing.
+
+**That leaves 1,623 USDA producers in states that DO have their own data, deliberately not built,
+and it is an open question.** Deciding whether each is a licence the state's own list missed or the
+same business under a different number is per-state work: FL 339, TX 325, CO 112, MO 108, NY 107,
+VA 107, CA 81, PA 73 and the rest.
+
+What the rows carry: a real federal licence number, holder name, city, ZIP, the regulator's own
+status, issue and expiry dates, source URL and extract date. Every row says on its face that it is
+a **federal** USDA licence and not a state one — a state running its own USDA-approved plan
+licenses its own growers, who do not appear in this extract, which is precisely why it is the right
+universe for the states where USDA administers instead.
+
+Three judgements:
+- **"Active on Corrective Action Plan" (76 rows) maps to Active**, because it is still a live
+  licence. The regulator's own wording stays in `status` and the plan is named in `extra_details`,
+  so the distinction the standard statuses cannot carry is not lost.
+- **Puerto Rico's 3 producers are reported and left out.** This project covers the 50 states and
+  DC; dropping them silently would have been the wrong kind of quiet.
+- **8 rows needed the existing `~n` id suffix** to stay distinct, 3 of them because the USDA
+  extract itself repeats a licence number.
+
+**No county, and the reason is specific.** USDA withholds the producer's street address — it is
+present on 118 of 3,635 rows — and the Census geocoder returns no match without one, tested on
+14 Nov 2026 with city+ZIP and with the ZIP as the street line: 0 matches both ways. So county gaps
+rise from 1,005 to 3,037, every new one saying exactly that. **A ZIP-to-county crosswalk is the
+official route**, and the next pass needs one host approved (www2.census.gov, where the Census
+publishes its ZCTA relationship files, is not in the allowlist) plus a decision about a ZIP that
+spans counties — it must not pick one silently.
+
+**The pipeline order, which I had been running incomplete.** `fill_counties.py` has a third step,
+`--validate`, that writes the `county not valid for this state=` flag verify.py exempts against.
+Rebuilding this table wrote fresh rows without it, and two Ohio rows failed the county check —
+rows where Ohio's own DCC GIS layer publishes "Painesville Township" and "Lewis Center" in its
+county field. The flag is the record of a regulator's error, not a workaround, and it has to be
+re-applied after any rebuild:
+
+```
+scripts/build_states.py
+scripts/fill_counties.py --apply
+scripts/fill_counties.py --canonicalise
+scripts/fill_counties.py --validate        <- this one
+scripts/add_standard_type.py --apply
+scripts/build_site_data.py
+scripts/verify.py
+```
 
 ## Maryland publishes licence numbers after all (14 Nov 2026)
 

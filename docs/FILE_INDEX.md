@@ -89,7 +89,7 @@ Every report copied into this folder, with the name it had on my phone. All pass
 | data/clean/vt_licences.csv | Vermont CCB active licences, 520 |
 | data/clean/ma_towns.csv | Massachusetts CCC municipal zoning tracker, all 351 towns |
 | data/clean/ct_towns.csv | Connecticut town zoning status, 169 towns |
-| data/clean/usda_hemp_licensees_national.csv | USDA-licensed hemp producers, 3,635 (USDA FOIA list dated 5 May 2026; street, phone and email withheld by USDA) |
+| data/clean/usda_hemp_licensees_national.csv | USDA-licensed hemp producers, 3,635 (USDA FOIA list dated 5 May 2026; street, phone and email withheld by USDA). 2,009 of these are built into regions_3_to_9_licences.csv for the 25 jurisdictions with no state data; 166 overlap existing licence_ids (153 FL, 13 CT) and 1,623 in already-built states are left out pending a per-state decision |
 | data/clean/national_businesses.csv | National business directory, 237 (from reports/businesses/national-businesses-audited.html) |
 | data/clean/new_england_businesses.csv | New England business directory, 118 (from reports/businesses/new-england-businesses-audited.html) |
 | data/clean/businesses_master.csv | Both combined, 355 |
@@ -109,7 +109,7 @@ Notes:
 | scripts/sources.json | Source declarations: Part 5 reference, URL, expected format and the limitation the audit recorded for each |
 | scripts/build_new_england.py | Rebuilds data/clean/new_england_licences.csv from data/raw/, carrying forward enrichment raw cannot supply |
 | scripts/build_mid_atlantic.py | Builds data/clean/mid_atlantic_licences.csv from data/raw/ for NY, PA, NJ, DE, MD and DC |
-| scripts/build_states.py | Spec-driven builder for data/clean/regions_3_to_9_licences.csv — one declarative spec per state |
+| scripts/build_states.py | Spec-driven builder for data/clean/regions_3_to_9_licences.csv — one declarative spec per state, plus a USDA spec that builds the federal hemp producers for the 25 jurisdictions with no state-licensed data of their own |
 | scripts/discover_sources.py | Walks the licensee pages the reports cite and records the data files they link to |
 | scripts/xlsx_reader.py | Reads .xlsx straight from its zip (shared strings, inline strings, 1900-epoch date serials). Sheets are addressable by NAME, not just index, because regulators reorganise their tabs |
 | scripts/fill_counties.py | Fills, canonicalises and validates the county column from the Census geocoder and NJ's CRC table. Reads the geocoder's County Subdivisions layer too, which is what resolves a Connecticut village to its town and so to a traditional county; asks about the state the premises are in rather than the licensing state; and clears a stale "county unavailable" note whenever it supplies a county |
