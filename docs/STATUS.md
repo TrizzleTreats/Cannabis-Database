@@ -30,7 +30,7 @@
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-8. Build the site — STARTED (13 Nov 2026). The public data build and the Database page are done; see "The site" below. Still to build: the home page's legal-status map (blocked on per-state sourced status, which is the next real job), the state pages and their county maps, the federal page, and profile pages.
+8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page** and the terms page (see "The site" below). Still to build: the home page's legal-status map, the county and city pages with their maps, licence profile pages, and the Laws / Taxes / Market tabs on each state page — those three rest on the law rather than licence data, and each says so on its face rather than showing an empty frame.
 
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
@@ -337,6 +337,46 @@ Still blocked on a person with a browser, and nothing else:
     addressed to the *Alabama* Medical Cannabis Commission, which its report mentions
     comparatively, and four letters carried sentence fragments as the recipient ("Office of
     Medical Cannabis ceased accepting permit").
+
+## State pages and the federal page (14 Nov 2026)
+
+`site/state.html` serves all 50 jurisdictions from the per-state JSON rather than 50 generated
+files, with HANDOFF's six tabs. Three are backed by data and three are not, and the three that are
+not say so:
+
+- **Overview** — record counts, how many carry the regulator's own number, counties with at least
+  one, records with no county published, programmes as the regulator classifies them, a county
+  table, and the sources the data came from.
+- **Licences** — the state's own licence names first, which is what HANDOFF asks for ("Show the
+  state's own licence name on state pages; use the standard type for search"). Colorado reads
+  `Retail Marijuana Store` 636, `RMJ Delivery Permit` 10, `Hospitality & Sales Business` 4 beside
+  the standard types. Clicking a standard type or a county opens the Database already filtered.
+- **Business** — points at the services side of the Database.
+- **Laws, Taxes, Market** — each explains what it will cover and why it is empty: it rests on the
+  law rather than on licence data, the research exists in that state's audited report, and
+  publishing an unsourced summary of the law would be worse than publishing nothing.
+
+A state with no licence data at all (only Alaska now) says so and points at the drafted data
+request rather than rendering an empty frame.
+
+`site/federal.html` publishes the federal baseline as sourced, dated statements: the split
+scheduling at 91 FR 22714 from 28 April 2026 with adult-use remaining Schedule I, 280E lifted for
+medical only, the hemp definition changing on 11 December 2026 to total THC with a 0.4 mg per
+container cap under PL 119-37 §781 as limited by PL 119-103 §2019, the 31 December 2026 USDA
+DEA-lab testing deadline, the medical rider through 11 December 2026, and the absence of any
+federal banking statute. It also carries the two things the audited federal report leaves open —
+how a state follows or blocks a federal schedule change (Idaho §37-2702(d) follows, Tennessee
+Pub. Ch. 789 blocks) and whether a tribal medical programme counts as "state-licensed".
+
+**Verified in the browser this time, and it caught a bug the static checks could not.** `state.html`
+called `render()` during module evaluation while the `const` arrow functions it uses were still in
+their temporal dead zone — valid syntax, and the page rendered nothing but its tab strip. Those are
+now hoisted function declarations. Checked afterwards: Colorado's full tab set, Alaska's no-data
+message, Wisconsin's Laws tab, the federal page, and the drill-through from Colorado's county table
+into the Database, which lands on 553 of 1,832 Denver licences — the same 553 the state page shows.
+
+A reminder for the next session: Bash cannot reach localhost in this sandbox, so a `curl` smoke test
+hangs rather than failing. The browser pane and `preview_logs` are the only usable evidence.
 
 ## The USDA hemp list: 25 jurisdictions to 50 (14 Nov 2026)
 

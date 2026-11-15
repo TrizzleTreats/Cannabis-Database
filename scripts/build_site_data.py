@@ -160,7 +160,14 @@ def main():
             "default_search_set": sum(1 for r in rows
                                       if r["standard_status"] in ("Active", "Provisional")),
             "counties": len(counties),
+            "by_county": dict(counties.most_common()),
             "rows_without_a_county": sum(1 for r in rows if not r["county"]),
+            "programs": dict(collections.Counter(
+                r["program"] for r in rows if r["program"]).most_common()),
+            # The state's own licence names, which HANDOFF wants shown on a
+            # state page in preference to the standard type.
+            "licence_types_as_the_state_names_them": dict(collections.Counter(
+                r["licence_type"] for r in rows if r["licence_type"]).most_common()),
             # Never one number: these are different measures on different dates.
             "data_as_of": asof[0] if len(asof) == 1 else {"earliest": asof[0], "latest": asof[-1]},
             "sources": sorted({r["source"] for r in rows if r["source"]})[:12],

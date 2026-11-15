@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>State — US Cannabis &amp; Hemp Law</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main id="main">
+  <h2 id="title">State</h2>
+  <p class="note" id="lede"></p>
+
+  <div class="segmented" id="tabs" style="margin:1rem 0"></div>
+  <section id="panel"></section>
+</main>
+
+<script type="module">
+import { loadJSON, fmt, el, mountFooter, mountTopbar, statusBadge } from "./assets/app.js";
+
+mountTopbar(document.body, "state.html");
+mountFooter(document.body);
+
+const NAMES = { AL:"Alabama", AK:"Alaska", AZ:"Arizona", AR:"Arkansas", CA:"California",
+  CO:"Colorado", CT:"Connecticut", DE:"Delaware", DC:"District of Columbia", FL:"Florida",
+  GA:"Georgia", HI:"Hawaii", ID:"Idaho", IL:"Illinois", IN:"Indiana", IA:"Iowa", KS:"Kansas",
+  KY:"Kentucky", LA:"Louisiana", ME:"Maine", MD:"Maryland", MA:"Massachusetts", MI:"Michigan",
+  MN:"Minnesota", MS:"Mississippi", MO:"Missouri", MT:"Montana", NE:"Nebraska", NV:"Nevada",
+  NH:"New Hampshire", NJ:"New Jersey", NM:"New Mexico", NY:"New York", NC:"North Carolina",
+  ND:"North Dakota", OH:"Ohio", OK:"Oklahoma", OR:"Oregon", PA:"Pennsylvania", RI:"Rhode Island",
+  SC:"South Carolina", SD:"South Dakota", TN:"Tennessee", TX:"Texas", UT:"Utah", VT:"Vermont",
+  VA:"Virginia", WA:"Washington", WV:"West Virginia", WI:"Wisconsin", WY:"Wyoming" };
+
+/* HANDOFF's state page has six tabs. Three of them rest on the law rather than
+   on licence data, and that research is not published yet — so they say so
+   instead of showing an empty frame that looks like "nothing here". */
+const TABS = [
+  ["overview", "Overview", true],
+  ["licences", "Licences", true],
+  ["laws", "Laws", false],
+  ["taxes", "Taxes", false],
+  ["business", "Business", true],
+  ["market", "Market", false],
+];
+
+const q = new URLSearchParams(location.search);
+const code = (q.get("state") || "").toUpperCase();
+let tab = q.get("tab") || "overview";
+const summary = await loadJSON("summary.json");
+const s = summary.states[code];
+
+document.getElementById("title").textContent = NAMES[code]
+  ? `${NAMES[code]} (${code})` : "Choose a state";
+
+if (!NAMES[code]) {
+  document.getElementById("panel").replaceChildren(el("div", { class: "table-scroll" },
+    el("table", {}, el("thead", {}, el("tr", {}, el("th", {}, "State"),
+        el("th", { class: "num" }, "Licences"))),
+      el("tbody", {}, Object.entries(summary.states)
+        .sort((a, b) => b[1].licences - a[1].licences)
+        .map(([c, st]) => el("tr", {},
+          el("td", {}, el("a", { href: `state.html?state=${c}` }, NAMES[c] || c)),
+          el("td", { class: "num", text: fmt(st.licences) })))))));
+} else {
+  renderTabs();
+  render();
+}
+
+function renderTabs() {
+  const host = document.getElementById("tabs");
+  host.replaceChildren(...TABS.map(([id, label, backed]) =>
+    el("button", {
+      type: "button",
+      "aria-pressed": String(id === tab),
+      title: backed ? "" : "Not published yet — this tab rests on the law, not on licence data",
+      onclick: () => {
+        tab = id;
+        const p = new URLSearchParams(location.search);
+        p.set("state", code); p.set("tab", id);
+        history.replaceState(null, "", `?${p}`);
+        renderTabs(); render();
+      },
+    }, backed ? label : `${label} ·`)));
+}
+
+function asof(st) {
+  return typeof st.data_as_of === "string"
+    ? st.data_as_of : `${st.data_as_of.earliest} – ${st.data_as_of.latest}`;
+}
+
+function render() {
+  const panel = document.getElementById("panel");
+  const lede = document.getElementById("lede");
+
+  if (!s) {
+    lede.textContent = "";
+    panel.replaceChildren(el("div", { class: "panel" },
+      el("p", {}, `This project holds no licence data for ${NAMES[code]} yet. `,
+        "Its regulator publishes licence data only through a lookup that answers one record at a ",
+        "time, which cannot be enumerated, and a data request has been drafted for it — see ",
+        el("code", {}, "outreach/data-requests/"), " in the repository.")));
+    return;
+  }
+  lede.textContent = `${fmt(s.licences)} licence records, read ${asof(s)}. `
+    + `${fmt(s.default_search_set)} are Active or Provisional — the default search set. `
+    + `These are different measures on different dates and must not be added into one figure.`;
+
+  if (tab === "overview") return overview(panel);
+  if (tab === "licences") return licences(panel);
+  if (tab === "business") return business(panel);
+  return notYet(panel, tab);
+}
+
+function stat(n, label) {
+  return el("div", { class: "stat" },
+    el("b", { text: typeof n === "number" ? fmt(n) : n }), el("span", { text: label }));
+}
+
+function overview(panel) {
+  const counties = Object.entries(s.by_county || {});
+  panel.replaceChildren(
+    el("div", { class: "stats" },
+      stat(s.licences, "licence records"),
+      stat(s.with_a_licence_number, "with the regulator's own number"),
+      stat(s.counties, "counties with at least one"),
+      stat(s.rows_without_a_county, "records with no county published")),
+    el("h2", {}, "Programmes"),
+    el("p", { class: "note" }, "As the regulator classifies them. A record counted here under "
+      + "Hemp is a hemp licence, not a cannabis one."),
+    el("div", { class: "table-scroll" }, table(
+      ["Programme", "Records"], Object.entries(s.programs || {}),
+      ([k, v]) => [k, fmt(v)])),
+    counties.length ? el("h2", {}, `Counties (${counties.length})`) : null,
+    counties.length ? el("p", { class: "note" },
+      "Every county on every row carries the source it came from. "
+      + (s.rows_without_a_county
+        ? `${fmt(s.rows_without_a_county)} records have none, and each says why.` : "")) : null,
+    counties.length ? el("div", { class: "table-scroll" }, table(
+      ["County", "Records"], counties,
+      ([k, v]) => [el("a", { href: `database.html?state=${code}&county=${encodeURIComponent(k)}` }, k),
+                   fmt(v)])) : null,
+    el("h2", {}, "Where this came from"),
+    el("ul", { class: "note" }, (s.sources || []).map((x) => el("li", { text: x }))),
+  );
+}
+
+function licences(panel) {
+  panel.replaceChildren(
+    el("p", { class: "note" }, "The state's own licence name is what the regulator calls it. "
+      + "Clicking a standard type opens the database already filtered."),
+    el("h2", {}, "By the state's own licence name"),
+    el("div", { class: "table-scroll" }, table(
+      ["Licence name, as the state writes it", "Records"],
+      Object.entries(s.licence_types_as_the_state_names_them || {}), ([k, v]) => [k, fmt(v)])),
+    el("h2", {}, "By standard type"),
+    el("p", { class: "note" }, "The standard type is what one search spans every state with."),
+    el("div", { class: "table-scroll" }, table(
+      ["Standard type", "Records"], Object.entries(s.standard_type || {}),
+      ([k, v]) => [el("a", { href: `database.html?state=${code}&type=${encodeURIComponent(k)}` }, k),
+                   fmt(v)])),
+    el("h2", {}, "By status"),
+    el("p", { class: "note" }, "An empty status means the regulator publishes none. "
+      + "It must never be read as Active."),
+    el("div", { class: "table-scroll" }, table(
+      ["Status", "Records"], Object.entries(s.standard_status || {}),
+      ([k, v]) => [statusBadge(k, ""), fmt(v)])),
+  );
+}
+
+function business(panel) {
+  panel.replaceChildren(
+    el("p", { class: "note" },
+      `${fmt(summary.businesses.publishable)} service businesses are published across all states — `
+      + "lawyers, accountants, insurers, security, packaging and the rest. The database page "
+      + "searches them; a per-state view needs the states_served field parsed into codes, which "
+      + "is not done for every directory yet."),
+    el("p", {}, el("a", { class: "cta", href: "database.html?mode=services" },
+      "Search industry services")),
+  );
+}
+
+function notYet(panel, which) {
+  const why = {
+    laws: "possession and use, home grow, the medical programme, hemp, business rules, "
+        + "employment, consumer rules and pending bills",
+    taxes: "the state's cannabis excise and sales taxes, local add-ons, and what 280E means for "
+         + "operators in this state",
+    market: "sales, patient and operator counts published by the regulator",
+  }[which];
+  panel.replaceChildren(el("div", { class: "panel" },
+    el("h2", { style: "margin-top:0" }, "Not published yet"),
+    el("p", {}, `This tab will cover ${why}.`),
+    el("p", { class: "note" },
+      "It rests on the law rather than on licence data, and this project's rule is that every "
+      + "fact carries a source and a date. The research exists in the audited state report for "
+      + `${NAMES[code]}, but it has not been turned into sourced, dated statements yet, and `
+      + "showing an unsourced summary of the law would be worse than showing nothing. "
+      + "The licence data on the other tabs is complete and sourced.")));
+}
+
+function table(headers, rows, cells) {
+  return el("table", {},
+    el("thead", {}, el("tr", {}, headers.map((h, i) =>
+      el("th", { class: i ? "num" : "" }, h)))),
+    el("tbody", {}, rows.map((r) => {
+      const out = cells(r);
+      return el("tr", {}, out.map((c, i) => el("td", { class: i ? "num" : "" }, c)));
+    })));
+}
+</script>
+</body>
+</html>

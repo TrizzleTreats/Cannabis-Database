@@ -17,6 +17,7 @@
     </p>
     <div class="cta-row">
       <a class="cta" href="database.html">Search the database</a>
+      <a class="cta secondary" href="state.html">Browse by state</a>
       <a class="cta secondary" href="federal.html">Federal law</a>
     </div>
   </div>
@@ -43,8 +44,11 @@
   <h2>Licences, by jurisdiction</h2>
   <p class="note">
     The regulators publish separately and on different dates, so these counts are not a single
-    national figure and must not be added into one. 26 jurisdictions publish no licensee list at
-    all — they answer one lookup at a time, which cannot be enumerated.
+    national figure and must not be added into one. <strong>26 state regulators publish no
+    licensee list at all</strong> — they answer one lookup at a time, which cannot be enumerated.
+    Those states appear here anyway, because where a state runs no hemp plan of its own its
+    producers are licensed <em>federally</em> and appear in the USDA's own list. A row marked
+    Hemp Grower with a USDA source is a federal licence, not a state one.
   </p>
   <div class="table-scroll">
     <table id="states">
@@ -72,7 +76,7 @@ const t = summary.totals;
 const stat = (n, label) => el("div", { class: "stat" }, el("b", { text: fmt(n) }), el("span", { text: label }));
 document.getElementById("stats").replaceChildren(
   stat(t.licences, "licence records"),
-  stat(t.jurisdictions_with_licence_data, "jurisdictions with a published list"),
+  stat(t.jurisdictions_with_licence_data, "jurisdictions with licence data"),
   stat(t.licences_with_a_county, "records placed in a county"),
   stat(summary.businesses.publishable, "service businesses"),
 );
@@ -96,7 +100,7 @@ document.querySelector("#states tbody").replaceChildren(...rows.map(([code, s]) 
   const read = typeof s.data_as_of === "string" ? s.data_as_of
     : `${s.data_as_of.earliest} – ${s.data_as_of.latest}`;
   return el("tr", {},
-    el("td", {}, el("a", { href: `database.html?state=${code}` }, code)),
+    el("td", {}, el("a", { href: `state.html?state=${code}` }, code)),
     el("td", { class: "num", text: fmt(s.licences) }),
     el("td", { class: "num", text: fmt(s.default_search_set) }),
     el("td", { class: "num", text: s.counties ? fmt(s.counties) : "—" }),
