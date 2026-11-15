@@ -57,6 +57,8 @@ be published by me in any case.
 
 No dispensary list file appears on either the Marijuana Licensing or Medical Marijuana pages. The only such file found anywhere in the crawl sits on a private site, which this project's primary-sources rule excludes.
 
+For completeness: I already hold the USDA's own list of hemp producers licensed federally, which includes 19 in Arizona as of 5 May 2026. If USDA administers the hemp plan here rather than your agency, I am not asking you to duplicate that — only for whatever licence, permit or registration your agency issues itself.
+
 **Practicalities**
 
 Electronic delivery by email or a download link is ideal, and I am happy to

@@ -10,7 +10,7 @@ Each letter needs three things added before it goes out — the agency confirmed
 |---|---|---|
 | Alaska (AK) | Marijuana Control Board | checked — see the letter |
 | Arizona (AZ) | Bureau of Marijuana Licensing, Licensing Division, Arizona Department of Health Services (ADHS) | **VERIFIED** on the agency's own site |
-| Arkansas (AR) | Medical Marijuana Commission | from the report, unverified |
+| Arkansas (AR) | Arkansas Department of Agriculture — Hemp Program (under Quality Control and Compliance). Its site does NOT name the agency that licenses medical marijuana cultivation facilities and dispensaries, so Arkansas needs a second recipient found for the cannabis side | **VERIFIED** on the agency's own site |
 | Georgia (GA) | GA Access to Medical Cannabis Commission | **VERIFIED** on the agency's own site |
 | Idaho (ID) | **not filled in — find it** | FIND THE AGENCY |
 | Indiana (IN) | Indiana Cannabis Commission | from the report, unverified |
@@ -32,10 +32,10 @@ Each letter needs three things added before it goes out — the agency confirmed
 | Tennessee (TN) | Medical Cannabis Commission | from the report, unverified |
 | Utah (UT) | SPLIT — the Utah Department of Agriculture and Food (UDAF) licenses cannabis businesses; the Center for Medical Cannabis, Utah Department of Health and Human Services, runs the medical programme. Send to UDAF for a licensee list | **VERIFIED** on the agency's own site |
 | West Virginia (WV) | Office of Medical Cannabis | checked — see the letter |
-| Wisconsin (WI) | Office of Medical Cannabis Regulation | from the report, unverified |
+| Wisconsin (WI) | Wisconsin Department of Agriculture, Trade and Consumer Protection (DATCP) — but see below: it may issue no cannabis or hemp licence at all | **VERIFIED** on the agency's own site |
 | Wyoming (WY) | **not filled in — find it** | FIND THE AGENCY |
 
-**14 of 26 are verified against the agency's own site on 14 November 2026** — the agency, what it licenses, and the route to send to. A further 3 were checked and the result is recorded in the letter: a 403 to automated clients, a host missing from this project's allowlist, or an agency that turned out to run no cannabis programme.
+**16 of 26 are verified against the agency's own site on 14 November 2026** — the agency, what it licenses, and the route to send to. A further 3 were checked and the result is recorded in the letter: a 403 to automated clients, a host missing from this project's allowlist, or an agency that turned out to run no cannabis programme.
 
 23 of 26 name a cannabis, marijuana or hemp body in their own title, which is the only basis on which a recipient is filled in here. 3 are left blank for you to fill: ID, KS, WY. A blank is deliberate — a letter addressed to the wrong agency is worse than one addressed to none.
 

@@ -57,6 +57,8 @@ be published by me in any case.
 
 Minnesota's OCM licence data page serves a Radware Bot Manager hCaptcha to any client. A records request is the route that does not depend on solving one.
 
+For completeness: I already hold the USDA's own list of hemp producers licensed federally, which includes 194 in Minnesota as of 5 May 2026. If USDA administers the hemp plan here rather than your agency, I am not asking you to duplicate that — only for whatever licence, permit or registration your agency issues itself.
+
 **Practicalities**
 
 Electronic delivery by email or a download link is ideal, and I am happy to

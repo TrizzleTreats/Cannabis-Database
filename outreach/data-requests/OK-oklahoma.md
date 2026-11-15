@@ -57,6 +57,8 @@ be published by me in any case.
 
 Oklahoma publishes dated aggregate counts on its Licensing and Tax Data page (as of 2 Nov 2026: 1,226 dispensaries, 1,582 growers, 545 processors, 42 transporters, 12 labs, 7 waste facilities) but licensee-level data only through Verify a License. This asks for the roster behind those counts.
 
+For completeness: I already hold the USDA's own list of hemp producers licensed federally, which includes 34 in Oklahoma as of 5 May 2026. If USDA administers the hemp plan here rather than your agency, I am not asking you to duplicate that — only for whatever licence, permit or registration your agency issues itself.
+
 **Practicalities**
 
 Electronic delivery by email or a download link is ideal, and I am happy to

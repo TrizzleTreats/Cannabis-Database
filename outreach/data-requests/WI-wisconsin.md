@@ -1,6 +1,6 @@
 14 November 2026
 
-Office of Medical Cannabis Regulation
+Wisconsin Department of Agriculture, Trade and Consumer Protection (DATCP) — but see below: it may issue no cannabis or hemp licence at all
 Wisconsin
 
 **Public records request — list of licensed cannabis, marijuana and hemp businesses**
@@ -57,6 +57,10 @@ be published by me in any case.
 
 Your agency's published pages do not appear to include a downloadable list of licence holders. Every regulator page cited in this project's research for this state was fetched and checked for a list-shaped data file and for embedded ArcGIS, Tableau and Power BI reports; none was found, and licence data appears to be available only through a lookup that answers one record at a time.
 
+For completeness: I already hold the USDA's own list of hemp producers licensed federally, which includes 290 in Wisconsin as of 5 May 2026. If USDA administers the hemp plan here rather than your agency, I am not asking you to duplicate that — only for whatever licence, permit or registration your agency issues itself.
+
+I also note DATCP's own hemp page states that, beginning 1 January 2022, Wisconsin hemp growers are licensed by the USDA and that DATCP discontinued its programme. If that means your agency issues no cannabis or hemp licence at all, a one-line reply saying so is a complete and welcome answer.
+
 **Practicalities**
 
 Electronic delivery by email or a download link is ideal, and I am happy to
@@ -82,9 +86,10 @@ Yours sincerely,
 
 ## Before you send this
 
-  * **Confirm the agency.** “Office of Medical Cannabis Regulation” names cannabis, marijuana or hemp in its own title and is cited 3x in a licensing context in this project's audited report. Worth a glance, not a re-research.
-    **This name came out of the report's prose, which cannot tell a body that licenses today from one proposed in a bill** — and that matters here, because these are the 26 jurisdictions with no licence data and several run no programme at all. If it turns out to be proposed rather than operating, the live recipient is almost certainly the agriculture or health department that runs the state's hemp programme.
-  * **Confirm where to send it.** Most agencies have a records-request page or a designated officer, and some want a web form rather than an email. This draft does not guess an address.
+  * **Agency — verified.** VERIFIED 14 Nov 2026 against the agency's own site, https://datcp.wi.gov/Pages/Programs_Services/Hemp.aspx — it DISCONTINUED its hemp programme on 1 January 2022; Wisconsin hemp growers are licensed by the USDA, and Wisconsin has no medical or adult-use programme.
+  * **Where to send it — verified.**
+  Public records: https://www.wi.gov/Pages/About_Us/PublicRecords.aspx
+  Contact: (608) 224-5012 · 2811 Agriculture Dr., PO Box 8911, Madison, WI 53708-8911
   * **Add the statute.** One line, from the agency's own records page. This
     letter deliberately leaves it blank rather than guess it.
 

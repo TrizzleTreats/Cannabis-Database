@@ -57,6 +57,8 @@ be published by me in any case.
 
 Your agency's published pages do not appear to include a downloadable list of licence holders. Every regulator page cited in this project's research for this state was fetched and checked for a list-shaped data file and for embedded ArcGIS, Tableau and Power BI reports; none was found, and licence data appears to be available only through a lookup that answers one record at a time.
 
+For completeness: I already hold the USDA's own list of hemp producers licensed federally, which includes 5 in Montana as of 5 May 2026. If USDA administers the hemp plan here rather than your agency, I am not asking you to duplicate that — only for whatever licence, permit or registration your agency issues itself.
+
 **Practicalities**
 
 Electronic delivery by email or a download link is ideal, and I am happy to

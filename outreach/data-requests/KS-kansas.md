@@ -59,6 +59,8 @@ Your agency's published pages do not appear to include a downloadable list of li
 
 I understand this state may license hemp only, and no adult-use or medical programme. The hemp grower, processor and handler registrations are exactly what I am asking for in that case.
 
+For completeness: I already hold the USDA's own list of hemp producers licensed federally, which includes 83 in Kansas as of 5 May 2026. If USDA administers the hemp plan here rather than your agency, I am not asking you to duplicate that — only for whatever licence, permit or registration your agency issues itself.
+
 **Practicalities**
 
 Electronic delivery by email or a download link is ideal, and I am happy to

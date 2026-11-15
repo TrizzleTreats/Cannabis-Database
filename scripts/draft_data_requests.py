@@ -44,6 +44,35 @@ import argparse, collections, html, json, pathlib, re
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
+# Hemp producers in states where USDA administers the plan are licensed
+# federally, and this project already holds that list — 3,635 producers in the
+# USDA's 5 May 2026 FOIA extract, 2,009 of them in these 26 jurisdictions. So
+# the letters say what is already held, and narrow the ask to whatever the STATE
+# itself issues. Wisconsin is the clearest case: DATCP told us on its own site
+# that it discontinued its hemp programme on 1 January 2022 and its growers are
+# licensed by USDA, so for hemp there may be nothing to ask it for at all.
+USDA_FILE = ROOT / "data" / "clean" / "usda_hemp_licensees_national.csv"
+STATE_NAMES = {
+    "AK": "Alaska", "AR": "Arkansas", "AZ": "Arizona", "GA": "Georgia", "IA": "Iowa",
+    "ID": "Idaho", "IN": "Indiana", "KS": "Kansas", "KY": "Kentucky", "LA": "Louisiana",
+    "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi", "MT": "Montana",
+    "NC": "North Carolina", "ND": "North Dakota", "NE": "Nebraska", "NM": "New Mexico",
+    "OK": "Oklahoma", "SC": "South Carolina", "SD": "South Dakota", "TN": "Tennessee",
+    "UT": "Utah", "WI": "Wisconsin", "WV": "West Virginia", "WY": "Wyoming",
+}
+
+
+def usda_counts():
+    """How many hemp producers USDA already licenses in each state."""
+    import csv as _csv
+    if not USDA_FILE.exists():
+        return {}
+    counts = collections.Counter()
+    with open(USDA_FILE, newline="", encoding="utf-8") as f:
+        for row in _csv.DictReader(f):
+            counts[(row.get("state_name") or "").strip().title()] += 1
+    return {code: counts.get(name, 0) for code, name in STATE_NAMES.items()}
+
 STATES = {
     "AK": "Alaska", "AR": "Arkansas", "AZ": "Arizona", "GA": "Georgia", "IA": "Iowa",
     "ID": "Idaho", "IN": "Indiana", "KS": "Kansas", "KY": "Kentucky", "LA": "Louisiana",
@@ -177,6 +206,21 @@ VERIFIED = {
            "No open-records link on the programme site.\n"
            "  Contact: medmarijuana@nd.gov · 701-328-1311",
            "https://mmregistration.health.nd.gov/"),
+    "AR": ("Arkansas Department of Agriculture — Hemp Program (under Quality Control and "
+           "Compliance). Its site does NOT name the agency that licenses medical marijuana "
+           "cultivation facilities and dispensaries, so Arkansas needs a second recipient found "
+           "for the cannabis side",
+           "licenses hemp growers and processors",
+           "FOIA: https://agriculture.arkansas.gov/resources/public-information/foia-requests/\n"
+           "  Contact: (501) 225-1598",
+           "https://agriculture.arkansas.gov/"),
+    "WI": ("Wisconsin Department of Agriculture, Trade and Consumer Protection (DATCP) — but see "
+           "below: it may issue no cannabis or hemp licence at all",
+           "DISCONTINUED its hemp programme on 1 January 2022; Wisconsin hemp growers are "
+           "licensed by the USDA, and Wisconsin has no medical or adult-use programme",
+           "Public records: https://www.wi.gov/Pages/About_Us/PublicRecords.aspx\n"
+           "  Contact: (608) 224-5012 · 2811 Agriculture Dr., PO Box 8911, Madison, WI 53708-8911",
+           "https://datcp.wi.gov/Pages/Programs_Services/Hemp.aspx"),
     "GA": ("GA Access to Medical Cannabis Commission",
            "licenses Class 1 Production, Class 2 Production and Dispensing. The Georgia "
            "Department of Public Health separately runs the patient registry card, so it is NOT "
@@ -414,6 +458,7 @@ def main():
     args = ap.parse_args()
     out = ROOT / args.out
     out.mkdir(parents=True, exist_ok=True)
+    usda = usda_counts()
 
     index, low = [], []
     for code, state in sorted(STATES.items(), key=lambda kv: kv[1]):
@@ -453,6 +498,18 @@ def main():
             why += ("\n\nI understand this state may license hemp only, and no adult-use or "
                     "medical programme. The hemp grower, processor and handler registrations are "
                     "exactly what I am asking for in that case.")
+        n = usda.get(code, 0)
+        if n:
+            why += (f"\n\nFor completeness: I already hold the USDA's own list of hemp producers "
+                    f"licensed federally, which includes {n} in {state} as of 5 May 2026. If USDA "
+                    f"administers the hemp plan here rather than your agency, I am not asking you "
+                    f"to duplicate that — only for whatever licence, permit or registration your "
+                    f"agency issues itself.")
+        if code == "WI":
+            why += ("\n\nI also note DATCP's own hemp page states that, beginning 1 January 2022, "
+                    "Wisconsin hemp growers are licensed by the USDA and that DATCP discontinued "
+                    "its programme. If that means your agency issues no cannabis or hemp licence "
+                    "at all, a one-line reply saying so is a complete and welcome answer.")
 
         evidence = "\n".join(f"  * {n} — named {c}x in a licensing context" for n, c in cands) \
             or "  * (nothing well-formed extracted from the report)"

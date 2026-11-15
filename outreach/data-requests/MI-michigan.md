@@ -57,6 +57,8 @@ be published by me in any case.
 
 Michigan's CRA publishes monthly Licensing Reports, but they are activity reports — prequalifications, approvals and denials for that month — not a roster of current licensees. This asks for the roster.
 
+For completeness: I already hold the USDA's own list of hemp producers licensed federally, which includes 12 in Michigan as of 5 May 2026. If USDA administers the hemp plan here rather than your agency, I am not asking you to duplicate that — only for whatever licence, permit or registration your agency issues itself.
+
 **Practicalities**
 
 Electronic delivery by email or a download link is ideal, and I am happy to

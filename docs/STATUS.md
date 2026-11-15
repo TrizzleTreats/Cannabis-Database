@@ -26,10 +26,15 @@
    - Do not take a result from the unofficial county totals. A recount has already changed one county's count, and the project's rule against reconciling two differently-dated figures applies to election returns as much as to licence counts.
 2. The remaining **1,005** county gaps (CA 275, CO 240, NY 196, HI 64, FL 59, TX 51, IL 36, ME 23, PA 22, MO 11, AL 9, CT 5, VA 4, MD 3, MA 2, RI 2, NJ 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish. Down from 1,133: New Jersey's permits closed 86, Connecticut's villages 8, and fixing the wrong-state geocode query closed 34 in Texas.
 3. Resolve the licence numbers **PA and DE** do not publish — they publish none anywhere found so far. **NJ and MD are DONE**: NJ's 655 licences carry the CRC's real numbers, and MD's 191 carry the MCA's (see "New Jersey: rebuilt from the permit PDFs" and "Maryland publishes licence numbers after all" below).
-4. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
-5. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
-6. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-7. Build the site — STARTED (13 Nov 2026). The public data build and the Database page are done; see "The site" below. Still to build: the home page's legal-status map (blocked on per-state sourced status, which is the next real job), the state pages and their county maps, the federal page, and profile pages.
+4. **BUILD THE USDA HEMP LIST INTO THE LICENCE TABLES — the biggest remaining win, and the data is already on disk.** Found 14 Nov 2026 while verifying the data-request recipients. `data/clean/usda_hemp_licensees_national.csv` holds 3,635 federally licensed hemp producers from the USDA's 5 May 2026 FOIA extract, and **2,009 of them are in 25 of the 26 jurisdictions this project records as having no licence data** (every one except Alaska). It has never been built into the three licence tables, so those states read as empty when a real, dated, official licence universe for them is sitting in data/clean.
+   - Per state: NC 666, WI 290, MN 194, TN 175, MS 119, IN 104, KS 83, GA 71, KY 51, NE 41, OK 34, IA 23, LA 22, SD 20, AZ 19, WV 19, UT 17, AR 13, MI 12, ID 9, NM 8, SC 6, MT 5, WY 5, ND 3.
+   - Every row carries a real federal licence number, the holder's name, city, ZIP, status (3,559 Active, 76 Active on Corrective Action Plan), issue and expiry dates, the source URL and the extract date. **Street is withheld by USDA** (118 of 3,635), so county cannot be geocoded at address level — a Census ZCTA-to-county crosswalk is the official route, with multi-county ZIPs flagged rather than guessed.
+   - It must be labelled for what it is: a **federal** USDA hemp producer licence, not a state licence. A state running its own USDA-approved plan licenses its own growers and they do NOT appear here — which is exactly why this list is the right licence universe for the states where USDA administers instead.
+   - **Wisconsin is the clean case.** DATCP's own hemp page states that from 1 January 2022 Wisconsin hemp growers are licensed by the USDA and DATCP discontinued its programme. So Wisconsin's 290 USDA producers ARE its hemp licence universe, and there may be nothing to ask the state for at all.
+5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
+6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
+7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
+8. Build the site — STARTED (13 Nov 2026). The public data build and the Database page are done; see "The site" below. Still to build: the home page's legal-status map (blocked on per-state sourced status, which is the next real job), the state pages and their county maps, the federal page, and profile pages.
 
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
@@ -272,9 +277,9 @@ Still blocked on a person with a browser, and nothing else:
   - **No statute is cited and no address is invented.** Every state's public-records law has its
     own name and number; a request citing the wrong one invites a brush-off and misinforms the
     sender. Both are marked slots.
-  - **14 of the 26 are now VERIFIED against the agency's own site (14 Nov 2026)** — the agency, what
+  - **16 of the 26 are now VERIFIED against the agency's own site (14 Nov 2026)** — the agency, what
     it licenses in its own words, and the route to send to: AZ, IA, KY, LA, MN, MT, ND, NE, NM, OK,
-    SD, UT, GA, MS. Those letters carry a real records-request URL or form where the agency publishes one,
+    SD, UT, GA, MS, AR, WI. Those letters carry a real records-request URL or form where the agency publishes one,
     and say plainly where it does not.
   - **Verifying corrected four letters that would otherwise have gone to the wrong place:**
     - **Kentucky** was addressed to Alcoholic Beverage Control, which states on its own site that
@@ -315,10 +320,20 @@ Still blocked on a person with a browser, and nothing else:
     and Alaska return HTTP 403 to automated clients (michigan.gov/cra,
     commerce.alaska.gov/web/amco), and West Virginia's health department names no cannabis office
     at all on its homepage.
-  - The remaining 9 keep a candidate agency extracted from that state's own audited report, marked
-    unverified; 4 are deliberately blank (ID, KS, MS, WY). Most of those 9 are states that license
-    no cannabis at all, where the real recipient is probably an agriculture department's hemp
-    programme.
+  - **Arkansas and Wisconsin verified too (14 Nov 2026).** Arkansas: the Arkansas Department of
+    Agriculture runs a Hemp Program that licenses growers and processors, with a FOIA page at
+    https://agriculture.arkansas.gov/resources/public-information/foia-requests/ and (501) 225-1598
+    — but its site does not name the agency that licenses medical marijuana, so Arkansas needs a
+    second recipient found. Wisconsin: DATCP discontinued its hemp programme on 1 January 2022 and
+    its growers are USDA-licensed, so it may issue no cannabis or hemp licence at all; its letter
+    now says a one-line reply confirming that is a complete answer.
+  - **Every letter now states what is already held.** Where USDA licenses hemp producers in that
+    state, the letter gives the count from the project's own USDA extract and narrows the ask to
+    whatever the STATE itself issues, so no agency is asked to duplicate a federal list.
+  - The remaining 7 keep a candidate agency extracted from that state's own audited report, marked
+    unverified; 3 are deliberately blank (ID, KS, WY). Most are states that license no cannabis at
+    all, where the recipient is probably an agriculture department's hemp programme — and where
+    Next item 4 may mean no letter is needed.
   - **The known limit, stated on each letter it applies to:** a name lifted from report prose
     cannot distinguish a body that licenses today from one proposed in a bill, and these are
     precisely the jurisdictions with no licence data, several of which run no programme at all.
