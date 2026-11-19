@@ -359,6 +359,13 @@ else:
 head("No private data reaches the public site build")
 site_data = ROOT / "site" / "data"
 site_files = sorted(site_data.rglob("*.json")) if site_data.exists() else []
+# The deploy publishes site/ as it stands, so nothing under it may be marked
+# not-for-public (the held-back business entries are written to data/private/).
+marked = [f.relative_to(ROOT) for f in sorted((ROOT / "site").rglob("*"))
+          if f.is_file() and f.suffix in (".json", ".html", ".js", ".css")
+          and "NOT FOR THE PUBLIC SITE" in f.read_text(encoding="utf-8", errors="replace")]
+check(not marked, "nothing under site/ is marked not for the public site",
+      f"({[str(m) for m in marked][:3]})" if marked else "the whole folder is deployable")
 if not site_files:
     print("  -- site/data/ not built; nothing to check "
           "(run scripts/build_site_data.py)")

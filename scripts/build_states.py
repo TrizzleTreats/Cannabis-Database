@@ -21,7 +21,9 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
 OUT = ROOT / "data" / "clean" / "regions_3_to_9_licences.csv"
 NE = ROOT / "data" / "clean" / "new_england_licences.csv"
-TODAY = "2026-11-12"
+TODAY = "2026-11-12"   # the date the files declared below were read; see raw_files.resolve
+
+from raw_files import resolve, resolve_declared  # noqa: E402
 sys.path.insert(0, str(ROOT / "scripts"))
 
 STANDARD = {"Active", "Provisional", "Limited Operations", "Pending", "Suspended",
@@ -134,7 +136,8 @@ CA_STATUS = {"Active": ("Active", False), "Expired": ("Expired", False),
 
 def build_ca(blank, warn):
     rows = []
-    with open(RAW / "california/dcc_unified_licence_search_2026-11-12.csv", encoding="utf-8-sig") as f:
+    path, asof = resolve("california/dcc_unified_licence_search_2026-11-12.csv", TODAY)
+    with open(path, encoding="utf-8-sig") as f:
         for r in csv.DictReader(f):
             ltype = clean(r["licenseType"])
             cat = next((c for pat, c in CA_CAT if re.match(pat, ltype)), "")
@@ -170,7 +173,7 @@ def build_ca(blank, warn):
                 "owners": na(r["businessOwnerName"]),
                 "owner_count": str(len([x for x in na(r["businessOwnerName"]).split(",") if x.strip()])),
                 "source": "CA DCC Cannabis Unified License Search (the API behind search.cannabis.ca.gov)",
-                "source_url": "https://search.cannabis.ca.gov/", "data_as_of": iso(r["dataRefreshedDate"]) or TODAY,
+                "source_url": "https://search.cannabis.ca.gov/", "data_as_of": iso(r["dataRefreshedDate"]) or asof,
                 "extra_details": "; ".join(x for x in (
                     f"licensing authority={clean(r['licensingAuthority'])}" if clean(r["licensingAuthority"]) else "",
                     f"local jurisdiction={clean(r['localJurisdictionName'])} ({clean(r['localJurisdictionType'])})"
@@ -204,7 +207,8 @@ OR_STATUS = {"ACTIVE": ("Active", False), "EXPIRED": ("Expired", False),
 
 def build_or(blank, warn):
     rows = []
-    with open(RAW / "oregon/olcc_cannabis_licences_q32u-cmam_2026-11-12.csv", encoding="utf-8-sig") as f:
+    path, asof = resolve("oregon/olcc_cannabis_licences_q32u-cmam_2026-11-12.csv", "2026-10-05")
+    with open(path, encoding="utf-8-sig") as f:
         src = list(csv.DictReader(f))
     # OLCC publishes a row per licence TERM, so a renewed licence appears more
     # than once. Keep the latest term as the licence's record and carry the
@@ -256,7 +260,7 @@ def build_or(blank, warn):
                 "county_source": "OLCC County field" if clean(r["County"]) else "",
                 "location_basis": "Address exempt from public disclosure (OLCC)" if exempt else "Licensed premises",
                 "source": "OR OLCC Cannabis Business Licenses & Endorsements (data.oregon.gov q32u-cmam)",
-                "source_url": "https://data.oregon.gov/d/q32u-cmam", "data_as_of": "2026-10-05",
+                "source_url": "https://data.oregon.gov/d/q32u-cmam", "data_as_of": asof,
                 "extra_details": "; ".join(x for x in (
                     f"canopy type={clean(r['Canopy Type'])}" if clean(r["Canopy Type"]) else "",
                     f"endorsements={clean(r['License Endorsements'])}" if clean(r["License Endorsements"]) else "",
@@ -284,7 +288,8 @@ WA_STATUS = {"ACTIVE (ISSUED)": ("Active", False), "ACTIVE TITLE CERTIFICATE": (
 
 def build_wa(blank, warn):
     from xlsx_reader import read
-    raw = read(RAW / "washington/lcb_cannabis_applicants_2026-11-10.xlsx")
+    path, asof = resolve("washington/lcb_cannabis_applicants_2026-11-10.xlsx", "2026-11-10")
+    raw = read(path)
     hdr = raw[0]
     recs = [dict(zip(hdr, list(x) + [""] * (len(hdr) - len(x)))) for x in raw[1:]]
     # An LCB licence number belongs to the premises and survives an ownership
@@ -340,7 +345,7 @@ def build_wa(blank, warn):
             "contact_phone": clean(r.get("Day Phone")), "contact_is_law_firm": "N",
             "source": "WA LCB Frequently Requested Lists, Cannabis License Applicants (10 Nov 2026)",
             "source_url": "https://lcb.wa.gov/records/frequently-requested-lists",
-            "data_as_of": "2026-11-10",
+            "data_as_of": asof,
             "extra_details": "; ".join(x for x in (
                 f"ubi={clean(r.get('UBI'))}" if clean(r.get("UBI")) else "",
                 near_dup,
@@ -370,7 +375,8 @@ NV_STATUS = {"Active": ("Active", False), "Non-Operational": ("Active", False),
 
 def build_nv(blank, warn):
     from xlsx_reader import read
-    raw = read(RAW / "nevada/ccb_cannabis_establishment_list_2026-10-02.xlsx")
+    path, asof = resolve("nevada/ccb_cannabis_establishment_list_2026-10-02.xlsx", "2026-10-02")
+    raw = read(path)
     hdr = raw[1]                      # row 0 is the report title
     rows = []
     for rec in raw[2:]:
@@ -396,7 +402,7 @@ def build_nv(blank, warn):
             "county_source": "CCB County field" if clean(r.get("County")) else "",
             "location_basis": "No premises address published",
             "source": "NV CCB Cannabis Establishment List (2 Oct 2026)",
-            "source_url": "https://ccb.nv.gov/", "data_as_of": "2026-10-02",
+            "source_url": "https://ccb.nv.gov/", "data_as_of": asof,
             "extra_details": "; ".join(x for x in (
                 f"ce id={clean(r.get('CE ID'))}" if clean(r.get("CE ID")) else "",
                 "operating=no — the CCB lists this licence as Non-Operational ('Licensed - No Operating')"
@@ -417,7 +423,8 @@ def build_tx(blank, warn):
     from xlsx_reader import read
     rows, seen = [], collections.Counter()
     for rel, cat in TX_FILES:
-        raw = read(RAW / rel)
+        path, asof = resolve(rel, "2026-11-02")
+        raw = read(path)
         hdr = raw[0]
         for rec in raw[1:]:
             r = dict(zip(hdr, list(rec) + [""] * (len(hdr) - len(rec))))
@@ -451,7 +458,7 @@ def build_tx(blank, warn):
                 "contact_phone": clean(r.get("PHNE_NBR")), "contact_is_law_firm": "N",
                 "source": "TX DSHS Consumable Hemp Product Program licence lists (2 Nov 2026)",
                 "source_url": "https://www.dshs.texas.gov/consumable-hemp-program",
-                "data_as_of": "2026-11-02",
+                "data_as_of": asof,
                 "extra_details": "; ".join(x for x in (
                     f"licence type code={code}" if code else "",
                     f"mailing town={title(r.get('MAIL_CITY'))}" if clean(r.get("MAIL_CITY")) else "",
@@ -466,7 +473,8 @@ def build_tx(blank, warn):
 # ======================================================================== ALABAMA
 def build_al(blank, warn):
     from xlsx_reader import read
-    raw = read(RAW / "alabama/alabc_active_consumable_hemp_licences.xlsx")
+    path, asof = resolve("alabama/alabc_active_consumable_hemp_licences.xlsx", "2026-10-08")
+    raw = read(path)
     hdr_i = next(i for i, r in enumerate(raw) if r and clean(r[0]) == "License Number")
     hdr = raw[hdr_i]
     rows = []
@@ -490,7 +498,7 @@ def build_al(blank, warn):
             "street_address": addr, "town": town, "town_as_listed": town,
             "location_basis": "Licensed premises",
             "source": "AL ABC Board Active Consumable Hemp Licensee Listing (as of 8 Oct 2026)",
-            "source_url": "https://alabcboard.gov/", "data_as_of": "2026-10-08",
+            "source_url": "https://alabcboard.gov/", "data_as_of": asof,
             "extra_details": "note=Alabama's medical cannabis licences (AMCC) are litigation-delayed "
                              "and are NOT in this file; this is the consumable hemp programme only",
         })
@@ -509,7 +517,8 @@ CO_CAT = [(r"Store", "Retail Store"), (r"Cultivation Facility|Marijuana Cultivat
 def build_co(blank, warn):
     import glob
     rows = []
-    for path in sorted(glob.glob(str(RAW / "colorado/*.csv"))):
+    # One current file per declared sheet, never an old and a new copy of the same one.
+    for path, asof in resolve_declared("colorado", ".csv", TODAY):
         with open(path, encoding="utf-8-sig") as f:
             recs = list(csv.DictReader(f))
         if not recs:
@@ -548,7 +557,7 @@ def build_co(blank, warn):
                 "location_basis": "Licensed premises",
                 "source": "CO MED List of Licensed Facilities (public Google Sheets linked from med.colorado.gov)",
                 "source_url": "https://med.colorado.gov/licensee-information-and-lookup-tool/licensed-facilities",
-                "data_as_of": TODAY,
+                "data_as_of": asof,
                 "extra_details": "; ".join(x for x in (
                     f"elemental impurities certified until={clean(r.get('Elemental Impurities'))}"
                     if testing and clean(r.get("Elemental Impurities")) else "",
@@ -566,7 +575,8 @@ def build_fl(blank, warn):
     (MMTCs) are published by OMMU as per-MMTC web pages, not as a list file, so
     they are not in this table yet."""
     from pypdf import PdfReader
-    reader = PdfReader(RAW / "florida/fdacs_active_hemp_cultivation_licences_2026-09-10.pdf")
+    path, asof = resolve("florida/fdacs_active_hemp_cultivation_licences_2026-09-10.pdf", "2026-09-10")
+    reader = PdfReader(path)
     text = "\n".join(pg.extract_text() or "" for pg in reader.pages)
     text = re.sub(r"[\u00a0\u2000-\u200b\u202f\u205f\u3000]", " ", text)
     row_re = re.compile(r"^(\d+_\d+)\s+(\d{1,2}/\d{1,2}/\d{4})\s+(.+?)\s+"
@@ -601,7 +611,7 @@ def build_fl(blank, warn):
             "owners": person, "owner_count": "1" if person else "",
             "source": "FL FDACS Current List of Hemp Cultivation Licenses (10 Sept 2026)",
             "source_url": "https://www.fdacs.gov/Divisions-Offices/Plant-Industry/Hemp-Program",
-            "data_as_of": "2026-09-10",
+            "data_as_of": asof,
             "extra_details": "note=Florida's medical marijuana treatment centres (MMTCs) are published by "
                              "OMMU as individual web pages rather than a list, so they are not in this "
                              "table yet. FDACS names a Primary Responsible Person per licence; that is "
@@ -619,8 +629,8 @@ def build_va(blank, warn):
     from pypdf import PdfReader
     rows = []
     # Registered industrial hemp processors under food-safety inspection
-    txt = "\n".join(pg.extract_text() or "" for pg in
-                    PdfReader(RAW / "virginia/vdacs_industrial_hemp_processors.pdf").pages)
+    proc_path, proc_asof = resolve("virginia/vdacs_industrial_hemp_processors.pdf", "2026-10-08")
+    txt = "\n".join(pg.extract_text() or "" for pg in PdfReader(proc_path).pages)
     txt = re.sub(r"[\u00a0\u2000-\u200b\u202f\u205f\u3000]", " ", txt)
     proc = re.compile(r"^(.+?)\s+(\d+[\w\-]*\s+.+?)\s+([A-Za-z .'\-]+?)\s+VA\s+(\d{5})\s+(.+)$")
     for line in (re.sub(r"[ \t]+", " ", l).strip() for l in txt.splitlines()):
@@ -643,15 +653,15 @@ def build_va(blank, warn):
             "location_basis": "Licensed premises", "owners": person, "owner_count": "1" if person else "",
             "source": "VA VDACS Industrial Hemp Processors Under Food Safety Inspection (8 Oct 2026)",
             "source_url": "https://www.vdacs.virginia.gov/food-industrial-hemp.shtml",
-            "data_as_of": "2026-10-08",
+            "data_as_of": proc_asof,
             "extra_details": f"{LOCAL_ID}; note=Virginia licenses no adult-use cannabis retail; its "
                              "pharmaceutical processors are a separate Board of Pharmacy programme not "
                              "in this table yet",
         })
         rows.append(row)
     # Approved hemp testing laboratories
-    txt2 = "\n".join(pg.extract_text() or "" for pg in
-                     PdfReader(RAW / "virginia/vdacs_hemp_approved_test_labs.pdf").pages)
+    lab_path, lab_asof = resolve("virginia/vdacs_hemp_approved_test_labs.pdf", TODAY)
+    txt2 = "\n".join(pg.extract_text() or "" for pg in PdfReader(lab_path).pages)
     lab = re.compile(r"^(.+?)\s+(www\.[\w\.\-]+)\s+([\d\-\(\) ]{7,})$")
     for line in (re.sub(r"[ \t]+", " ", l).strip() for l in txt2.splitlines()):
         m = lab.match(line)
@@ -668,7 +678,7 @@ def build_va(blank, warn):
             "website": f"https://{site}", "contact_phone": phone.strip(), "contact_is_law_firm": "N",
             "source": "VA VDACS approved hemp testing laboratories",
             "source_url": "https://www.vdacs.virginia.gov/pdf/hemp-approved-test-labs.pdf",
-            "data_as_of": TODAY,
+            "data_as_of": lab_asof,
             "extra_details": f"{LOCAL_ID}; note=VDACS publishes only lab name, website and phone",
         })
         rows.append(row)
@@ -682,7 +692,8 @@ def build_il(blank, warn):
     growers, infusers and transporters are behind a separate portal that
     publishes only aggregate counts, so they are not in this table yet."""
     rows = []
-    with open(RAW / "illinois/il_dispensary_locations_2026-11-10.csv", encoding="utf-8-sig") as f:
+    path, asof = resolve("illinois/il_dispensary_locations_2026-11-10.csv", "2026-11-10")
+    with open(path, encoding="utf-8-sig") as f:
         for i, r in enumerate(csv.DictReader(f), 1):
             name = clean(r.get("Dispensary Name"))
             if not name:
@@ -702,7 +713,7 @@ def build_il(blank, warn):
                 "location_basis": "Licensed premises",
                 "source": f"IL Dispensary Locations, Tableau view on public.data.illinois.gov — {LOCAL_ID}",
                 "source_url": "https://cannabis.illinois.gov/about/locations.html",
-                "data_as_of": "2026-11-10",
+                "data_as_of": asof,
                 "extra_details": "; ".join(x for x in (
                     f"bls region={clean(r.get('BLS Region'))}" if clean(r.get("BLS Region")) else "",
                     f"latitude={clean(r.get('Latitude'))}" if clean(r.get("Latitude")) else "",
@@ -721,7 +732,8 @@ def build_oh(blank, warn):
     """DCC dispensaries from the ArcGIS feature service behind the dispensary
     map. Ohio's cultivators, processors and testing labs are only in the DCC
     eLicense portal, so they are not in this table yet."""
-    d = json.loads((RAW / "ohio/oh_dcc_dispensaries.geojson").read_text())
+    path, asof = resolve("ohio/oh_dcc_dispensaries.geojson", TODAY)
+    d = json.loads(path.read_text())
     rows = []
     for ft in d.get("features", []):
         q = ft.get("properties", {})
@@ -754,7 +766,7 @@ def build_oh(blank, warn):
             "contact_phone": clean(str(q.get("user_phone") or "")), "contact_is_law_firm": "N",
             "source": "OH DCC Cannabis Dispensary Map, ArcGIS feature service on maps.ohio.gov",
             "source_url": "https://maps.ohio.gov/arcgis/rest/services/Hosted/Geocoded_Dispensaries_/FeatureServer/0",
-            "data_as_of": TODAY,
+            "data_as_of": asof,
             "extra_details": "; ".join(x for x in (
                 f"latitude={lat}" if lat else "", f"longitude={lon}" if lon else "",
                 f"hours={clean(str(q.get('hours') or ''))}" if clean(str(q.get("hours") or "")) else "",
@@ -771,7 +783,8 @@ def build_mo(blank, warn):
     """DCR verified dispensaries from the ArcGIS service behind the locator.
     Missouri's cultivation, manufacturing and testing licensees are not in this
     layer; the xlsx files on health.mo.gov are product-recall lists."""
-    d = json.loads((RAW / "missouri/mo_dcr_verified_dispensaries.geojson").read_text())
+    path, asof = resolve("missouri/mo_dcr_verified_dispensaries.geojson", TODAY)
+    d = json.loads(path.read_text())
     rows = []
     for ft in d.get("features", []):
         q = ft.get("properties", {})
@@ -802,7 +815,7 @@ def build_mo(blank, warn):
             "contact_phone": clean(str(q.get("Phone_Number") or "")), "contact_is_law_firm": "N",
             "source": "MO DCR Verified Dispensary Locator, ArcGIS feature service",
             "source_url": "https://health.mo.gov/business-professionals/cannabis-regulation/licensee-compliance-guidance/licensed-facilities",
-            "data_as_of": TODAY,
+            "data_as_of": asof,
             "extra_details": "; ".join(x for x in (
                 f"latitude={lat}" if lat else "", f"longitude={lon}" if lon else "",
                 f"source last updated={clean(str(q.get('Last_updated') or ''))}"
@@ -834,8 +847,8 @@ def build_hi(blank, warn):
     wraps each record over several lines but numbers them, so records are
     reassembled on the numbering before parsing."""
     from pypdf import PdfReader
-    text = "\n".join(pg.extract_text() or "" for pg in
-                     PdfReader(RAW / "hawaii/hi_hemp_registry_public_2026-10.pdf").pages)
+    path, asof = resolve("hawaii/hi_hemp_registry_public_2026-10.pdf", "2026-10-26")
+    text = "\n".join(pg.extract_text() or "" for pg in PdfReader(path).pages)
     text = re.sub(r"[\u00a0\u2000-\u200b\u202f\u205f\u3000]", " ", text)
     lines = [re.sub(r"[ \t]+", " ", l).strip() for l in text.splitlines() if l.strip()]
     # Reassemble: a record starts at "N." and runs until the next one.
@@ -887,7 +900,7 @@ def build_hi(blank, warn):
             "website": site if online else "",
             "source": "HI DOH Manufactured Hemp Product Retailer and Distributor Registry "
                       "(public list, current as of 26 Oct 2026)",
-            "source_url": "https://health.hawaii.gov/hempprogram/", "data_as_of": "2026-10-26",
+            "source_url": "https://health.hawaii.gov/hempprogram/", "data_as_of": asof,
             "extra_details": "; ".join(x for x in (
                 "registered to sell online=no" if not online else "registered to sell online=yes",
                 f"registrant home state={home_state}" if home_state != "HI" else "",

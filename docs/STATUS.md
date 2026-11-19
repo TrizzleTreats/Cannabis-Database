@@ -33,6 +33,8 @@
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
 8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). Still to build: city/town pages and the Market tab. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They cover four facts per state; the rest of the law (public consumption, driving, employment, packaging, pending bills, local taxes) is still to come, and each tab says so.
 
+9. **Turn on the daily update** — BUILT 19 Nov 2026, NOT YET RUNNING (see "The daily update" below). Three steps, all yours: merge to the default branch (scheduled workflows only run there); to publish the site, set Settings > Pages to "GitHub Actions" and add the repository variable `DEPLOY_SITE` = `true`; and check the first run's summary. GitHub Pages on a private repository needs a paid plan.
+
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
 - **CT**: ngch-56tr had been downloaded filtered to cannabis credential types only, so 280 hemp and THC-beverage credentials were missing — including the 104 live rows the master table was carrying with the wrong source label. Filter on `credential`, never `credentialtype`: types CSM and CSW are shared with "MANUFACTURER / WHOLESALER OF DRUGS, COSMETICS & MEDICAL DEVICES" and pull in roughly 4,300 unrelated pharmacy licences.
@@ -231,6 +233,82 @@ villages" below. The Census geocoder's County Subdivisions layer resolves a vill
 municipality at address level, which beat the village-level assumption: 56 River Rd, Cornwall
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
+
+## The daily update (19 Nov 2026)
+
+HANDOFF says the site "will update itself daily with scripts and agents". Until now nothing
+could: the builders opened raw files by dated name (`…_2026-11-12.csv`) and stamped a fixed
+`TODAY = "2026-11-12"`, and `fetch_raw.py` skipped any file already on disk. A daily fetch would
+have downloaded nothing, and if forced it would have overwritten files whose names and rows still
+said 12 November.
+
+- **`scripts/update_all.py`** runs the whole pipeline in a fixed order and stops at the first
+  failure: fetch, the three licence builders, geocode new addresses, apply, canonicalise and
+  validate counties, independent cities, standard types, review worksheet, legal status, quick
+  reference, site data, verify. It prints a summary (step results, which sources changed, and
+  licence rows per state before and after), and `--summary FILE` writes it as markdown.
+  `--offline` skips the fetch and the geocoder.
+- **The order was found, not assumed.** A rebuild from data/raw/ in a separate worktree, compared
+  row by row with the committed tables, first differed on 50,000 rows. After the fixes below, all
+  three licence tables come back **identical**. The full offline pipeline then runs in about 35
+  seconds, passes verify, and leaves every data file unchanged, in the worktree and in the real
+  working tree.
+- **`scripts/fetch_raw.py --refresh`** downloads every declared source again:
+  - **Same bytes as the current file:** logged `ok: unchanged`, and nothing is written.
+  - **New bytes that pass the checks:** saved as `<declared name>__fetched-<date>`. The file it
+    supersedes is removed from the working tree; git keeps it.
+  - **A suspect or failed download:** logged, NOT written, and the last good file stays current.
+
+  A source can declare `drop_columns`, removed before saving and hashing. Massachusetts' two CCC
+  files are now declared with the EIN/TIN column dropped (CLAUDE.md), so Massachusetts refreshes
+  too. Both URLs were already in the repository. Tested offline against simulated downloads:
+  unchanged, changed, too small to be real, a paged source failing, and a CSV with an EIN_TIN
+  column, which came back byte-identical to the stripped original.
+- **`scripts/raw_files.py`** tells the builders which file is current for each source (the newest
+  good download in the manifest) and its date. The rule for `data_as_of`:
+  - **While a builder still reads the file its spec was written for,** the documented date
+    stands. For about ten sources that is the regulator's own "as of" date, read off the file,
+    which is more precise than the download date.
+  - **Once a newer download is current,** the date is the day its bytes were first saved.
+  - **An unchanged daily check does not move it,** so an unchanged source does not rewrite every
+    row's date each day. `raw_files.last_checked()` gives the last check.
+
+  Parsing each regulator's own date out of each new file is a per-source refinement still to do.
+  Colorado's builder used to read every CSV in its folder; it now reads one current file per
+  declared sheet, so an old and a new copy can never both be counted.
+- **Bugs found by the rebuild, and fixed:**
+  - **My own regression in `fill_counties.py`** (commit e5289a2, the independent-cities change)
+    had dropped an `if hit:` line, so canonicalisation only fixed city names and silently skipped
+    "Dade" → "Miami-Dade", "Saint Lucie" → "St. Lucie" and 200-odd others. The committed data
+    was unaffected, because it was normalised earlier, but the next rebuild would have undone it.
+  - **`build_new_england.py` carried a county forward but not the note explaining it** (a premises
+    in another state, a CT village's municipality). It also re-filled, by town name, a county the
+    prior table had cleared on purpose with a stated reason. Both notes are now carried, and a
+    deliberate blank stays blank.
+  - **`resolve_independent_cities.py` now also annotates "Baltimore city" rows** that the fixed
+    normaliser writes directly, so every such row says how it was settled.
+- **`site/` is now public by construction.** `build_site_data.py` used to write the held-back
+  unverified business entries to `site/data/businesses_unverified.json`, so deploying the folder
+  would have published them. They now go to data/private/ (git-ignored, never deployed). verify.py
+  fails if anything under site/ is marked not for the public site; it was tested by putting the
+  file back.
+- **`.github/workflows/daily-update.yml`** runs the pipeline daily at 10:23 UTC, and on demand.
+  - It commits data/raw and data/clean only when every step passed.
+  - A failed scheduled run commits nothing, and GitHub emails the repository owner.
+  - The deploy job publishes site/ to GitHub Pages, and is **off** until the repository variable
+    `DEPLOY_SITE` is `true`.
+  - Scheduled runs only happen on the default branch, so nothing runs from this branch.
+  - `requirements.txt` pins the one third-party package (pypdf 6.17.0). Both fetchers now also
+    find Ubuntu's CA bundle, since a runner may not have certifi.
+- **Not in the daily run**, and the script says so:
+  - New Jersey's 517 permit PDFs, which have their own fetcher.
+  - The business directory, built once from the audited reports.
+  - Maine, Vermont, Rhode Island and New Hampshire, which have no downloadable source and are
+    carried forward.
+- **Not tested here:** an online run. This sandbox reaches only package registries, so the real
+  fetch and geocoder steps run for the first time on GitHub's runner. Expect some regulators to
+  refuse a cloud IP. Those show as failed in the summary and keep their last good file; they do
+  not fail the run.
 
 ## State quick reference: possession, home grow, tax, regulator (19 Nov 2026)
 

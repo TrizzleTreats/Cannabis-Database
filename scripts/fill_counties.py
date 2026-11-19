@@ -38,7 +38,9 @@ def ssl_context():
         return ssl.create_default_context(cafile=certifi.where())
     except ImportError:
         pass
-    for ca in ("/etc/ssl/cert.pem", "/private/etc/ssl/cert.pem"):
+    # macOS keeps its bundle at the first two; Debian/Ubuntu (a CI runner) at the third.
+    for ca in ("/etc/ssl/cert.pem", "/private/etc/ssl/cert.pem",
+               "/etc/ssl/certs/ca-certificates.crt"):
         if os.path.exists(ca):
             return ssl.create_default_context(cafile=ca)
     sys.exit("no CA bundle found - refusing to fetch without certificate verification")
@@ -324,6 +326,7 @@ def canonicalise(all_rows):
                 # (scripts/resolve_independent_cities.py explains the rule).
                 if hit and re.search(r"\bcity$", c, re.I) and (st, hit) in independent_cities():
                     hit = f"{hit} city"
+                if hit:
                     if hit != r["county"]:
                         r["county"] = hit
                         r["county_source"] = "; ".join(x for x in (

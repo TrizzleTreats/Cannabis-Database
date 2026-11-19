@@ -99,8 +99,12 @@ def main():
             rows = list(csv.DictReader(f))
         changed = 0
         for r in rows:
-            if (r["state"], r["county"]) not in amb or NOTE in r["extra_details"]:
+            # A bare ambiguous name, or a "<name> city" that fill_counties.py wrote from a
+            # source that said "City": either way the row must say how it was settled.
+            base = r["county"][:-5] if r["county"].endswith(" city") else r["county"]
+            if (r["state"], base) not in amb or NOTE in r["extra_details"]:
                 continue
+            r["county"] = base
             got = decide(r, mo, md)
             if got:
                 county, note = got

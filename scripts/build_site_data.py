@@ -42,6 +42,7 @@ import us_map  # noqa: E402
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CLEAN = ROOT / "data" / "clean"
 OUT = ROOT / "site" / "data"
+HELD_BACK = ROOT / "data" / "private" / "businesses_unverified.json"
 TABLES = ["new_england_licences.csv", "mid_atlantic_licences.csv",
           "regions_3_to_9_licences.csv"]
 
@@ -278,9 +279,15 @@ def main():
         {"note": "primary profiles only, and only entries the audit did not leave unverified",
          "count": len(publishable),
          "businesses": [public(r, BUSINESS_PUBLIC) for r in publishable]}, args.dry_run)
-    # Kept, not dropped, so the number is visible and nothing is lost.
+    # Kept, not dropped, so the number is visible and nothing is lost. Written OUTSIDE
+    # site/, so that everything under site/ is public by construction and the deploy
+    # can publish the folder as it stands. data/private/ is git-ignored and never
+    # deployed.
+    stale = OUT / "businesses_unverified.json"
+    if stale.exists() and not args.dry_run:
+        stale.unlink()
     bytes_written["businesses_held_back"] = write(
-        OUT / "businesses_unverified.json",
+        HELD_BACK,
         {"note": "NOT FOR THE PUBLIC SITE — CLAUDE.md: unverified entries stay off the public "
                  "site until checked. Built so the count is visible and the entries are not lost.",
          "count": len(held_back),

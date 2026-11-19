@@ -105,7 +105,7 @@ Notes:
 
 | File | What it is |
 |---|---|
-| scripts/fetch_raw.py | Downloads every source declared in scripts/sources.json into data/raw/<state>/ and logs each attempt |
+| scripts/fetch_raw.py | Downloads every source declared in scripts/sources.json into data/raw/<state>/ and logs each attempt. `--refresh` (daily) re-downloads everything: unchanged files are only logged, new bytes are saved as <name>__fetched-<date>, and a suspect download never replaces good data. Declared `drop_columns` (Massachusetts' EIN/TIN) are removed before saving |
 | scripts/sources.json | Source declarations: Part 5 reference, URL, expected format and the limitation the audit recorded for each |
 | scripts/build_new_england.py | Rebuilds data/clean/new_england_licences.csv from data/raw/, carrying forward enrichment raw cannot supply |
 | scripts/build_mid_atlantic.py | Builds data/clean/mid_atlantic_licences.csv from data/raw/ for NY, PA, NJ, DE, MD and DC |
@@ -126,7 +126,11 @@ Notes:
 | data/raw/census_county_lookup.csv | Cached Census geocoder results: address -> county and county subdivision, with the matched address and status |
 | data/raw/census_counties_by_state.csv | 3,229 official counties across 56 states, from Census TIGERweb — the reference verify.py checks against |
 | data/raw/discovered_sources.csv | What the discovery crawl found: 2,615 rows of candidate data files per state |
-| scripts/build_site_data.py | Builds the public data in site/data/ from data/clean, on an ALLOWLIST of publishable columns so a new private column cannot leak by default. Licences per state: a list file, and the full records in ~300-record hash buckets carrying each licence's related licences; county maps and legal status; unverified business entries written separately and not published |
+| scripts/build_site_data.py | Builds the public data in site/data/ from data/clean, on an ALLOWLIST of publishable columns so a new private column cannot leak by default. Licences per state: a list file, and the full records in ~300-record hash buckets carrying each licence's related licences; county maps and legal status; unverified business entries written to data/private/ (never under site/, so the whole site/ folder is deployable) |
+| scripts/update_all.py | The daily update: fetch, the three licence builders, counties, standard types, review worksheet, legal status, quick reference, site data, verify, in that order, stopping at the first failure. `--offline` rebuilds from what is on disk; `--summary FILE` writes the run summary |
+| scripts/raw_files.py | Which raw file is current for each declared source (newest good download in the manifest) and the date its data carries; used by every builder instead of fixed dated filenames |
+| .github/workflows/daily-update.yml | Runs update_all.py daily and commits the data if every step passed; deploys site/ to GitHub Pages only when the repository variable DEPLOY_SITE is "true" |
+| requirements.txt | pypdf, the only third-party package |
 | scripts/quick_reference_data.py | Four facts per jurisdiction (possession, home grow, the state's cannabis tax, regulator), hand-restated from each audited report, each with a citation, an official link the report cites, and a confirmed flag; unconfirmed facts carry no text |
 | scripts/build_quick_reference.py | Writes data/clean/quick_reference.csv, refusing on a missing fact, a non-official link, an unconfirmed fact with text, or any cited section number not found as a whole token in that state's own report |
 | data/clean/quick_reference.csv | 204 facts for 51 jurisdictions: what the state page's quick-reference boxes and its Laws and Taxes tabs show. 4 held back as unconfirmed (GA, TX, UT, VA tax), 5 without an official link (TN, WY) |
