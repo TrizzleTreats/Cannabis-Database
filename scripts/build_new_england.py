@@ -113,6 +113,29 @@ def title(s):
     return s.title() if s.isupper() or s.islower() else s
 
 
+# Regulator test records are not licences. Connecticut's DCP leaves its own test
+# credentials in the public file, named "TEST RECORD" and registered to its own
+# office (450 Columbus Blvd, Hartford) — 28 of them on 12 Nov 2026, several with
+# real-looking numbers (ACRE.0015712, CSW.0005793-TIB), so they are matched by
+# name, which also catches any new ones a daily refresh brings in. Vermont's
+# three carry no such marker beyond the name, so they are named by licence id.
+CT_TEST_NAME = "TEST RECORD"
+TEST_RECORD_IDS = {
+    ("VT", "MANU0073"): "High Society - Test - Manufacturing",
+    ("VT", "MANU0123"): "Test - MANU0123",
+    ("VT", "RTLR0086"): "Test - RTLR0086",
+}
+
+
+def is_test_record(state, licence_id, legal_name, dba):
+    if (state, licence_id) in TEST_RECORD_IDS:
+        return True
+    return state == "CT" and CT_TEST_NAME in (legal_name.upper(), dba.upper())
+
+
+CT_READ_ON = "2026-11-12"   # the fetch date in the raw file's name and manifest row
+
+
 def build_ct(prior, town_county, blank):
     src = ROOT / "data/raw/connecticut/ngch-56tr_business_credentials_2026-11-12.csv"
     rows, excluded, unmapped = [], collections.Counter(), []
@@ -151,7 +174,7 @@ def build_ct(prior, town_county, blank):
                                                         r.get("state", ""), r.get("zip", "")) if x),
                 "town": town, "town_as_listed": r.get("city", ""),
                 "source": CT_SRC, "source_url": CT_URL,
-                "data_as_of": iso(r.get("recordrefreshedon")) or TODAY,
+                "data_as_of": iso(r.get("recordrefreshedon")) or CT_READ_ON,
             })
             carry(row, prior.get(("CT", lid)), town_county, "CT", town)
             if std == "Provisional":
@@ -179,6 +202,11 @@ MA_STATUS = {"Active": "Active", "Expired": "Expired", "Surrendered": "Surrender
              "Revoked": "Revoked", "Suspended": "Suspended", "Payment Pending": "Pending"}
 MA_SRC = "Mass. Cannabis Control Commission, all licences (public) — EIN/TIN column dropped"
 MA_URL = "https://masscannabiscontrol.com/resource/l_licenses_all_details_public.csv"
+# The date the MA raw files were read. They predate scripts/fetch_raw.py and have no
+# manifest row; they arrived in the initial commit on 12 Nov 2026, which is the date
+# every MA row carried until a rebuild stamped the run date instead. A data_as_of
+# must say when the regulator's file was read, never when this script last ran.
+MA_READ_ON = "2026-11-12"
 
 
 def build_ma(prior, town_county, blank):
@@ -232,7 +260,7 @@ def build_ma(prior, town_county, blank):
             "town": town, "town_as_listed": r.get("ESTABLISHMENT_CITY") or r.get("BUSINESS_CITY", ""),
             "contact_phone": r.get("BUSINESS_PHONE", ""), "contact_email": r.get("BUSINESS_EMAIL", ""),
             "contact_is_law_firm": "N",
-            "source": MA_SRC, "source_url": MA_URL, "data_as_of": TODAY,
+            "source": MA_SRC, "source_url": MA_URL, "data_as_of": MA_READ_ON,
         })
         carry(row, prior.get(("MA", lid)), town_county, "MA", town)
         rows.append(row)
@@ -298,6 +326,9 @@ def main():
         carried.append(row)
 
     new_rows = carried + ct + ma
+    tests = [r for r in new_rows
+             if is_test_record(r["state"], r["licence_id"], r["legal_name"], r["dba"])]
+    new_rows = [r for r in new_rows if r not in tests]
     new_rows.sort(key=lambda r: (r["state"], r["licence_id"]))
     after = collections.Counter(r["state"] for r in new_rows)
 
@@ -312,6 +343,10 @@ def main():
     for k, n in ct_excluded.most_common():
         print(f"  {n:>4}  {k}")
     print(f"  {sum(ct_excluded.values()):>4}  total excluded")
+
+    print("\nRegulator test records excluded (not licences):")
+    for st, n in sorted(collections.Counter(r["state"] for r in tests).items()):
+        print(f"  {n:>4}  {st}")
 
     unmapped = collections.Counter(ct_unmapped + ma_unmapped + carried_unmapped)
     if unmapped:

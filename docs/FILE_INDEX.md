@@ -82,7 +82,7 @@ Every report copied into this folder, with the name it had on my phone. All pass
 ## Data files (rebuilt 12 November 2026 from official sources unless noted)
 | File | What it is |
 |---|---|
-| data/clean/new_england_licences.csv | All six New England states in one schema, 4,267 licences — rebuilt from data/raw/ on 12 Nov 2026 by scripts/build_new_england.py. CT 498, MA 1,072, ME 1,903, VT 524, RI 263, NH 7. Has a `standard_status` column beside each state's own status wording, and `standard_type` + `standard_types_all` beside each regulator's own licence name (43 columns) |
+| data/clean/new_england_licences.csv | All six New England states in one schema, 4,236 licences (4,267 less 31 regulator test records removed 19 Nov 2026) — rebuilt from data/raw/ on 12 Nov 2026 by scripts/build_new_england.py. CT 498, MA 1,072, ME 1,903, VT 524, RI 263, NH 7. Has a `standard_status` column beside each state's own status wording, and `standard_type` + `standard_types_all` beside each regulator's own licence name (43 columns) |
 | data/clean/ma_licences.csv | Massachusetts CCC licences, 944 (EIN/TIN column removed) |
 | data/clean/ct_licences.csv | Connecticut DCP cannabis business credentials, 683 records (all statuses; employee badges and product registrations excluded). SUPERSEDED as the master's input by data/raw/connecticut/ngch-56tr_business_credentials_2026-11-12.csv (963 rows), which also carries the 280 hemp and THC-beverage credentials this file omits |
 | data/clean/ri_licences.csv | Rhode Island CCC: 9 compassion centres, 55 cultivators, 10 industrial hemp, 189 hemp-consumable licences (263) |

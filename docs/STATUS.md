@@ -5,10 +5,10 @@
 - Every report checked for completeness in Claude chat. Re-checked in Claude Code on 12 Nov 2026: all 64 files in docs/FILE_INDEX.md are present, none missing, none truncated, nothing on disk outside the index.
 - Git repository started (local only, no remote). data/private/ is git-ignored and nothing under it is tracked. CLAUDE.md now names the private columns that live inside tracked data/clean/ files, so the public build has something authoritative to strip against.
 - Master list of official sites, allowed to Claude Code in .claude/settings.json as WebFetch(domain:...) rules — **1,257 hosts**. Five were added during the build: paauditor.b-cdn.net, content.govdelivery.com, www.arcgis.com, maryland.maps.arcgis.com, and data.mmcp.ms.gov (Mississippi's cannabis transparency portal, 14 Nov 2026). einpresswire.com was deliberately left out as a secondary news reprint.
-- New England licence table rebuilt from data/raw/ on 12 Nov 2026 (scripts/build_new_england.py): 3,917 to 4,267 rows. CT 253 to 498, MA 967 to 1,072; ME, VT, RI and NH carried forward unchanged because their raw files hold nothing the table did not already have. A `standard_status` column was added so one search spans all six states.
+- New England licence table rebuilt from data/raw/ on 12 Nov 2026 (scripts/build_new_england.py): 3,917 to 4,267 rows, then **4,236 on 19 Nov 2026 after 31 regulator test records were removed** (see "Test records" below). CT 253 to 498 (470 without its test records), MA 967 to 1,072; ME, VT, RI and NH carried forward unchanged because their raw files hold nothing the table did not already have. A `standard_status` column was added so one search spans all six states.
 - Mid-Atlantic raw licence data captured for all six jurisdictions (scripts/fetch_raw.py, declared in scripts/sources.json, logged in data/raw/manifest.csv). 23 of 24 declared sources fetched.
 - Mid-Atlantic clean table built: data/clean/mid_atlantic_licences.csv, 4,236 rows (scripts/build_mid_atlantic.py). NY 3,056, NJ 678, PA 197, MD 191, DC 100, DE 14. Same columns as the New England table, in the same order, so the two union cleanly. NJ was rebuilt from its permit PDFs on 12 Nov 2026 (586 → 678) and PA's dispensary source moved to the DOH PDF (181 → 197).
-- Regions 3-9: data/clean/regions_3_to_9_licences.csv, 44,203 rows (scripts/build_states.py), one declarative spec per state plus a USDA federal-hemp spec. CA 20,984, TX 12,853, OR 3,701, CO 1,832, WA 1,226, FL 289, IL 289, MO 238, OH 232, NV 345, HI 94, AL 85, VA 26, and 2,009 USDA hemp producers across 25 further jurisdictions. Same column set as the other two tables; all three union to 52,706 rows across **50 of the 51 jurisdictions**.
+- Regions 3-9: data/clean/regions_3_to_9_licences.csv, 44,203 rows (scripts/build_states.py), one declarative spec per state plus a USDA federal-hemp spec. CA 20,984, TX 12,853, OR 3,701, CO 1,832, WA 1,226, FL 289, IL 289, MO 238, OH 232, NV 345, HI 94, AL 85, VA 26, and 2,009 USDA hemp producers across 25 further jurisdictions. Same column set as the other two tables; all three union to 52,706 rows (**52,675** since the test records came out on 19 Nov 2026) across **50 of the 51 jurisdictions**.
 - Business directory built: all 11 audited directories parsed into data/clean/businesses_master.csv, 355 to 2,087 entries, every row on HANDOFF's 17 standard categories (scripts/build_businesses.py). California 371, National 237, Great Lakes 196, Plains 192, Pacific 192, Southeast 189, Mid-Atlantic 173, Southwest 165, South Central 130, Mountain 124, New England 118.
 - Business-to-licence matching done (scripts/match_businesses_to_licences.py): 22 directory entries hold a state licence under the same name, flagged on the row with their licence numbers and written to data/clean/business_licence_matches.csv.
 - USDA hemp list (May 2026) parsed.
@@ -231,6 +231,32 @@ villages" below. The Census geocoder's County Subdivisions layer resolves a vill
 municipality at address level, which beat the village-level assumption: 56 River Rd, Cornwall
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
+
+## Test records removed: 28 Connecticut, 3 Vermont (19 Nov 2026)
+
+Found while grouping licences by shared address for the profile pages. **28 Connecticut rows were
+the DCP's own test credentials**: legal name and DBA "TEST RECORD", registered to the DCP's office
+at 450 Columbus Blvd, Hartford. They were on the public site, which showed 28 of them. They
+covered every credential type, and some carried real-looking numbers (ACRE.0015712, CSW.0005793-TIB),
+so a number-based rule would have missed them. **3 Vermont rows**, all `Active`, were CCB test entries:
+"Test - MANU0123", "Test - RTLR0086" and "High Society - Test - Manufacturing" (MANU0073).
+
+- `scripts/build_new_england.py` now excludes them. Connecticut's are matched by the name "TEST
+  RECORD", so a daily refresh that brings in new ones drops them too. Vermont's are named by
+  licence id, because their only marker is the name. The run prints how many it dropped per state.
+- **The table was NOT rebuilt to apply this.** A rebuild also clears the county notes that
+  `scripts/fill_counties.py` writes (58 rows), and that step needs the Census geocoder, which this
+  sandbox cannot reach. Instead the 31 rows were deleted from the existing table, and the diff is
+  exactly 31 deletions. The next full rebuild produces the same result.
+- **A second bug in the same builder, fixed.** Massachusetts rows were stamped
+  `data_as_of = today` on every run, and Connecticut rows with no refresh date fell back to today
+  too. So a rebuild on any later day would have claimed every MA licence was read that day.
+  Both now use the date the raw file was read: 12 Nov 2026 (`MA_READ_ON`, `CT_READ_ON`).
+- Checked and left alone: California's "La Test Labs LLC" (trading as Pacific Star Labs) and
+  "we'd Test" match the word "test" but read as real business names. The superseded inputs
+  data/clean/ct_licences.csv and vt_licences.csv still hold the test rows. They are not
+  built into the site.
+- Totals: New England 4,267 → 4,236; all three tables 52,706 → 52,675. verify.py passes.
 
 ## The legal-status map (19 Nov 2026)
 
