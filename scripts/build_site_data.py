@@ -215,6 +215,7 @@ def main():
         by_state[r["state"]].append(r)
 
     summary = {"generated_from": "data/clean/*_licences.csv", "states": {}}
+    county_names = us_map.county_display_names()
     for state, rows in sorted(by_state.items()):
         bytes_written["licences (list)"] += write(
             OUT / "licences" / f"{state}.json",
@@ -249,6 +250,11 @@ def main():
                                       if r["standard_status"] in ("Active", "Provisional")),
             "counties": len(counties),
             "by_county": dict(counties.most_common()),
+            # What a reader sees: "Baltimore City", "Winchester City", "Orleans Parish".
+            "county_names": {c: county_names.get((state, c), c) for c in counties},
+            "towns_by_county": {c: dict(collections.Counter(
+                r["town"] for r in rows if r["county"] == c and r["town"]).most_common())
+                for c in counties},
             "rows_without_a_county": sum(1 for r in rows if not r["county"]),
             "programs": dict(collections.Counter(
                 r["program"] for r in rows if r["program"]).most_common()),
@@ -301,9 +307,21 @@ def main():
         {"note": "Each status restates section 1.1 of that jurisdiction's audited report; "
                  "report_last_audited is the date the law was checked.",
          "states": {r["state"]: public(r, LEGAL_PUBLIC) for r in legal}}, args.dry_run)
-    bytes_written["us_map"] = write(
-        OUT / "us_map.json", us_map.build({r["state_name"]: r["state"] for r in legal}),
-        args.dry_run)
+    geo = us_map.build({r["state_name"]: r["state"] for r in legal})
+    bytes_written["us_map"] = write(OUT / "us_map.json", geo, args.dry_run)
+    # One county map per state. A county value with no shape (a premises outside
+    # its licensing state, already flagged on the row) is listed, never drawn.
+    county_maps = us_map.counties({s["fips"]: s["code"] for s in geo["states"]})
+    unmatched = collections.Counter()
+    for code, cm in county_maps.items():
+        drawn = {c["county"] for c in cm["counties"]}
+        st = summary["states"].get(code)
+        if st:
+            unmatched.update({(code, c): n for c, n in st["by_county"].items() if c not in drawn})
+        bytes_written["county maps"] += write(OUT / "counties" / f"{code}.json", cm, args.dry_run)
+    if unmatched:
+        print(f"  {sum(unmatched.values())} licence rows in {len(unmatched)} county values have no "
+              f"shape in their own state (premises outside the licensing state); listed, not drawn")
 
     print(f"{len(licences):,} licence rows -> {len(by_state)} per-state files")
     print(f"{len(primaries):,} business profiles -> {len(publishable):,} publishable, "

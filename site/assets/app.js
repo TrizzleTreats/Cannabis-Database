@@ -173,7 +173,12 @@ const fact = (label, value) => (value ? [el("dt", { text: label }), el("dd", {},
 
 /* The full public record of one licence: heading, facts, the row's own flags,
    and its source. Used by the Database's side panel and by the profile page. */
-export function licenceDetail(d, { heading = "h3" } = {}) {
+export function licenceDetail(d, opts = {}) {
+  // replaceChildren() would print a null as the text "null", so drop them here.
+  return licenceDetailParts(d, opts).filter((x) => x !== null && x !== undefined);
+}
+
+function licenceDetailParts(d, { heading = "h3" } = {}) {
   // extra_details is "key=value; key=value" — the per-row flags the build wrote.
   const flags = (d.extra_details || "").split("; ").filter(Boolean);
   const county = d.county
@@ -193,7 +198,10 @@ export function licenceDetail(d, { heading = "h3" } = {}) {
       fact("Issued", d.issue_date),
       fact("First issued", d.first_issue_date),
       fact("Expires", d.expiry_date),
-      fact("Address", [d.street_address, d.town].filter(Boolean).join(", ")),
+      // Most regulators put the town inside the address already; add it only when absent.
+      fact("Address", d.street_address && d.town
+        && !d.street_address.toLowerCase().includes(d.town.toLowerCase())
+        ? `${d.street_address}, ${d.town}` : (d.street_address || d.town)),
       fact("County", county),
       fact("Town as listed", d.town_as_listed !== d.town ? d.town_as_listed : ""),
       fact("County source", d.county_source),
@@ -212,4 +220,37 @@ export function licenceDetail(d, { heading = "h3" } = {}) {
       d.source_url ? [" — ", el("a", { href: d.source_url, target: "_blank", rel: "noopener" }, "source")] : "",
       d.data_as_of ? ` · read ${d.data_as_of}` : ""),
   ];
+}
+
+/* ------------------------------------------------------------- county maps
+   One state's counties from site/data/counties/<ST>.json. Uncoloured on
+   purpose: HANDOFF puts county colour-coding in "later, not now", so the map
+   is navigation, and the counts are in the tooltip and the tables. */
+export const countyHref = (state, county) =>
+  `county.html?state=${encodeURIComponent(state)}&county=${encodeURIComponent(county)}`;
+
+export function countyMap(cm, { counts = {}, highlight = null, link = true, label = "" } = {}) {
+  const SVG = "http://www.w3.org/2000/svg";
+  const make = (tag, attrs = {}) => {
+    const n = document.createElementNS(SVG, tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    return n;
+  };
+  const svg = make("svg", { class: "countymap", viewBox: cm.viewBox.join(" "), role: "group",
+    "aria-label": label || `Map of the counties of ${cm.state}` });
+  for (const c of cm.counties) {
+    const n = counts[c.county] || 0;
+    const tip = `${c.name}${n ? ` — ${n.toLocaleString("en-US")} licence records` : ""}`;
+    const path = make("path", { d: c.d, class: c.county === highlight ? "on" : "" });
+    const title = make("title"); title.textContent = tip;
+    if (link) {
+      const a = make("a", { href: countyHref(cm.state, c.county), "aria-label": tip });
+      a.append(title, path);
+      svg.append(a);
+    } else {
+      path.append(title);
+      svg.append(path);
+    }
+  }
+  return svg;
 }

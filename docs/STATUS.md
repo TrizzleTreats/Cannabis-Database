@@ -31,7 +31,7 @@
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) and **the home page's legal-status map** (see "The legal-status map" below). Still to build: the county and city pages with their maps, licence profile pages, and the Laws / Taxes / Market tabs on each state page — those three rest on the law rather than licence data, and each says so on its face rather than showing an empty frame.
+8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). Still to build: city/town pages, and the Laws / Taxes / Market tabs on each state page — those three rest on the law rather than licence data, and each says so on its face rather than showing an empty frame.
 
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
@@ -231,6 +231,54 @@ villages" below. The Census geocoder's County Subdivisions layer resolves a vill
 municipality at address level, which beat the village-level assumption: 56 River Rd, Cornwall
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
+
+## Profiles and county pages (19 Nov 2026)
+
+HANDOFF's site layout now has its profile and county levels.
+
+- **Licence profiles**, `licence.html?state=XX&id=<licence id>`. Each shows the full public record,
+  its status and type badges, the row's own flags, its source and read date, and a small county
+  map. Below that are the licences it is linked to: **same group** (the regulator's or the build's
+  grouping), **same holder** (the same company name in the state, normalised for punctuation and
+  LLC/Inc), and **same address** (the same premises). Holders who are individuals are never
+  matched by name, because two hemp growers called John Smith are not one person. Placeholder
+  addresses ("Data Not Available", 18,978 California rows) are never treated as shared. Each list
+  shows 12 with the true total; past 12, the holder list links to the Database filtered by name.
+  A licence id that does not exist gets a plain "no such licence" page, not an error.
+  The Database's side panel now carries an "Open the full profile" link, and both use one
+  renderer in `site/assets/app.js`.
+- **The detail records are bucketed.** Each state's full records were one file (California's was
+  21 MB, loaded on the first click of any California row). They are now split into ~300-record
+  buckets by an FNV-1a hash of the licence id: `site/data/licences/detail/<ST>/<n>.json`. Python
+  (`build_site_data.py`) and JavaScript (`app.js`) compute the same hash. Every id is ASCII,
+  where the two agree. Opening a California profile now loads ~300 KB. The related lists
+  raise the total from 53 MB to 79 MB, but no page loads more than one bucket.
+- **County pages**, `county.html?state=XX&county=<value>`. Each has the county highlighted on its state
+  map, record counts, the counts by standard type and by status, the towns, the first 300 licences
+  linked to their profiles, and a link to the Database. "Local rules" says plainly that it is not
+  published yet. A county with no records says that a missing record is not proof of no business,
+  and how many of the state's records carry no county.
+- **Display names come from Census**, so a reader sees "Baltimore City", "Winchester City" (an
+  independent city with no county of that name), "Denver County" and "Acadia Parish", never
+  "Winchester County". `us_map.county_display_names()` builds them; CT keeps its traditional
+  eight counties.
+- **The state Overview opens with a clickable county map**, as HANDOFF specifies. It is uncoloured
+  on purpose: HANDOFF lists county colour-coding as "later, not now". The counts are in each
+  county's tooltip and in the county table, whose links now open the county page.
+- **County shapes**: US Census 2017 cartographic county boundaries via us-atlas 3.0.1, stored in
+  data/raw/us-atlas/ and logged in the manifest. The 2017 vintage still has Connecticut's
+  traditional eight counties, the vocabulary this project uses. The six city/county name pairs
+  are told apart by Census county code (500 and up is the city). 58 licence rows in 43
+  county values have no shape in their own state. Every one is already flagged as premises
+  outside the licensing state, and they are listed but not drawn.
+- **Checked in headless Chromium**: profiles in MA and CO, a missing id, county pages for Baltimore
+  City, Los Angeles and an empty county (Hinsdale), the Colorado Overview, and a click through from
+  the Database panel to a California profile. No console errors, and no horizontal scroll at
+  390 px. Fixed along the way: the Database panel printed a stray "null" under every record, the
+  address repeated the town, and the state page's six tabs widened the page on a phone.
+- **A commit-hygiene note.** Part of this work (the buckets and the shared renderer) went in
+  with e5289a2, the independent-cities commit, because `git add -A` picked it up. The site
+  worked at that commit, so it was left there rather than rewritten.
 
 ## Independent cities were merged into their counties (19 Nov 2026)
 

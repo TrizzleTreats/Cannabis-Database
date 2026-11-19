@@ -16,7 +16,7 @@
 </main>
 
 <script type="module">
-import { loadJSON, fmt, el, mountFooter, mountTopbar, statusBadge } from "./assets/app.js";
+import { loadJSON, fmt, el, mountFooter, mountTopbar, statusBadge, countyMap, countyHref } from "./assets/app.js";
 
 mountTopbar(document.body, "state.html");
 mountFooter(document.body);
@@ -118,7 +118,17 @@ function stat(n, label) {
 
 function overview(panel) {
   const counties = Object.entries(s.by_county || {});
+  // HANDOFF: the Overview opens with a clickable county map. Uncoloured —
+  // county colour-coding is listed as "later, not now".
+  const mapHost = el("div", { class: "map-card", style: "margin-bottom:1rem" },
+    el("p", { class: "loading", text: "Loading the county map…" }));
+  loadJSON(`counties/${code}.json`).then((cm) => mapHost.replaceChildren(
+    countyMap(cm, { counts: s.by_county || {}, label: `Counties of ${NAMES[code]}` }),
+    el("p", { class: "map-note" }, `Click a county to see the licences placed in it. `
+      + `${cm.counties.length} counties and county-equivalents; shapes from the US Census Bureau.`)))
+    .catch(() => mapHost.remove());
   panel.replaceChildren(
+    mapHost,
     el("div", { class: "stats" },
       stat(s.licences, "licence records"),
       stat(s.with_a_licence_number, "with the regulator's own number"),
@@ -137,7 +147,7 @@ function overview(panel) {
         ? `${fmt(s.rows_without_a_county)} records have none, and each says why.` : "")) : null,
     counties.length ? el("div", { class: "table-scroll" }, table(
       ["County", "Records"], counties,
-      ([k, v]) => [el("a", { href: `database.html?state=${code}&county=${encodeURIComponent(k)}` }, k),
+      ([k, v]) => [el("a", { href: countyHref(code, k) }, s.county_names?.[k] || k),
                    fmt(v)])) : null,
     el("h2", {}, "Where this came from"),
     el("ul", { class: "note" }, (s.sources || []).map((x) => el("li", { text: x }))),

@@ -100,3 +100,80 @@ def build(code_by_name):
         raise SystemExit(f"map geometry is missing jurisdictions: {missing}")
     return {"viewBox": VIEWBOX, "source": "US Census Bureau cartographic state boundaries, "
             "2017 edition, via us-atlas 3.0.1 (data/raw/us-atlas/)", "states": out}
+
+
+# ------------------------------------------------------------------ counties
+COUNTIES = ROOT / "data" / "raw" / "us-atlas" / "counties-albers-10m.json"
+CENSUS_NAMES = ROOT / "data" / "raw" / "census_counties_by_state.csv"
+CT_TRADITIONAL = {"Fairfield", "Hartford", "Litchfield", "Middlesex", "New Haven",
+                  "New London", "Tolland", "Windham"}
+
+
+def county_display_names():
+    """(state, value in the county column) -> the name to show a reader.
+
+    The column holds Census basenames, plus "<name> city" for the six independent
+    cities that share a basename with a county (scripts/resolve_independent_cities.py).
+    A reader should see "Baltimore County" and "Baltimore City", "Winchester City"
+    (an independent city with no county of that name), "Orleans Parish",
+    "District of Columbia" — never "Winchester County"."""
+    import csv, collections
+    by_base = collections.defaultdict(list)
+    with open(CENSUS_NAMES, encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            by_base[(r["state"], r["county_basename"])].append(r["county_name"])
+    out = {}
+    for (st, base), names in by_base.items():
+        pretty = [n[:-4] + "City" if n.endswith(" city") else n for n in names]
+        if len(names) == 1:
+            out[(st, base)] = pretty[0]
+        else:
+            for n, p in zip(names, pretty):
+                if n.endswith(" city"):
+                    out[(st, f"{base} city")] = p
+                else:
+                    out[(st, base)] = p
+    for c in CT_TRADITIONAL:
+        out[("CT", c)] = f"{c} County"
+    return out
+
+
+def counties(fips_to_code):
+    """One SVG per state: every county's path in the shared projection, keyed by
+    the value this project's county column uses for it."""
+    topo = json.loads(COUNTIES.read_text(encoding="utf-8"))
+    arcs = _decode_arcs(topo)
+    names = county_display_names()
+    per_state = {}
+    for g in topo["objects"]["counties"]["geometries"]:
+        code = fips_to_code.get(g["id"][:2])
+        if not code or "arcs" not in g:
+            continue
+        base = g["properties"]["name"]
+        # The six city/county pairs share a name; Census county codes of 500 and
+        # above are the independent cities.
+        value = base
+        if (code, f"{base} city") in names and int(g["id"][2:]) >= 500:
+            value = f"{base} city"
+        polys = g["arcs"] if g["type"] == "MultiPolygon" else [g["arcs"]]
+        rings = [_ring(r, arcs) for poly in polys for r in poly]
+        outer = [_ring(poly[0], arcs) for poly in polys]
+        _, (lx, ly) = max((_area_centroid(r) for r in outer), key=lambda t: t[0])
+        st = per_state.setdefault(code, {"counties": [], "pts": []})
+        st["counties"].append({"county": value, "name": names.get((code, value), value),
+                               "fips": g["id"], "d": _path(rings),
+                               "center": [round(lx, 1), round(ly, 1)]})
+        st["pts"].extend(rings[0])
+    out = {}
+    for code, st in per_state.items():
+        xs = [p[0] for p in st["pts"]]
+        ys = [p[1] for p in st["pts"]]
+        pad = 4
+        out[code] = {"state": code,
+                     "viewBox": [round(min(xs) - pad, 1), round(min(ys) - pad, 1),
+                                 round(max(xs) - min(xs) + 2 * pad, 1),
+                                 round(max(ys) - min(ys) + 2 * pad, 1)],
+                     "source": "US Census Bureau cartographic county boundaries, 2017 edition, "
+                               "via us-atlas 3.0.1 (data/raw/us-atlas/)",
+                     "counties": sorted(st["counties"], key=lambda c: c["name"])}
+    return out

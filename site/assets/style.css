@@ -230,3 +230,18 @@ details.as-list { margin-top: 1rem; }
 details.as-list summary { cursor: pointer; font-weight: 600; color: var(--green); }
 details.as-list table { margin-top: 0.5rem; }
 td.law i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--fill); margin-right: 0.4rem; border: 1px solid rgba(0,0,0,.12); }
+
+/* ------------------------------------------------------------ county maps */
+svg.countymap { display: block; width: 100%; height: auto; max-height: 420px; }
+svg.countymap path { fill: #e9efea; stroke: #fff; stroke-width: 0.6; vector-effect: non-scaling-stroke; }
+svg.countymap a { cursor: pointer; outline: none; }
+svg.countymap a:hover path, svg.countymap a:focus-visible path { fill: var(--law-medical); }
+svg.countymap path.on { fill: var(--law-adult); }
+.map-small { max-width: 340px; }
+.crumbs { font-size: 13px; color: var(--ink-soft); margin: 0 0 0.4rem; }
+.crumbs a { text-decoration: none; }
+.two-col { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 960px) { .two-col { grid-template-columns: minmax(0, 1fr) 340px; } }
+
+/* The state page's six tabs wrap on a phone instead of widening the page. */
+#tabs { flex-wrap: wrap; max-width: 100%; }

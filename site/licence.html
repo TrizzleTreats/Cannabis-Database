@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Licence — US Cannabis &amp; Hemp Law</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main id="main">
+  <p class="crumbs" id="crumbs"></p>
+  <div class="two-col">
+    <div>
+      <section class="detail" id="record"><p class="loading">Loading the licence…</p></section>
+      <div id="related"></div>
+    </div>
+    <aside id="side"></aside>
+  </div>
+</main>
+
+<script type="module">
+import { loadJSON, fmt, el, mountFooter, mountTopbar, statusBadge, loadLicence,
+         licenceDetail, profileHref, countyMap, countyHref } from "./assets/app.js";
+
+mountTopbar(document.body, "licence.html");
+mountFooter(document.body);
+
+/* One licence, its full public record, and the licences it shares a group,
+   holder or premises with. Contacts are never here: the public build drops
+   them (scripts/build_site_data.py allowlist), and this page shows only what
+   that build emits. */
+const q = new URLSearchParams(location.search);
+const state = (q.get("state") || "").toUpperCase();
+const id = q.get("id") || "";
+
+const [summary, law] = await Promise.all([loadJSON("summary.json"), loadJSON("legal_status.json")]);
+const stateName = law.states[state]?.state_name || state;
+const d = state && id ? await loadLicence(state, id, summary) : null;
+
+const crumbs = document.getElementById("crumbs");
+const record = document.getElementById("record");
+
+if (!d) {
+  crumbs.replaceChildren(el("a", { href: "database.html" }, "Database"));
+  record.replaceChildren(
+    el("h2", { style: "margin-top:0" }, "No such licence"),
+    el("p", {}, state && id
+      ? `There is no licence ${id} in ${stateName} in this database. It may have been removed `
+        + "by the regulator since, or the link may be mistyped."
+      : "A licence link needs a state and a licence id."),
+    el("p", {}, el("a", { class: "cta", href: "database.html" }, "Search the database")));
+} else {
+  document.title = `${d.dba || d.legal_name || d.licence_id} — ${stateName} licence`;
+  const st = summary.states[state];
+  const countyName = d.county ? (st.county_names?.[d.county] || d.county) : "";
+  crumbs.replaceChildren(
+    el("a", { href: `state.html?state=${state}` }, stateName),
+    ...(countyName ? [" › ", el("a", { href: countyHref(state, d.county) }, countyName)] : []),
+    " › ", d.licence_id);
+
+  record.replaceChildren(
+    el("div", { style: "display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem" },
+      statusBadge(d.standard_status, d.status),
+      ...(d.standard_types_all || d.standard_type || "").split("; ").filter(Boolean)
+        .map((t) => el("span", { class: "badge", text: t }))),
+    ...licenceDetail(d, { heading: "h2" }));
+
+  const DB_LINK = {
+    "same holder": (r) => `database.html?state=${state}&status=&q=${encodeURIComponent(d.legal_name || "")}`,
+  };
+  const WHY = {
+    "same group": "Licences the regulator or this build groups together, usually one organisation's set.",
+    "same holder": "Other licences held by the same company name in this state. "
+      + "Individuals are not matched by name: two people can share one.",
+    "same address": "Other licences at the same premises address.",
+  };
+  document.getElementById("related").replaceChildren(...(d.related || []).map((rel) =>
+    el("section", {},
+      el("h2", {}, `${rel.relation[0].toUpperCase()}${rel.relation.slice(1)} `
+        + `(${fmt(rel.total)} other${rel.total === 1 ? "" : "s"})`),
+      el("p", { class: "note" }, WHY[rel.relation] || ""),
+      el("div", { class: "table-scroll" },
+        el("table", {},
+          el("thead", {}, el("tr", {}, ["Licence", "Name", "Type", "Status", "Town"]
+            .map((h) => el("th", { text: h })))),
+          el("tbody", {}, rel.licences.map((o) => el("tr", {},
+            el("td", { class: "id" }, el("a", { href: profileHref({ state, licence_id: o.licence_id }) }, o.licence_id)),
+            el("td", { text: o.name }),
+            el("td", { text: o.standard_type }),
+            el("td", {}, statusBadge(o.standard_status, "")),
+            el("td", { text: o.town })))))),
+      rel.total > rel.licences.length
+        ? el("p", { class: "note" }, `Showing ${rel.licences.length} of ${fmt(rel.total)}. `,
+            DB_LINK[rel.relation]
+              ? el("a", { href: DB_LINK[rel.relation]() }, "See them all in the database")
+              : "The database lists the rest.")
+        : null)));
+
+  const side = document.getElementById("side");
+  if (d.county) {
+    try {
+      const cm = await loadJSON(`counties/${state}.json`);
+      if (cm.counties.some((c) => c.county === d.county)) {
+        side.replaceChildren(el("div", { class: "map-card map-small" },
+          countyMap(cm, { highlight: d.county, counts: st.by_county,
+            label: `${countyName} within ${stateName}` }),
+          el("p", { class: "map-note" }, `${countyName}, ${stateName}. `,
+            "The county, not the premises: the regulator's data carries no coordinates.")));
+      }
+    } catch { /* the map is a nicety; the record stands without it */ }
+  }
+}
+</script>
+</body>
+</html>
