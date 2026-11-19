@@ -1,4 +1,4 @@
-# Status (13 November 2026)
+# Status (19 November 2026)
 
 ## Done
 - Research and audits for all 50 states + DC, federal, the national business directory and all 10 regional business directories (California separate).
@@ -23,6 +23,7 @@
 ## Next
 1. Post-election re-check: **Idaho HJR 4 — checked 13 Nov 2026, NOT yet certified, re-check on or after 24 Nov 2026.** Idaho HJR 4 was the only 2026 cannabis-related measure on any state ballot (the 2026 Idaho Medical Cannabis Act failed to qualify on 14 July 2026; HANDOFF records that Florida and Arkansas had none). As of 13 Nov the Secretary of State's press site carries no state canvass or certification — its most recent items are county-level and the counts are still moving: "Latah County Recount Complete" (11 Nov 2026) and "Bannock County Reports Additional Election Day Ballots" with a vote-margin correction (10 Nov 2026). Idaho Code §34-1211 requires the State Board of Canvassers to meet "within twenty-one (21) days after the general election", so certification is due by **24 Nov 2026** (https://legislature.idaho.gov/statutesrules/idstat/Title34/T34CH12/SECT34-1211/).
    - **The Idaho report is now past its own expiry and one of its statements is stale.** reports/regions/8-mountain/idaho/idaho-audited.html says on its face: "Do not carry this file forward after 3 November 2026 without replacing the HJR 4 passages with certified Secretary of State / VoteIdaho results." Its Part 0 / 1.9 wording — HJR 4 "on 3 Nov 2026 ballot, not yet voted on" — is no longer true: the vote has happened and only the result is pending. Part 1.2's discipline still holds exactly as written ("No constitutional amendment limiting legalisation currently in force; only PROPOSED HJR 4"), because an uncertified measure is not in force. The report is deliberately NOT edited yet: the plan is to replace those passages once there is a certified result to put in them, and a two-step edit would put an uncertified outcome into an audited file. Until then HJR 4 must be described as voted on 3 Nov 2026 with the result uncertified, never as pending a vote and never with an outcome.
+   - **The home-page map carries Idaho too** (scripts/legal_status_data.py, row ID). Its note says HJR 4 was voted and is uncertified. Update it in the same change as the report, then re-run build_legal_status.py and build_site_data.py.
    - Do not take a result from the unofficial county totals. A recount has already changed one county's count, and the project's rule against reconciling two differently-dated figures applies to election returns as much as to licence counts.
 2. The remaining **1,005** county gaps (CA 275, CO 240, NY 196, HI 64, FL 59, TX 51, IL 36, ME 23, PA 22, MO 11, AL 9, CT 5, VA 4, MD 3, MA 2, RI 2, NJ 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish. Down from 1,133: New Jersey's permits closed 86, Connecticut's villages 8, and fixing the wrong-state geocode query closed 34 in Texas.
 3. Resolve the licence numbers **PA and DE** do not publish — they publish none anywhere found so far. **NJ and MD are DONE**: NJ's 655 licences carry the CRC's real numbers, and MD's 191 carry the MCA's (see "New Jersey: rebuilt from the permit PDFs" and "Maryland publishes licence numbers after all" below).
@@ -30,7 +31,7 @@
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page** and the terms page (see "The site" below). Still to build: the home page's legal-status map, the county and city pages with their maps, licence profile pages, and the Laws / Taxes / Market tabs on each state page — those three rest on the law rather than licence data, and each says so on its face rather than showing an empty frame.
+8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) and **the home page's legal-status map** (see "The legal-status map" below). Still to build: the county and city pages with their maps, licence profile pages, and the Laws / Taxes / Market tabs on each state page — those three rest on the law rather than licence data, and each says so on its face rather than showing an empty frame.
 
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
@@ -230,6 +231,66 @@ villages" below. The Census geocoder's County Subdivisions layer resolves a vill
 municipality at address level, which beat the village-level assumption: 56 River Rd, Cornwall
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
+
+## The legal-status map (19 Nov 2026)
+
+The home page now opens with a clickable map of all 51 jurisdictions coloured by the legal
+status of cannabis **under state law**. The colour comes from `data/clean/legal_status.csv`,
+never from whether this project holds licence data for a state.
+
+- **Where the status comes from.** `scripts/legal_status_data.py` restates section 1.1 ("Legal
+  status") of each audited report, by hand, with the citation the report gives and a link the
+  report itself cites in that section. Every citation was checked against the report's own text
+  before it went in. One that came from memory rather than the report was corrected: South Dakota's
+  measure is "IM 26", as the report writes it.
+  `scripts/build_legal_status.py` writes the CSV and refuses on an unknown status, a link that
+  is not on an official host in domains/all-domains.txt, a row with no link and no reason, or a
+  report with no readable "Last audited" date. That date is read from the report, so it cannot
+  drift from its source.
+- **Four statuses, no more.** 25 adult use and medical (including DC and Virginia), 15 medical
+  only, **3 limited (low-THC) medical only** (Georgia, Iowa, Texas), 8 no medical programme
+  (Idaho, Indiana, Kansas, North Carolina, South Carolina, Tennessee, Wisconsin, Wyoming). The
+  third class is not in HANDOFF's colour list, which names dark green, medium green and "lighter
+  green adult-only if needed". No state is adult-use only, so that shade is used for low-THC
+  instead. Folding Texas or Georgia into "medical only" would overstate the law, and folding them
+  into "none" would erase a licensed programme. No medical programme is a neutral grey, not red:
+  the map states the law, it does not grade it.
+- **What the colour cannot say, the card says.** Hovering over a state, tabbing to it, or tapping it
+  on a phone shows its citation, the official link, the date the law was checked, and a note
+  where the colour alone would mislead. Virginia: adult possession is legal, but retail opens only on
+  1 July 2027. Nebraska: patients are protected but no dispensary licence had been issued. Delaware,
+  New Jersey, Washington: home grow limits. Hawaii, New Hampshire: decriminalised, not legal. Idaho:
+  **"HJR 4 was voted on 3 Nov 2026 and the result is not yet certified"**, which is the
+  wording item 1 above requires. The map note says the law was checked between 23 Oct and 1 Nov 2026 and that
+  federal law differs, with a link to the federal page. A "map as a list" table under the map
+  carries the same facts for screen readers and for anyone who wants all 51 at once.
+- **Shapes.** US Census Bureau cartographic state boundaries (2017), already projected with
+  Alaska and Hawaii inset, from the us-atlas 3.0.1 package. They are stored in data/raw/us-atlas/
+  and logged in the manifest. They came from the npm registry because census.gov is not reachable
+  from this sandbox. `scripts/us_map.py` turns them into SVG paths at build time (116 KB), so
+  the site loads no mapping library and nothing from a CDN. The nine states too small to label
+  (VT NH MA RI CT NJ DE MD DC) get a callout column to the right of the map, and each callout can also be clicked.
+- **Checked in a real browser** (headless Chromium, desktop and iPhone 13): all 51 shapes
+  render with no console errors and no horizontal scroll at 390 px. Hovering shows the card,
+  clicking opens `state.html?state=XX`, and on touch the first tap shows the card and the
+  second opens the page. `scripts/verify.py` now checks that the CSV is valid, current, and
+  is what the site's map shows. Changing Texas's status by hand makes it fail on both counts.
+- **verify.py now runs off a Mac.** Its PDF page counter called macOS `mdls` unconditionally and
+  crashed on Linux. It now reports "?" pages when `mdls` is absent. Every other check is unchanged
+  and all pass.
+
+**Gaps this leaves, recorded rather than papered over:**
+- **Tennessee and Wyoming carry no official link.** Their reports cite the statutes (Tenn. Code
+  §39-17-402; W.S. 35-7-1001 et seq.) but link only Justia/FindLaw, which CLAUDE.md rules out. The
+  card says "no official link captured yet". The fix is the official code page for each.
+  Tennessee's official online code is published through LexisNexis.
+- **Michigan's link is the medical act.** The report gives no official link for the adult-use act
+  (MRTMA, MCL 333.27951 et seq.); the row's note says so.
+- **Idaho must be re-checked on or after 24 Nov 2026** (item 1). If HJR 4 is certified, update
+  the Idaho row in scripts/legal_status_data.py as well as the report. The map is the most visible
+  place an outcome would show.
+- The map colours by **state** law only. Tribal programmes (e.g. the Eastern Band of Cherokee in
+  North Carolina) are noted on the card, not coloured.
 
 ## What needs a person, in one worksheet (14 Nov 2026)
 

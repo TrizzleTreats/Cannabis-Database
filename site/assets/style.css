@@ -182,3 +182,51 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
 .empty { padding: 2.5rem 1rem; text-align: center; color: var(--ink-faint); }
 .loading { padding: 2rem 1rem; text-align: center; color: var(--ink-faint); }
+
+/* ------------------------------------------------------- legal-status map
+   Four shades of one green ramp, darkest = most permissive (HANDOFF: dark green
+   medical + adult, medium green medical only, lighter after that). No medical
+   programme is a neutral grey, not a red: the map states the law, it does not
+   grade it. */
+:root {
+  --law-adult: #11592f;
+  --law-medical: #3f9a5f;
+  --law-lowthc: #b5dcc0;
+  --law-none: #dfe3e0;
+}
+.law-adult   { --fill: var(--law-adult);   --label: #fff; }
+.law-medical { --fill: var(--law-medical); --label: #fff; }
+.law-lowthc  { --fill: var(--law-lowthc);  --label: var(--ink); }
+.law-none    { --fill: var(--law-none);    --label: var(--ink); }
+
+.map-wrap { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 960px) { .map-wrap { grid-template-columns: minmax(0, 1fr) 19rem; } }
+.map-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.75rem; }
+.legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; margin: 0 0 0.5rem; padding: 0; list-style: none; font-size: 13px; color: var(--ink-soft); }
+.legend li { display: flex; align-items: center; gap: 0.4rem; }
+.legend i { width: 14px; height: 14px; border-radius: 3px; background: var(--fill); border: 1px solid rgba(0,0,0,.12); }
+.legend b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+svg.usmap { display: block; width: 100%; height: auto; }
+svg.usmap path { fill: var(--fill); stroke: #fff; stroke-width: 0.8; stroke-linejoin: round; transition: fill .12s; }
+svg.usmap a { outline: none; cursor: pointer; }
+svg.usmap a:hover path, svg.usmap a:focus-visible path, svg.usmap a.chosen path { stroke: var(--ink); stroke-width: 1.6; }
+svg.usmap a:focus-visible path { stroke: var(--green-bright); stroke-width: 2.4; }
+svg.usmap text { font: 600 11px var(--sans); fill: var(--label); pointer-events: none; text-anchor: middle; dominant-baseline: central; }
+svg.usmap .callout text { fill: var(--ink); text-anchor: start; }
+svg.usmap .callout rect { fill: var(--fill); stroke: rgba(0,0,0,.15); }
+svg.usmap .callout line { stroke: var(--ink-faint); stroke-width: 0.7; }
+
+.state-card { align-self: start; }
+.state-card h3 { margin: 0 0 0.35rem; font-size: 1.15rem; }
+.state-card .law-chip { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 99px; font-size: 12px; font-weight: 650; background: var(--fill); color: var(--label); }
+.state-card p { margin: 0.6rem 0 0; font-size: 13.5px; }
+.state-card .cite { color: var(--ink-soft); }
+.state-card .warn { padding: 0.5rem 0.65rem; background: var(--amber-bg); border: 1px solid #ecdcae; border-radius: 6px; }
+.state-card .cta { margin-top: 0.9rem; padding: 0.5rem 0.9rem; }
+.map-note { font-size: 13px; color: var(--ink-soft); margin: 0.6rem 0 0; }
+
+details.as-list { margin-top: 1rem; }
+details.as-list summary { cursor: pointer; font-weight: 600; color: var(--green); }
+details.as-list table { margin-top: 0.5rem; }
+td.law i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--fill); margin-right: 0.4rem; border: 1px solid rgba(0,0,0,.12); }

@@ -36,6 +36,9 @@ Usage:
 """
 import argparse, collections, csv, json, pathlib, shutil, sys
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import us_map  # noqa: E402
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CLEAN = ROOT / "data" / "clean"
 OUT = ROOT / "site" / "data"
@@ -74,6 +77,11 @@ BUSINESS_PUBLIC = [
     "states_served_codes", "credentials", "evidence_links", "audit_verdict",
     "needs_verify", "audit_note", "sources", "last_checked",
 ]
+
+# The home-page map's legal status per jurisdiction (scripts/build_legal_status.py).
+# Statements about the law, each with its citation, official link and audit date.
+LEGAL_PUBLIC = ["state", "state_name", "legal_status", "citation", "source_url",
+                "source_kind", "note", "report_last_audited"]
 
 UNVERIFIED = ("unverif",)
 
@@ -203,6 +211,19 @@ def main():
         "licences_with_a_county": sum(1 for r in licences if r["county"]),
     }
     bytes_written["summary"] = write(OUT / "summary.json", summary, args.dry_run)
+
+    legal = rows_of("legal_status.csv")
+    if len(legal) != 51:
+        sys.exit(f"legal_status.csv has {len(legal)} rows, not 51 — "
+                 "run python3 scripts/build_legal_status.py")
+    bytes_written["legal_status"] = write(
+        OUT / "legal_status.json",
+        {"note": "Each status restates section 1.1 of that jurisdiction's audited report; "
+                 "report_last_audited is the date the law was checked.",
+         "states": {r["state"]: public(r, LEGAL_PUBLIC) for r in legal}}, args.dry_run)
+    bytes_written["us_map"] = write(
+        OUT / "us_map.json", us_map.build({r["state_name"]: r["state"] for r in legal}),
+        args.dry_run)
 
     print(f"{len(licences):,} licence rows -> {len(by_state)} per-state files")
     print(f"{len(primaries):,} business profiles -> {len(publishable):,} publishable, "

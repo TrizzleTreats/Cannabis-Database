@@ -30,8 +30,11 @@ def git(*a):
 
 def pdf_pages(p):
     """Spotlight reads PDFs with compressed object streams; a regex does not."""
-    out = subprocess.run(["mdls", "-raw", "-name", "kMDItemNumberOfPages", str(p)],
-                         capture_output=True, text=True).stdout.strip()
+    try:
+        out = subprocess.run(["mdls", "-raw", "-name", "kMDItemNumberOfPages", str(p)],
+                             capture_output=True, text=True).stdout.strip()
+    except FileNotFoundError:   # mdls is macOS-only; elsewhere the count is unknown
+        return "?"
     return out if out.isdigit() else "?"
 
 
@@ -636,6 +639,30 @@ if p.exists():
     print("  These figures are NOT expected to agree: the dataset is a year later, counts")
     print("  one row per location rather than per licence, and includes mere applicants.")
     print("  Do not reconcile them into a single number.")
+
+head("Legal status: the map's colour is a statement about the law")
+p = ROOT / "data/clean/legal_status.csv"
+if not p.exists():
+    check(False, "data/clean/legal_status.csv exists", "run python3 scripts/build_legal_status.py")
+else:
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import build_legal_status as bls
+    expected, problems = bls.build()
+    check(not problems, "every row has a known status, a citation, an official link or a "
+          "stated reason for none, and an audit date read from its report",
+          f"({problems[:2]})" if problems else "")
+    have = list(csv.DictReader(open(p, encoding="utf-8")))
+    by_state = {h["state"]: h for h in have}
+    stale = [r["state"] for r in expected if by_state.get(r["state"]) != r]
+    check(len(have) == 51 and not stale, "legal_status.csv is 51 rows and matches its source",
+          f"stale: {sorted(stale)[:5]} — run python3 scripts/build_legal_status.py" if stale else "")
+    built = ROOT / "site/data/legal_status.json"
+    if built.exists():
+        site_law = json.loads(built.read_text(encoding="utf-8"))["states"]
+        drift = [r["state"] for r in have
+                 if site_law.get(r["state"], {}).get("legal_status") != r["legal_status"]]
+        check(not drift, "the site's map shows the status the table holds",
+              f"({drift[:5]}) — run python3 scripts/build_site_data.py" if drift else "")
 
 head("Result")
 if fails:
