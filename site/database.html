@@ -57,7 +57,8 @@
 
 <script type="module">
 import { loadJSON, fmt, el, statusBadge, readParams, writeParams, debounce,
-         toCSV, download, sortRows, mountFooter, mountTopbar } from "./assets/app.js";
+         toCSV, download, sortRows, mountFooter, mountTopbar,
+         loadLicence, licenceDetail, profileHref } from "./assets/app.js";
 
 const DEFAULTS = { mode: "operators", state: "", q: "", type: "", status: "Active + Provisional",
                    county: "", category: "", sort: "legal_name", dir: "ascending" };
@@ -66,7 +67,6 @@ const $ = (id) => document.getElementById(id);
 
 let summary = null;
 let rows = [];          // the loaded set for the current mode/state
-let detailCache = {};   // state -> full detail records, loaded on demand
 let chosen = null;
 
 const OPERATOR_COLUMNS = [
@@ -199,49 +199,13 @@ async function openDetail(r) {
   if (S.mode === "services") return renderServiceDetail(panel, r);
 
   panel.replaceChildren(el("p", { class: "loading", text: "Loading the full record…" }));
-  if (!detailCache[S.state]) {
-    const data = await loadJSON(`licences/${S.state}.detail.json`);
-    detailCache[S.state] = Object.fromEntries(data.licences.map((x) => [x.licence_id, x]));
-  }
-  renderLicenceDetail(panel, detailCache[S.state][r.licence_id] || r);
+  const full = await loadLicence(r.state, r.licence_id, summary);
+  renderLicenceDetail(panel, full || r);
 }
 
-const row = (label, value) => (value ? [el("dt", { text: label }), el("dd", {}, value)] : []);
-
 function renderLicenceDetail(panel, d) {
-  // extra_details is "key=value; key=value" — the per-row flags the build wrote.
-  const flags = (d.extra_details || "").split("; ").filter(Boolean);
-  panel.replaceChildren(
-    el("h3", { text: d.legal_name || "(the regulator publishes no name)" }),
-    el("p", { class: "sub" }, [d.dba && `trading as ${d.dba}`, d.licence_id].filter(Boolean).join(" · ")),
-    el("dl", {},
-      row("Licence type", d.licence_type),
-      row("Standard type", d.standard_types_all || d.standard_type),
-      row("Programme", d.program),
-      row("Status", d.status),
-      row("Standard status", d.standard_status || "not published"),
-      row("Tier", d.tier),
-      row("Issued", d.issue_date),
-      row("First issued", d.first_issue_date),
-      row("Expires", d.expiry_date),
-      row("Address", [d.street_address, d.town, d.county && `${d.county} County`].filter(Boolean).join(", ")),
-      row("Town as listed", d.town_as_listed !== d.town ? d.town_as_listed : ""),
-      row("County source", d.county_source),
-      row("Location basis", d.location_basis),
-      row("Website", d.website && el("a", { href: d.website, target: "_blank", rel: "noopener" }, d.website)),
-      row("Part of", d.linked_group && `${d.linked_group} (${d.licences_in_group} licences)`),
-    ),
-    flags.length
-      ? el("div", { class: "flags" },
-          el("b", { text: "What this row says about itself" }),
-          el("ul", { style: "margin:.4rem 0 0; padding-left:1.1rem" },
-            flags.map((f) => el("li", { text: f }))))
-      : null,
-    el("p", { class: "source" },
-      d.source || "",
-      d.source_url ? [" — ", el("a", { href: d.source_url, target: "_blank", rel: "noopener" }, "source")] : "",
-      d.data_as_of ? ` · read ${d.data_as_of}` : ""),
-  );
+  panel.replaceChildren(...licenceDetail(d),
+    el("p", {}, el("a", { class: "cta", href: profileHref(d) }, "Open the full profile →")));
 }
 
 function renderServiceDetail(panel, b) {

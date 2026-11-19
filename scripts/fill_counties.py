@@ -241,6 +241,17 @@ def ct_town_counties():
         return {r["town"].strip().lower(): r["county"] for r in csv.DictReader(f)}
 
 
+def independent_cities():
+    """(state, basename) pairs that are both an independent city and a county."""
+    path = ROOT / "data/raw/census_counties_by_state.csv"
+    names = collections.defaultdict(set)
+    if path.exists():
+        with open(path, encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                names[(r["state"], r["county_basename"])].add(r["county_name"])
+    return {k for k, v in names.items() if len(v) > 1}
+
+
 def official_counties():
     path = ROOT / "data/raw/census_counties_by_state.csv"
     if not path.exists():
@@ -249,6 +260,8 @@ def official_counties():
     with open(path, encoding="utf-8") as f:
         for r in csv.DictReader(f):
             out[r["state"]].add(r["county_basename"])
+            if r["county_name"].endswith(" city"):
+                out[r["state"]].add(r["county_name"])
     return out
 
 
@@ -305,7 +318,12 @@ def canonicalise(all_rows):
                               r"Municipality|City)$", "", c, flags=re.I).strip()
             for cand in ([alias] if alias else []) + [c, stripped]:
                 hit = folded.get(st, {}).get(_fold(cand))
-                if hit:
+                # Baltimore, St. Louis and four Virginia names are both an
+                # independent city and a county. Stripping "City" would merge
+                # them, so the city keeps Census's own "<name> city" form
+                # (scripts/resolve_independent_cities.py explains the rule).
+                if hit and re.search(r"\bcity$", c, re.I) and (st, hit) in independent_cities():
+                    hit = f"{hit} city"
                     if hit != r["county"]:
                         r["county"] = hit
                         r["county_source"] = "; ".join(x for x in (

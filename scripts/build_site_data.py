@@ -34,7 +34,7 @@ split is about payload size and never about what is public.
 Usage:
   python3 scripts/build_site_data.py [--dry-run]
 """
-import argparse, collections, csv, json, pathlib, shutil, sys
+import argparse, collections, csv, json, pathlib, re, shutil, sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import us_map  # noqa: E402
@@ -120,6 +120,74 @@ def write(path, obj, dry_run):
     return len(text)
 
 
+# ------------------------------------------------------------ detail buckets
+BUCKET_SIZE = 300
+
+
+def buckets_for(n):
+    return max(1, -(-n // BUCKET_SIZE))
+
+
+def bucket(licence_id, nb):
+    """FNV-1a over the id's characters. site/assets/app.js computes the same
+    function to find a licence's bucket, so the two must not drift: ids are
+    ASCII (verify.py checks), where Python's ord() and JS charCodeAt() agree."""
+    h = 0x811C9DC5
+    for ch in licence_id:
+        h ^= ord(ch)
+        h = (h * 0x01000193) & 0xFFFFFFFF
+    return h % nb
+
+
+RELATED_CAP = 12
+NAME_NOISE = re.compile(r"[^a-z0-9 ]+")
+NAME_SUFFIX = re.compile(r"\b(llc|l l c|inc|incorporated|corp|corporation|co|ltd|lp|llp|pllc|pc)\b")
+
+
+def norm_name(name):
+    n = NAME_NOISE.sub(" ", name.lower())
+    return " ".join(NAME_SUFFIX.sub(" ", n).split())
+
+
+def usable_address(addr):
+    a = addr.strip().lower()
+    return bool(re.search(r"\d", a)) and "not available" not in a
+
+
+def related_licences(rows):
+    """Other licences in the same state that share this one's group, holder or
+    premises. Shared holder skips individuals: two hemp growers called John Smith
+    are not the same person. Each relation is capped, with the true total kept."""
+    keys = {
+        "same group": lambda r: r.get("group_id") or r.get("linked_group") or "",
+        "same holder": lambda r: "" if r.get("holder_is_individual") == "Y"
+                                 else norm_name(r.get("legal_name") or ""),
+        "same address": lambda r: r["street_address"].strip().lower()
+                                  if usable_address(r.get("street_address") or "") else "",
+    }
+    out = collections.defaultdict(list)
+    for relation, key in keys.items():
+        groups = collections.defaultdict(list)
+        for r in rows:
+            k = key(r)
+            if k:
+                groups[k].append(r)
+        for members in groups.values():
+            if len(members) < 2:
+                continue
+            for r in members:
+                others = [m for m in members if m["licence_id"] != r["licence_id"]]
+                out[r["licence_id"]].append({
+                    "relation": relation, "total": len(others),
+                    "licences": [{"licence_id": m["licence_id"],
+                                  "name": m.get("dba") or m.get("legal_name") or "",
+                                  "standard_type": m.get("standard_type", ""),
+                                  "standard_status": m.get("standard_status", ""),
+                                  "town": m.get("town", "")}
+                                 for m in others[:RELATED_CAP]]})
+    return out
+
+
 def is_unverified(row):
     verdict = (row.get("audit_verdict") or "").strip().lower()
     flag = (row.get("needs_verify") or "").strip().lower()
@@ -152,16 +220,28 @@ def main():
             OUT / "licences" / f"{state}.json",
             {"state": state, "count": len(rows),
              "licences": [public(r, LICENCE_LIST) for r in rows]}, args.dry_run)
-        bytes_written["licences (detail)"] += write(
-            OUT / "licences" / f"{state}.detail.json",
-            {"state": state,
-             "licences": [public(r, LICENCE_PUBLIC) for r in rows]}, args.dry_run)
+        # The full public record, in small buckets so a profile page or a detail
+        # panel loads ~300 records, not California's 21,000.
+        nb = buckets_for(len(rows))
+        shards = collections.defaultdict(list)
+        related = related_licences(rows)
+        for r in rows:
+            rec = public(r, LICENCE_PUBLIC)
+            if related.get(r["licence_id"]):
+                rec["related"] = related[r["licence_id"]]
+            shards[bucket(r["licence_id"], nb)].append(rec)
+        for b in range(nb):
+            bytes_written["licences (detail)"] += write(
+                OUT / "licences" / "detail" / state / f"{b}.json",
+                {"state": state, "bucket": b, "of": nb, "licences": shards.get(b, [])},
+                args.dry_run)
         types = collections.Counter(r["standard_type"] for r in rows if r["standard_type"])
         statuses = collections.Counter(r["standard_status"] for r in rows if r["standard_status"])
         counties = collections.Counter(r["county"] for r in rows if r["county"])
         asof = sorted({r["data_as_of"] for r in rows if r["data_as_of"]})
         summary["states"][state] = {
             "licences": len(rows),
+            "detail_buckets": nb,
             "with_a_licence_number": sum(1 for r in rows if not r["licence_id"].startswith(state + "-")),
             "standard_type": dict(types.most_common()),
             "standard_status": dict(statuses.most_common()),

@@ -141,3 +141,75 @@ export function mountTopbar(host, current) {
       link("federal.html", "Federal law"),
     ));
 }
+
+/* ------------------------------------------------------------ licence records
+   A state's full public records are split into buckets by an FNV-1a hash of the
+   licence id (scripts/build_site_data.py, bucket()). This is the same function;
+   if one changes, the other must too. */
+export function bucketOf(id, nb) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < id.length; i++) {
+    h = Math.imul((h ^ id.charCodeAt(i)) >>> 0, 0x01000193) >>> 0;
+  }
+  return h % nb;
+}
+
+const bucketCache = {};
+export async function loadLicence(state, id, summary) {
+  const nb = summary?.states?.[state]?.detail_buckets;
+  if (!nb) return null;
+  const key = `${state}/${bucketOf(id, nb)}`;
+  if (!bucketCache[key]) {
+    const data = await loadJSON(`licences/detail/${key}.json`);
+    bucketCache[key] = Object.fromEntries(data.licences.map((x) => [x.licence_id, x]));
+  }
+  return bucketCache[key][id] || null;
+}
+
+export const profileHref = (d) =>
+  `licence.html?state=${encodeURIComponent(d.state)}&id=${encodeURIComponent(d.licence_id)}`;
+
+const fact = (label, value) => (value ? [el("dt", { text: label }), el("dd", {}, value)] : []);
+
+/* The full public record of one licence: heading, facts, the row's own flags,
+   and its source. Used by the Database's side panel and by the profile page. */
+export function licenceDetail(d, { heading = "h3" } = {}) {
+  // extra_details is "key=value; key=value" — the per-row flags the build wrote.
+  const flags = (d.extra_details || "").split("; ").filter(Boolean);
+  const county = d.county
+    ? el("a", { href: `county.html?state=${d.state}&county=${encodeURIComponent(d.county)}` },
+        `${d.county} County`)
+    : null;
+  return [
+    el(heading, { text: d.legal_name || "(the regulator publishes no name)" }),
+    el("p", { class: "sub" }, [d.dba && `trading as ${d.dba}`, d.licence_id].filter(Boolean).join(" · ")),
+    el("dl", {},
+      fact("Licence type", d.licence_type),
+      fact("Standard type", d.standard_types_all || d.standard_type),
+      fact("Programme", d.program),
+      fact("Status", d.status),
+      fact("Standard status", statusBadge(d.standard_status, d.status)),
+      fact("Tier", d.tier),
+      fact("Issued", d.issue_date),
+      fact("First issued", d.first_issue_date),
+      fact("Expires", d.expiry_date),
+      fact("Address", [d.street_address, d.town].filter(Boolean).join(", ")),
+      fact("County", county),
+      fact("Town as listed", d.town_as_listed !== d.town ? d.town_as_listed : ""),
+      fact("County source", d.county_source),
+      fact("Location basis", d.location_basis),
+      fact("Website", d.website && el("a", { href: d.website, target: "_blank", rel: "noopener" }, d.website)),
+      fact("Part of", d.linked_group && `${d.linked_group} (${d.licences_in_group} licences)`),
+    ),
+    flags.length
+      ? el("div", { class: "flags" },
+          el("b", { text: "What this row says about itself" }),
+          el("ul", { style: "margin:.4rem 0 0; padding-left:1.1rem" },
+            flags.map((f) => el("li", { text: f }))))
+      : null,
+    el("p", { class: "source" },
+      d.source || "",
+      d.source_url ? [" — ", el("a", { href: d.source_url, target: "_blank", rel: "noopener" }, "source")] : "",
+      d.data_as_of ? ` · read ${d.data_as_of}` : ""),
+  ];
+}

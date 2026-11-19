@@ -288,8 +288,18 @@ head("Counties must exist in their state")
 cpath = ROOT / "data/raw/census_counties_by_state.csv"
 if cpath.exists():
     official = collections.defaultdict(set)
+    names = collections.defaultdict(set)
     for r in csv.DictReader(open(cpath, encoding="utf-8")):
         official[r["state"]].add(r["county_basename"])
+        names[(r["state"], r["county_basename"])].add(r["county_name"])
+    # Baltimore, St. Louis, Fairfax, Franklin, Richmond and Roanoke (VA) are both an
+    # independent city and a county under one basename. The city is written
+    # "<name> city" (Census's own form); a bare name means the county, and must
+    # say on the row that the question was checked.
+    both = {k for k, v in names.items() if len(v) > 1}
+    for st, base in both:
+        official[st].add(f"{base} city")
+    unsettled = collections.Counter()
     # Connecticut uses its traditional eight counties by project decision
     # (12 Nov 2026), not the nine Planning Regions that replaced them as Census
     # county-equivalents in 2022. Current TIGER lists only the Planning
@@ -312,6 +322,8 @@ if cpath.exists():
             if r["state"] == "CT" and c in CT_TRADITIONAL:
                 ct_trad += 1
                 continue
+            if (r["state"], c) in both and "city or county checked=" not in r["extra_details"]:
+                unsettled[(r["state"], c)] += 1
             if c not in official.get(r["state"], set()):
                 # A row that already says its county is wrong is a known gap,
                 # not a regression. An UNflagged bad county is what must fail.
@@ -335,6 +347,9 @@ if cpath.exists():
     print(f"  -- {offstate} rows are flagged as premises outside their licensing state")
     print(f"  -- {known_bad} rows carry a county that is not their state's and say so on the row "
           f"(ambiguous names inherited from the 24 Oct 2026 table)")
+    check(not unsettled, "no county name that is also an independent city is left unsettled",
+          "" if not unsettled else f"{sum(unsettled.values())} rows, e.g. {list(unsettled.items())[:4]} "
+          "— run python3 scripts/resolve_independent_cities.py")
     check(not bad, "every county exists in its own state",
           "" if not bad else f"{sum(bad.values())} rows, e.g. {list(bad.items())[:5]}")
 else:

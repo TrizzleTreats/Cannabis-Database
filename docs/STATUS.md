@@ -25,7 +25,7 @@
    - **The Idaho report is now past its own expiry and one of its statements is stale.** reports/regions/8-mountain/idaho/idaho-audited.html says on its face: "Do not carry this file forward after 3 November 2026 without replacing the HJR 4 passages with certified Secretary of State / VoteIdaho results." Its Part 0 / 1.9 wording — HJR 4 "on 3 Nov 2026 ballot, not yet voted on" — is no longer true: the vote has happened and only the result is pending. Part 1.2's discipline still holds exactly as written ("No constitutional amendment limiting legalisation currently in force; only PROPOSED HJR 4"), because an uncertified measure is not in force. The report is deliberately NOT edited yet: the plan is to replace those passages once there is a certified result to put in them, and a two-step edit would put an uncertified outcome into an audited file. Until then HJR 4 must be described as voted on 3 Nov 2026 with the result uncertified, never as pending a vote and never with an outcome.
    - **The home-page map carries Idaho too** (scripts/legal_status_data.py, row ID). Its note says HJR 4 was voted and is uncertified. Update it in the same change as the report, then re-run build_legal_status.py and build_site_data.py.
    - Do not take a result from the unofficial county totals. A recount has already changed one county's count, and the project's rule against reconciling two differently-dated figures applies to election returns as much as to licence counts.
-2. The remaining **1,005** county gaps (CA 275, CO 240, NY 196, HI 64, FL 59, TX 51, IL 36, ME 23, PA 22, MO 11, AL 9, CT 5, VA 4, MD 3, MA 2, RI 2, NJ 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish. Down from 1,133: New Jersey's permits closed 86, Connecticut's villages 8, and fixing the wrong-state geocode query closed 34 in Texas.
+2. The remaining **1,006** county gaps (CA 275, CO 240, NY 196, HI 64, FL 59, TX 51, IL 36, ME 23, PA 22, MO 11, AL 9, CT 5, VA 5, MD 3, MA 2, RI 2, NJ 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish. Down from 1,133: New Jersey's permits closed 86, Connecticut's villages 8, and fixing the wrong-state geocode query closed 34 in Texas.
 3. Resolve the licence numbers **PA and DE** do not publish — they publish none anywhere found so far. **NJ and MD are DONE**: NJ's 655 licences carry the CRC's real numbers, and MD's 191 carry the MCA's (see "New Jersey: rebuilt from the permit PDFs" and "Maryland publishes licence numbers after all" below).
 4. DONE (14 Nov 2026) — see "The USDA hemp list: 25 jurisdictions to 50" below. 2,009 federal hemp licences built in, taking coverage from 25 of 51 jurisdictions to 50.
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
@@ -231,6 +231,30 @@ villages" below. The Census geocoder's County Subdivisions layer resolves a vill
 municipality at address level, which beat the village-level assumption: 56 River Rd, Cornwall
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
+
+## Independent cities were merged into their counties (19 Nov 2026)
+
+Census gives an independent city and the county of the same name one basename: Baltimore city and
+Baltimore County, St. Louis city and St. Louis County, plus four Virginia pairs (Fairfax,
+Franklin, Richmond, Roanoke). The county column holds basenames, and `fill_counties.py` stripped
+the "City" designator when it normalised spellings, so **"Baltimore City" and "Baltimore County"
+both became "Baltimore"**. Any per-county count or county page would have added two separate
+jurisdictions together. 82 rows were affected.
+
+- **Rule now.** A city is written as Census writes its county-equivalent name, "Baltimore city".
+  The county keeps its bare basename, like every other county, and carries a
+  `city or county checked=` note saying which source settled it. `fill_counties.py` keeps the
+  designator from now on, and verify.py fails on a bare ambiguous name without that note.
+- **Settled from the regulators' own county fields** (`scripts/resolve_independent_cities.py`),
+  never from the town: a Baltimore mailing address is often in Baltimore County. Missouri: DCR
+  GIS County field, 39 St. Louis County and 10 St. Louis city. Maryland: MCA Dispensary Locator
+  county column, 22 Baltimore County and 10 Baltimore city. Both splits match the 10 + 10 rows
+  the earlier normalisation had marked "spelling normalised".
+- **One cleared rather than guessed.** VA-HEMP-PROC-001 (2004 Dabney Rd, Richmond 23230). VDACS
+  lists its locality as "Richmond", which is both the city and Richmond County. The address rules
+  out the county, which is on the Northern Neck, but ZIP 23230 also covers Henrico County. Its
+  county is now blank, with the reason on the row. A geocoder run (not reachable from this
+  sandbox) settles it. Virginia's county gaps go from 4 to 5.
 
 ## Test records removed: 28 Connecticut, 3 Vermont (19 Nov 2026)
 
