@@ -83,6 +83,8 @@ BUSINESS_PUBLIC = [
 LEGAL_PUBLIC = ["state", "state_name", "legal_status", "citation", "source_url",
                 "source_kind", "note", "report_last_audited"]
 
+QUICK_PUBLIC = ["fact", "text", "cite", "source_url", "confirmed", "note", "report_last_audited"]
+
 UNVERIFIED = ("unverif",)
 
 
@@ -307,6 +309,23 @@ def main():
         {"note": "Each status restates section 1.1 of that jurisdiction's audited report; "
                  "report_last_audited is the date the law was checked.",
          "states": {r["state"]: public(r, LEGAL_PUBLIC) for r in legal}}, args.dry_run)
+    # Quick-reference facts per state (scripts/build_quick_reference.py). An
+    # unconfirmed fact is published only as "not yet confirmed" plus its reason:
+    # its text column is empty by construction, and checked again here.
+    quick = collections.defaultdict(dict)
+    for r in rows_of("quick_reference.csv"):
+        if r["confirmed"] != "Y" and r["text"]:
+            sys.exit(f"quick_reference.csv: {r['state']}.{r['fact']} is unconfirmed but carries text")
+        quick[r["state"]][r["fact"]] = public(r, QUICK_PUBLIC)
+    if len(quick) != 51:
+        sys.exit(f"quick_reference.csv covers {len(quick)} jurisdictions, not 51 — "
+                 "run python3 scripts/build_quick_reference.py")
+    bytes_written["quick_reference"] = write(
+        OUT / "quick_reference.json",
+        {"note": "Each fact restates that state's audited report; report_last_audited is the "
+                 "date it was checked. confirmed=N facts are deliberately shown without text.",
+         "states": quick}, args.dry_run)
+
     geo = us_map.build({r["state_name"]: r["state"] for r in legal})
     bytes_written["us_map"] = write(OUT / "us_map.json", geo, args.dry_run)
     # One county map per state. A county value with no shape (a premises outside

@@ -245,3 +245,16 @@ svg.countymap path.on { fill: var(--law-adult); }
 
 /* The state page's six tabs wrap on a phone instead of widening the page. */
 #tabs { flex-wrap: wrap; max-width: 100%; }
+
+/* -------------------------------------------- state quick reference + Laws */
+.qr { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); margin-bottom: 1rem; }
+.qr-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.8rem 0.9rem; }
+.qr-card h3 { margin: 0 0 0.4rem; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
+.qr-card .fact { margin: 0.35rem 0 0; font-size: 14px; }
+.qr-card .source { margin-top: 0.5rem; }
+.qr-foot { grid-column: 1 / -1; margin: 0; font-size: 13px; }
+.law-chip { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 99px; font-size: 12px; font-weight: 650; background: var(--fill); color: var(--label); }
+p.unconfirmed { margin: 0.35rem 0 0; font-size: 14px; color: var(--amber); }
+.law-block { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.9rem 1rem; margin-bottom: 0.75rem; }
+.law-block h2 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+.law-block .fact { margin: 0.4rem 0 0; }

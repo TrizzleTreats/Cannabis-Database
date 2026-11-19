@@ -31,7 +31,7 @@
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). Still to build: city/town pages, and the Laws / Taxes / Market tabs on each state page — those three rest on the law rather than licence data, and each says so on its face rather than showing an empty frame.
+8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). Still to build: city/town pages and the Market tab. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They cover four facts per state; the rest of the law (public consumption, driving, employment, packaging, pending bills, local taxes) is still to come, and each tab says so.
 
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
@@ -231,6 +231,61 @@ villages" below. The Census geocoder's County Subdivisions layer resolves a vill
 municipality at address level, which beat the village-level assumption: 56 River Rd, Cornwall
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
+
+## State quick reference: possession, home grow, tax, regulator (19 Nov 2026)
+
+Each state page now opens with HANDOFF's quick-reference boxes: legal status, possession, home
+grow, the state's own cannabis tax, and the regulator. The Laws and Taxes tabs show the same
+facts with their full citations, and both say plainly what they do not cover yet.
+
+- **204 facts, 4 per jurisdiction**, in `scripts/quick_reference_data.py`, written to
+  `data/clean/quick_reference.csv` by `scripts/build_quick_reference.py`. Each was restated by
+  hand from the state's audited report, mostly from §1.3 (possession and home grow), §1.4
+  (medical), §2.1 (tax) and §9.1 (regulators). Each carries a citation, an official link the
+  report itself cites, and the report's own "Last audited" date.
+- **The rule for "confirmed".** A figure is published only if the final report states it as
+  fact. A Verify flag on the *verbatim wording* of a quotation does not unconfirm the figure;
+  a Verify flag on the figure itself, or a secondary-only source, does. **Four facts are held
+  back** and show as "Not yet confirmed from an official source", with the reason:
+  - Georgia tax: "no cannabis tax" is recorded only as a search result.
+  - Texas tax: sales-tax treatment of TCUP rests on secondary guides.
+  - Utah tax: the medical sales-tax exemption is from a secondary summary.
+  - Virginia tax: no adult-use sale until 1 July 2027, and medical treatment is disputed.
+
+  Alabama's dose caps are left out of its possession text for the same reason, and a note says so.
+- **A citation guard.** The build fails if any statute or section number in a citation is not
+  found, as a whole token, in that state's own report ("41-137-3" is not found inside
+  "41-137-35"). It caught three citations written in the wrong form on the first run (DC
+  "ch. 7-16B", Idaho "ch. 22-17", a stray "2-3" in Massachusetts), and it rejects invented
+  sections when tested. It does not test citations with no number, such as "Act 16".
+- **Links.** Where the report gives no section-level official link, the fact uses the nearest
+  official page the report cites, and the citation names the exact section; no URL was built by
+  hand. **5 facts have no official link at all**: Tennessee's possession and home grow, and
+  Wyoming's possession, home grow and tax. Their reports link only Justia/FindLaw, and the page
+  says "no official link captured yet".
+- **Changes since older summaries that the reports catch, and the boxes now show:**
+  - Illinois' possession limits doubled on 12 June 2026 (60 g).
+  - Massachusetts went to 2 oz on 19 April 2026.
+  - Vermont's limits doubled on 1 July 2026.
+  - Virginia moved to 2 oz on 1 July 2026.
+  - Connecticut's tax became a flat 10.75% on 1 Oct 2026.
+  - Maine's adult-use tax rose to 14% on 1 Jan 2026.
+  - Michigan added a 24% wholesale excise on 1 Jan 2026.
+  - New Mexico's excise is 14% from 1 July 2026.
+  - Nevada allows home grow only more than 25 miles from a store.
+- **Taxes are never totalled.** The tax fact names the state's cannabis taxes, and general and
+  local taxes only where confirmed, but never adds them into one "combined rate". Local rates
+  vary by town, and taxes on different bases (a grower's sale, a retail sale) cannot be summed.
+  This is a deliberate departure from HANDOFF's "combined tax rate" box.
+- `verify.py` checks that the table is valid and current, that no unconfirmed fact's text reaches
+  the site, and that the site shows what the table holds. Checked in headless Chromium: Colorado,
+  Alaska (no licence data, so the boxes show without the licence sections), the Texas Laws tab, the
+  Georgia Taxes tab (an unconfirmed fact), the Tennessee Laws tab (no official link), and
+  Massachusetts on a phone. No errors, and no horizontal scroll. The page's old trap struck
+  again (constants read by `render()` before their declaration) and is fixed the same way.
+- **Re-check when the law moves.** These facts are dated, not live. Idaho's row must change
+  with the HJR 4 result (item 1), and the federal hemp change on 11 Dec 2026 does not touch
+  them, because they cover marijuana, not hemp.
 
 ## Profiles and county pages (19 Nov 2026)
 

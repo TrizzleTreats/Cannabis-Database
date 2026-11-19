@@ -679,6 +679,33 @@ else:
         check(not drift, "the site's map shows the status the table holds",
               f"({drift[:5]}) — run python3 scripts/build_site_data.py" if drift else "")
 
+head("Quick reference: every published fact is confirmed, sourced and in its report")
+p = ROOT / "data/clean/quick_reference.csv"
+if not p.exists():
+    check(False, "data/clean/quick_reference.csv exists", "run python3 scripts/build_quick_reference.py")
+else:
+    import build_quick_reference as bqr
+    expected, problems = bqr.build()
+    check(not problems, "every fact is confirmed with text and a source, or unconfirmed with no "
+          "text and a reason, and every cited section appears in its own report",
+          f"({problems[:2]})" if problems else f"{len(expected)} facts")
+    have = list(csv.DictReader(open(p, encoding="utf-8")))
+    key = lambda r: (r["state"], r["fact"])
+    by_key = {key(h): h for h in have}
+    stale = [f"{r['state']}.{r['fact']}" for r in expected if by_key.get(key(r)) != r]
+    check(len(have) == len(expected) and not stale, "quick_reference.csv matches its source",
+          f"stale: {stale[:5]} — run python3 scripts/build_quick_reference.py" if stale else "")
+    built = ROOT / "site/data/quick_reference.json"
+    if built.exists():
+        site_q = json.loads(built.read_text(encoding="utf-8"))["states"]
+        leaked = [f"{r['state']}.{r['fact']}" for r in have if r["confirmed"] != "Y"
+                  and site_q.get(r["state"], {}).get(r["fact"], {}).get("text")]
+        drift = [f"{r['state']}.{r['fact']}" for r in have
+                 if (site_q.get(r["state"], {}).get(r["fact"], {}).get("text") or "") != r["text"]]
+        check(not leaked, "no unconfirmed fact's text reaches the site", str(leaked[:5]) if leaked else "")
+        check(not drift, "the site shows the facts the table holds",
+              f"({drift[:5]}) — run python3 scripts/build_site_data.py" if drift else "")
+
 head("Result")
 if fails:
     print("  FAILED: " + "; ".join(fails))
