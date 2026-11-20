@@ -235,8 +235,8 @@ function business(panel) {
           el("td", { text: (b.scope || "").slice(0, 60) })))))) : el("div", { class: "panel" },
           el("p", { style: "margin:0" }, `No published directory entry has an address in ${NAMES[code]} `
             + "or names it in its service area.")),
-      el("p", {}, el("a", { class: "cta", href: "database.html?mode=services" },
-        "Search all industry services")),
+      el("p", {}, el("a", { class: "cta", href: `database.html?mode=services&serves=${code}` },
+        `Search these in the database`)),
     );
   }).catch(() => panel.replaceChildren(el("p", { class: "note", text: "The business directory could not be loaded." })));
 }

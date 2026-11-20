@@ -44,6 +44,10 @@
         <label for="category">Category</label>
         <select id="category"></select>
       </div>
+      <div class="field" id="serves-field" hidden>
+        <label for="serves">In or serving</label>
+        <select id="serves"></select>
+      </div>
       <button type="button" class="plain" id="reset">Reset</button>
       <button type="button" class="plain" id="export">Export CSV</button>
     </div>
@@ -61,7 +65,7 @@ import { loadJSON, fmt, el, statusBadge, readParams, writeParams, debounce,
          loadLicence, licenceDetail, profileHref } from "./assets/app.js";
 
 const DEFAULTS = { mode: "operators", state: "", q: "", type: "", status: "Active + Provisional",
-                   county: "", category: "", sort: "legal_name", dir: "ascending" };
+                   county: "", category: "", serves: "", sort: "legal_name", dir: "ascending" };
 const S = readParams(DEFAULTS);
 const $ = (id) => document.getElementById(id);
 
@@ -85,6 +89,7 @@ const SERVICE_COLUMNS = [
   { key: "category", label: "Category" },
   { key: "home_state", label: "Based" },
   { key: "states_served", label: "Serves" },
+  { key: "states", label: "States", get: (r) => Object.keys(r.states || {}).join(", ") },
   { key: "website", label: "Website" },
 ];
 
@@ -132,8 +137,11 @@ function matches(r) {
     if (S.status === "Active + Provisional") {
       if (r.standard_status !== "Active" && r.standard_status !== "Provisional") return false;
     } else if (S.status && (r.standard_status || "") !== S.status) return false;
-  } else if (S.category && r.category !== S.category) {
-    return false;
+  } else {
+    if (S.category && r.category !== S.category) return false;
+    // The same derived states as the state page's Business tab (scripts/business_states.py):
+    // an address there, or the state named in the entry's own service area.
+    if (S.serves && !(r.states && r.states[S.serves])) return false;
   }
   return true;
 }
@@ -171,7 +179,7 @@ function renderTable(visible) {
         return el("td", {}, el("a", { href: r.website, target: "_blank", rel: "noopener" },
           r.website.replace(/^https?:\/\//, "").replace(/\/$/, "")));
       }
-      return el("td", { class: c.cls || "" }, r[c.key] || "—");
+      return el("td", { class: c.cls || "" }, (c.get ? c.get(r) : r[c.key]) || "—");
     });
     const tr = el("tr", {
       class: chosen === r ? "chosen" : "",
@@ -252,6 +260,10 @@ function refreshFilters(visible) {
   } else {
     fillSelect($("category"), Object.entries(summary.businesses.by_category),
                { chosenValue: S.category });
+    const serving = {};
+    for (const r of rows) for (const st of Object.keys(r.states || {})) serving[st] = (serving[st] || 0) + 1;
+    fillSelect($("serves"), Object.entries(serving).sort((a, b) => a[0].localeCompare(b[0])),
+               { all: "Any state", chosenValue: S.serves });
   }
 }
 
@@ -262,6 +274,7 @@ function setModeChrome() {
     $(id).hidden = !operators;
   }
   $("category-field").hidden = operators;
+  $("serves-field").hidden = operators;
   $("blurb").textContent = operators
     ? "Every licensed cannabis and hemp operator this project has been able to read from an "
       + "official source, with the regulator's own licence name and status beside the standard "
@@ -284,7 +297,13 @@ async function apply() {
       `Could not load the data (${err.message}). Run scripts/build_site_data.py.`));
     return;
   }
-  const visible = sortRows(rows.filter(matches), S.sort, S.dir);
+  // A column with its own formatter sorts by what it shows, not by the raw value.
+  const col = columns().find((c) => c.key === S.sort);
+  const visible = col?.get
+    ? rows.filter(matches).map((r) => [col.get(r), r])
+        .sort((a, b) => (a[0] || "\uffff").localeCompare(b[0] || "\uffff") * (S.dir === "descending" ? -1 : 1))
+        .map(([, r]) => r)
+    : sortRows(rows.filter(matches), S.sort, S.dir);
   refreshFilters(visible);
   renderTable(visible);
   const total = S.mode === "operators"
@@ -311,7 +330,7 @@ function wire() {
   $("state").addEventListener("change", (e) => { S.state = e.target.value; S.county = ""; apply(); });
   $("q").addEventListener("input", debounce((e) => { S.q = e.target.value; apply(); }));
   for (const [id, key] of [["type", "type"], ["status", "status"], ["county", "county"],
-                           ["category", "category"]]) {
+                           ["category", "category"], ["serves", "serves"]]) {
     $(id).addEventListener("change", (e) => { S[key] = e.target.value; apply(); });
   }
   $("reset").addEventListener("click", () => {
@@ -320,7 +339,7 @@ function wire() {
     apply();
   });
   $("export").addEventListener("click", () => {
-    const cols = columns().map((c) => ({ label: c.label, get: (r) => r[c.key] ?? "" }));
+    const cols = columns().map((c) => ({ label: c.label, get: c.get || ((r) => r[c.key] ?? "") }));
     const name = S.mode === "operators" ? `licences-${S.state || "all"}.csv` : "industry-services.csv";
     download(name, toCSV(window.__visible || [], cols));
   });

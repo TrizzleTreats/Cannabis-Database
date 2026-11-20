@@ -260,6 +260,9 @@ Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other st
   business categories. Every definition follows HANDOFF's own wording and decisions, and federal
   law is left to the Federal law page. verify.py fails if the glossary's types or statuses ever
   differ from the project's own lists.
+- **The Database's industry-services view has an "In or serving" state filter** on the same derived
+  states, and a States column (also in the CSV export). Each state's Business tab links to it
+  pre-filtered (`database.html?mode=services&serves=CO` gives the same 65 as Colorado's tab).
 - Fixed: the fourth top-bar link pushed phone pages 5 px too wide. The bar now wraps.
 
 ## The Market tab (20 Nov 2026)
