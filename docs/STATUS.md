@@ -283,8 +283,10 @@ as the rest of the quick reference. The table now holds 357 facts.
     unlawful; lawful adult or medical use, which the driver must prove, falls outside that rule.
   - Georgia's any-amount provision (§40-6-391(a)(6)) was narrowed by Love v. State (1999), but the
     report flags how it is charged today as unverified, so the fact says no more than that.
-- **Every number in a published driving fact appears in that state's own report** (checked by hand
-  this time; the quick-reference build checks cited sections, not numbers in the text).
+- **Every figure in every published fact now has to appear in that state's own report.** A check of
+  all 357 facts found none astray, and `build_quick_reference.py` now refuses a figure (three or
+  more digits, or a decimal) that its report does not hold, the same rule as the market table.
+  A planted "3.00 ng/mL" for Washington and a "$1,250" fine for Alaska were both refused.
 - The Laws tab's "not covered yet" list is now: packaging and advertising, qualifying conditions,
   and pending bills. Checked in headless Chromium for Colorado, Illinois, Iowa, Delaware, Georgia,
   Texas (held back) and Wyoming on a phone, with no page errors and no sideways scroll. verify.py

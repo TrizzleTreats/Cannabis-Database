@@ -694,7 +694,7 @@ else:
     import build_quick_reference as bqr
     expected, problems = bqr.build()
     check(not problems, "every fact is confirmed with text and a source, or unconfirmed with no "
-          "text and a reason, and every cited section appears in its own report",
+          "text and a reason, and every cited section and figure appears in its own report",
           f"({problems[:2]})" if problems else f"{len(expected)} facts")
     have = list(csv.DictReader(open(p, encoding="utf-8")))
     key = lambda r: (r["state"], r["fact"])

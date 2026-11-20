@@ -1,18 +1,23 @@
 #!/usr/bin/env python3
 """Write data/clean/quick_reference.csv from scripts/quick_reference_data.py, and check it.
 
-One row per state per fact: possession, home grow, the state's cannabis tax, the
-regulator. The state page's quick-reference boxes and its Laws and Taxes tabs read it.
+One row per state per fact (FIELDS in quick_reference_data.py: possession, home grow,
+the state's cannabis tax, the regulator, where it may be used, employment, driving).
+The state page's quick-reference boxes and its Laws and Taxes tabs read it.
 
 Checks, each of which refuses to write:
-  * all 51 jurisdictions, each with all four facts;
+  * all 51 jurisdictions, each with every fact in FIELDS;
   * a confirmed fact has text, and either an official link (a host in
     domains/all-domains.txt) or a note saying why there is none;
   * an unconfirmed fact has NO text (CLAUDE.md: unverified facts stay off the public
     site) and a note saying why it is unconfirmed;
   * every statute or section number in a citation appears in that state's own
     audited report, as a whole token: "41-137-3" does not count as found inside
-    "41-137-35". This is the guard against a citation written from memory.
+    "41-137-35". This is the guard against a citation written from memory;
+  * every figure in a published fact's text or note (three or more digits, or a
+    decimal: "$1,000", "5.00 ng/mL", "17.38.020") appears, as written, in that same
+    report. The guard against a figure typed from memory (added 20 Nov 2026, after a
+    hand check of all 357 facts found none astray).
 
 The date of every fact is its report's "Last audited" date, taken from
 data/clean/legal_status.csv, which reads it from the report itself.
@@ -59,6 +64,23 @@ def present(tok, text):
     return re.search(pat, text) is not None
 
 
+FIGURE = re.compile(r"\d[\d,]*(?:\.\d+)?")
+
+
+def stray_figures(text, report):
+    """Figures in `text` that are not in `report`. A section-like token found whole in
+    the report is set aside first, so "AS 17.38.020(2)" is not read as the figure 020."""
+    rest = TOKEN.sub(lambda m: " " if present(m.group(0).rstrip(".,:-"), report) else m.group(0),
+                     text or "")
+    out = []
+    for m in FIGURE.finditer(rest):
+        tok = m.group(0).rstrip(",.")
+        if (len(re.sub(r"\D", "", tok)) >= 3 or "." in tok) and not re.search(
+                r"(?<![\d.,])" + re.escape(tok) + r"(?![\d]|[.,]\d)", report):
+            out.append(tok)
+    return out
+
+
 def build():
     hosts = official_hosts()
     with open(LEGAL, encoding="utf-8") as f:
@@ -87,6 +109,8 @@ def build():
                     problems.append(f"{where} link is not on an official host: {f['url']}")
                 if not f["url"] and not f["note"]:
                     problems.append(f"{where} no link and no note saying why")
+                for tok in stray_figures(f"{f['text']} {f['note']}", texts[code]):
+                    problems.append(f"{where} the figure {tok!r} is not in the audited report")
             else:
                 if f["text"]:
                     problems.append(f"{where} unconfirmed facts must carry no text")
