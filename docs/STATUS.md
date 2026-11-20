@@ -31,7 +31,7 @@
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They cover four facts per state; the rest of the law (public consumption, driving, employment, packaging, pending bills, local taxes) is still to come, and each tab says so.
+8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They now cover seven facts per state (possession, home grow, tax, regulator, where it may be used, employment and driving); packaging and advertising, qualifying conditions, pending bills and local taxes are still to come, and each tab says so.
 
 9. **Turn on the daily update** — BUILT 19 Nov 2026, NOT YET RUNNING (see "The daily update" below). Three steps, all yours: merge to the default branch (scheduled workflows only run there); to publish the site, set Settings > Pages to "GitHub Actions" and add the repository variable `DEPLOY_SITE` = `true`; and check the first run's summary. GitHub Pages on a private repository needs a paid plan.
 
@@ -261,6 +261,34 @@ report), and no text for an unconfirmed fact. The table now holds 306 facts.
 - The Laws tab's "not covered yet" list is now: driving, packaging and advertising, qualifying
   conditions, and pending bills. Checked in headless Chromium for California, Arizona and
   Wyoming on a phone. verify.py passes.
+
+## Laws tab: driving (20 Nov 2026)
+
+A sixth law topic on every state's Laws tab: **driving**, meaning whether the state has a per se
+THC limit (a number in the blood that is an offence by itself), a zero-tolerance rule, or an
+impairment test. It is in `DRIVING` in `scripts/quick_reference_data.py`, under the same checks
+as the rest of the quick reference. The table now holds 357 facts.
+
+- Read from each report's impaired-driving section (Part 12 in most) and its audit rows.
+- **46 published, 5 held back**: Maine, New Hampshire, New Mexico, Texas and Virginia, where the
+  report marks the per se detail unverified or rests it on secondary summaries.
+- **The wording keeps the real shape of each rule.** Per se states give the limit and the sample it
+  is measured in (Illinois 5 ng/mL in whole blood within two hours; Ohio 2 ng/mL; Washington
+  5.00 ng/mL). Colorado's 5 ng/mL is a permissible inference, not a per se limit. Nevada's per se
+  limits now apply to felony DUI only. Zero-tolerance states (Iowa, Indiana, Pennsylvania, Utah)
+  say so, with what they exempt.
+- **Two corrections made while spot-checking citations the token guard cannot test:**
+  - Delaware was first written as purely impairment-based. 21 Del.C. §4177 also makes it an offence
+    to have any amount of a drug in the blood within 4 hours of driving where its use was
+    unlawful; lawful adult or medical use, which the driver must prove, falls outside that rule.
+  - Georgia's any-amount provision (§40-6-391(a)(6)) was narrowed by Love v. State (1999), but the
+    report flags how it is charged today as unverified, so the fact says no more than that.
+- **Every number in a published driving fact appears in that state's own report** (checked by hand
+  this time; the quick-reference build checks cited sections, not numbers in the text).
+- The Laws tab's "not covered yet" list is now: packaging and advertising, qualifying conditions,
+  and pending bills. Checked in headless Chromium for Colorado, Illinois, Iowa, Delaware, Georgia,
+  Texas (held back) and Wyoming on a phone, with no page errors and no sideways scroll. verify.py
+  passes.
 
 ## Business tab per state, and the glossary (20 Nov 2026)
 

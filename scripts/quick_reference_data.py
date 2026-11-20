@@ -29,7 +29,7 @@ combined rate varies by town, and adding rates from different bases would be wro
 Written out by scripts/build_quick_reference.py to data/clean/quick_reference.csv.
 """
 
-FIELDS = ["possession", "home_grow", "state_tax", "regulator", "public_use", "employment"]
+FIELDS = ["possession", "home_grow", "state_tax", "regulator", "public_use", "employment", "driving"]
 
 
 def F(text, cite, url, confirmed=True, note=""):
@@ -1178,3 +1178,144 @@ LAW_MORE = {
 
 for _code, _facts in LAW_MORE.items():
     QUICK[_code].update(_facts)
+
+
+# Driving under the influence, added 20 Nov 2026: a THC blood limit ("per se"), zero
+# tolerance, or proof of impairment. Same terms and checks as everything above.
+DRIVING = {
+    "AL": F("Impairment-based: Alabama has no per se THC limit for driving.", "Ala. Code tit. 32",
+            "https://alison.legislature.state.al.us/files/pdf/SearchableInstruments/2021RS/PrintFiles/213097-2.pdf"),
+    "AK": F("Impairment-based: driving under the influence of marijuana is DUI, with no per se THC blood level.",
+            "AS 28.35.030", "https://www.akleg.gov/"),
+    "AZ": F("Impairment-based: no per se THC blood limit. For adults 21+, impairment must be shown.",
+            "A.R.S. §36-2852(B)", "https://www.azleg.gov/viewdocument/?docName=https://www.azleg.gov/ars/36/02850.htm"),
+    "AR": F("Impairment-based: the per se limit applies to alcohol only, and being entitled to use "
+            "marijuana under state law is no defence.", "Ark. Code §5-65-103",
+            "https://www.dfa.arkansas.gov/wp-content/uploads/Medical_Marijuana_Rules_1.pdf"),
+    "CA": F("Impairment-based: California has never set a per se limit for THC.", "Cal. Vehicle Code",
+            "https://www.cannabis.ca.gov/cannabis-laws/"),
+    "CO": F("No per se limit, but 5 ng/mL or more of delta-9 THC in whole blood allows a court to infer "
+            "impairment.", "C.R.S. §42-4-1301(6)(a)(IV)", "https://med.colorado.gov/"),
+    "CT": F("Impairment-based: no per se THC limit.", "Conn. Gen. Stat. §14-227a",
+            "https://www.cga.ct.gov/current/pub/chap_248.htm"),
+    "DE": F("No numeric THC limit. Driving under the influence of any drug is an offence, and so is having "
+            "any amount of a drug in the blood within 4 hours of driving where its use was unlawful; lawful "
+            "adult or medical use, which the driver must prove, falls outside that second rule.",
+            "21 Del.C. §4177(a)(2), (a)(6), (c)(8)", "https://omc.delaware.gov/adult-use/",
+            note="Inactive metabolites alone do not count."),
+    "DC": F("Impairment-based: no per se THC limit; the question is whether driving ability was "
+            "noticeably impaired.", "D.C. Code §50-2206.11",
+            "https://oag.dc.gov/public-safety/driving-under-influence/marijuana-and-impaired-driving"),
+    "FL": F("Impairment-based: no per se THC limit; the only per se limit is for alcohol.", "Fla. Stat. §316.193(1)",
+            "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0381/Sections/0381.986.html"),
+    "GA": F("No numeric THC blood limit. Driving under the influence of any drug to the extent it is less "
+            "safe to drive is DUI. The statute also covers any amount of marijuana in the blood or urine, "
+            "but the Georgia Supreme Court substantially narrowed that provision (Love v. State, 1999).",
+            "O.C.G.A. §40-6-391(a)(2), (a)(6), (b); Love v. State, 271 Ga. 398",
+            "https://dph.georgia.gov/low-thc-oil-registry/patients-and-caregivers",
+            note="A registry card is not a defence to a DUI charge. How the any-amount provision is "
+                 "charged today is not confirmed."),
+    "HI": F("Impairment-based: no per se THC limit; the test is whether ability to drive carefully is impaired.",
+            "HRS §291E-61(a)", "https://health.hawaii.gov/medicalcannabisregistry/general-information/marijuana-laws-and-related-documents/"),
+    "ID": F("Impairment-based: no THC concentration, nanogram limit or metabolite threshold.", "Idaho Code §18-8004",
+            "https://legislature.idaho.gov/statutesrules/idstat/title18/t18ch80/sect18-8004/"),
+    "IL": F("Per se limit: 5 ng/mL or more of delta-9 THC in whole blood, or 10 ng/mL in another bodily "
+            "substance, within two hours of driving.", "625 ILCS 5/11-501(a)(7); 5/11-501.2(a)(6)",
+            "https://ilga.gov/legislation/ILCS/details?ActID=3992&ActName=Cannabis+Regulation+and+Tax+Act."),
+    "IN": F("Zero tolerance: any amount of marijuana or its metabolite in the body while driving is an "
+            "offence (Class C misdemeanor), with no impairment needed. A narrow defence applies if the "
+            "driver was not intoxicated and caused no accident.", "IC 9-30-5-1(c)-(d)",
+            "https://public.courts.in.gov/Decisions/api/Document/Opinion?Id=DmYIl2h3bOKWWdQQvJyPZ_rjZgo14Y_LmDtP2-HSBr7Uf3wsJD127SUP1Lq0Mzh20"),
+    "IA": F("Zero tolerance: any amount of a controlled substance in blood or urine, even a non-impairing "
+            "THC metabolite, is an offence. A medical card does not exempt the driver.",
+            "Iowa Code §321J.2(1)(c); State v. Comried", "https://www.legis.iowa.gov/docs/code/2024/124E.pdf"),
+    "KS": F("Impairment-based: no per se THC limit.", "K.S.A. 8-1567",
+            "https://kslegislature.gov/li_2022/b2021_22/statute/065_000_0000_chapter/065_041_0000_article/065_041_0001_section/065_041_0001_k/"),
+    "KY": F("Impairment-based: Kentucky has not adopted a per se THC limit.", "KRS 189A.010",
+            "https://apps.legislature.ky.gov/law/statutes/statute.aspx?id=54279"),
+    "LA": F("Impairment-based: no per se THC limit, and the standard applies to patients too.",
+            "La. R.S. 14:98", "https://www.legis.la.gov/Legis/Law.aspx?p=y&d=96986"),
+    "ME": NOT_CONFIRMED("The report finds no per se THC limit for adults, but from secondary reporting, "
+                        "still to be checked against 29-A MRS §2411.", "29-A MRS §2411"),
+    "MD": F("Impairment-based: no per se THC limit. Driving while impaired by cannabis is a criminal offence.",
+            "Md. Transportation §21-902", "https://cannabis.maryland.gov/pages/cannabisfaq.aspx"),
+    "MA": F("Impairment-based: the only numeric per se limit is for alcohol.", "M.G.L. c.90 §24(1)(a)(1)",
+            "https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXV/Chapter94G"),
+    "MI": F("No per se THC limit; impaired driving is charged under the Vehicle Code. Registered patients "
+            "are judged on impairment, not on the presence of THC.", "MCL 257.625; People v. Koon",
+            "https://www.michigan.gov/cra"),
+    "MN": F("Impairment-based: the \"any amount\" drug offence expressly excludes cannabis, so cannabis is "
+            "charged under the impairment clause.", "Minn. Stat. §169A.20, subd. 1(7)-(8)",
+            "https://www.revisor.mn.gov/statutes/cite/342"),
+    "MS": F("Impairment-based: no per se THC limit, and the impairment rule applies to registered patients too.",
+            "Miss. Code §63-11-30", "https://www.mmcp.ms.gov/"),
+    "MO": F("Impairment-based: a conviction needs evidence of actual influence, not THC or metabolites alone.",
+            "Mo. Const. art. XIV §2.3(1)(d)",
+            "https://revisor.mo.gov/main/OneSection.aspx?section=XIV%20Section%202&bid=51541"),
+    "MT": F("Per se limit: 5 ng/mL or more of THC, not counting inactive metabolites. Drivers under 21: any THC.",
+            "MCA §61-8-1002(1)(d), (1)(e)(ii)", "https://leg.mt.gov/bills/mca/title_0160/chapter_0120/"),
+    "NE": F("Impairment-based: no per se THC limit.", "Neb. Rev. Stat. §60-6,196(1)",
+            "https://nebraskalegislature.gov/laws/statutes.php?statute=60-6,196"),
+    "NV": F("Impairment-based for ordinary DUI since 1 July 2021. Per se blood limits (2 ng/mL delta-9 THC, "
+            "5 ng/mL metabolite) now apply only to felony DUI.", "NRS 484C.110(4); AB 400 (2021)",
+            "https://www.leg.state.nv.us/nrs/NRS-678D.html"),
+    "NH": NOT_CONFIRMED("The report finds no per se THC limit, but relies on the DWI statute's text as "
+                        "reproduced secondarily, still to be checked on the official RSA page.", "RSA 265-A:2"),
+    "NJ": F("Impairment-based: no per se THC limit.", "N.J.S.A. 39:4-50",
+            "https://www.nj.gov/cannabis/adult-personal/index.shtml"),
+    "NM": NOT_CONFIRMED("The report finds no per se THC limit, judged under the DWI statute, but marks the "
+                        "finding unverified pending the statute text.", "NMSA §66-8-102"),
+    "NY": F("Impairment-based: no per se THC limit; driving while ability is impaired by a drug is the offence.",
+            "Vehicle and Traffic Law §1192(4)", "https://cannabis.ny.gov/what-you-need-know-fact-sheet"),
+    "NC": F("Impairment-based: no per se THC limit.", "N.C.G.S. 20-138.1",
+            "https://ncleg.gov/EnactedLegislation/SessionLaws/HTML/2021-2022/SL2022-32.html"),
+    "ND": F("Impairment-based: the test is whether the driver is incapable of driving safely; the 0.08% "
+            "limit is for alcohol only.", "NDCC §39-08-01", "https://www.legis.nd.gov/cencode/t19c24-1.pdf"),
+    "OH": F("Per se limits: 2 ng/mL of marihuana in whole blood or blood serum/plasma, or 10 ng/mL in "
+            "urine, with separate limits for its metabolite.", "ORC 4511.19(A)(1)(j)(vii)",
+            "https://codes.ohio.gov/ohio-revised-code/chapter-3796"),
+    "OK": F("No nanogram threshold, but the statute also makes it an offence to drive with any amount of a "
+            "Schedule I substance or its metabolites. Being a licensed patient is no defence.",
+            "47 O.S. §11-902(A)(3), (B)", "https://oklahoma.gov/omma/",
+            note="How the any-amount rule and the impairment rules fit together for patients is not settled "
+                 "in the case law the audit found."),
+    "OR": F("Impairment-based: no per se THC blood limit.", "ORS 813.010(1)(b)-(c)",
+            "https://www.oregonlegislature.gov/bills_laws/ors/ors475C.html"),
+    "PA": F("Zero tolerance: no nanogram limit, but driving with any amount of a Schedule I substance or its "
+            "metabolite in the blood is an offence. Medical patients are not exempt.",
+            "75 Pa.C.S. §3802(d)(1)(i)", "https://www.legis.state.pa.us/WU01/LI/LI/US/HTM/2016/0/0016..HTM"),
+    "RI": F("Impairment-based: no numeric THC limit. Some penalty tiers turn on the presence of any scheduled "
+            "controlled substance in the blood.", "R.I. Gen. Laws §31-27-2",
+            "https://webserver.rilegislature.gov/Statutes/TITLE21/21-28.11/21-28.11-22.htm"),
+    "SC": F("Impairment-based (\"materially and appreciably impaired\"); no per se THC limit.",
+            "S.C. Code §56-5-2930(A)", "https://www.scstatehouse.gov/code/t44c053.php"),
+    "SD": F("No per se THC limit for adults, and a medical card gives no driving immunity. Drivers under 21: "
+            "zero tolerance.", "SDCL §32-23-1; §32-23-21", "http://sdlegislature.gov/api/Statutes/34-20G.html"),
+    "TN": F("Impairment-based: no per se THC limit.", "Tenn. Code §55-10-401(a)(1)", "",
+            note="The audited report cites the Tennessee Code, but no official link for it was captured."),
+    "TX": NOT_CONFIRMED("The report describes DWI as impairment-based, but marks its per se detail "
+                        "unverified, resting on secondary summaries.", "Texas Penal Code ch. 49"),
+    "UT": F("Zero tolerance: any measurable controlled substance or metabolite is an offence, without proof of "
+            "impairment. The inactive metabolite is excepted, and medical cannabis taken in dosage form under "
+            "the programme is an affirmative defence.", "Utah Code §41-6a-517",
+            "https://le.utah.gov/xcode/Title41/Chapter6a/C41-6a-S517_2026050620260506.pdf"),
+    "VT": F("Impairment-based: no per se THC limit.", "23 V.S.A. §1201",
+            "http://legislature.vermont.gov/statutes/section/18/084/04230a"),
+    "VA": NOT_CONFIRMED("The report finds driving impairment-based with no per se THC limit, but marks it "
+                        "unverified until §18.2-266 is opened directly.", "Va. Code §18.2-266"),
+    "WA": F("Per se limit: 5.00 ng/mL or more of THC in the blood within two hours of driving. Drivers under "
+            "21: any THC above 0.00.", "RCW 46.61.502(1)(b); RCW 46.61.503",
+            "https://app.leg.wa.gov/RCW/default.aspx?cite=46.61.506"),
+    "WV": F("The general DUI law is impairment-based. Medical patients may not drive with more than 3 ng of "
+            "active THC per mL of blood serum.", "W. Va. Code §17C-5-2; §16A-5-10(1)",
+            "https://code.wvlegislature.gov/16A-3/"),
+    "WI": F("Driving with 1 ng/mL or more of delta-9 THC in the blood is an offence; metabolites alone do not "
+            "count. Impaired driving is a separate offence.", "Wis. Stat. §346.63(1)(am); §340.01(50m)(e)",
+            "https://docs.legis.wisconsin.gov/document/acts/2019/68,54n"),
+    "WY": F("Impairment-based: no per se THC limit, and lawful use elsewhere is no defence.",
+            "W.S. 31-5-233(b)(iii), (d)", "",
+            note="The audited report cites the Wyoming statutes, but no official link for them was captured."),
+}
+
+for _code, _fact in DRIVING.items():
+    QUICK[_code]["driving"] = _fact
