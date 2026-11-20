@@ -139,6 +139,7 @@ export function mountTopbar(host, current) {
       link("index.html", "Home"),
       link("database.html", "Database"),
       link("federal.html", "Federal law"),
+      link("glossary.html", "Glossary"),
     ));
 }
 

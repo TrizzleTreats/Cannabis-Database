@@ -131,6 +131,8 @@ Notes:
 | scripts/raw_files.py | Which raw file is current for each declared source (newest good download in the manifest) and the date its data carries; used by every builder instead of fixed dated filenames |
 | .github/workflows/daily-update.yml | Runs update_all.py daily and commits the data if every step passed; deploys site/ to GitHub Pages only when the repository variable DEPLOY_SITE is "true" |
 | requirements.txt | pypdf, the only third-party package |
+| scripts/business_states.py | Derives which states each directory business is based in (address, home state, California directory) or names in its own service area, never inferred from a region; used by build_site_data.py for the state Business tab |
+| site/glossary.html | The site's vocabulary: reading the figures, legal-status classes, the 16 standard types, 10 standard statuses and 17 business categories; verify.py checks the lists match the project's |
 | scripts/market_data.py | Two official figures per jurisdiction for the Market tab, the size of the legal market (in the measure the state publishes) and registered patients, each with its source and the audit's verdict; unconfirmed figures carry no text |
 | scripts/build_market.py | Writes data/clean/market.csv, refusing on a missing fact, a non-official link, an unconfirmed fact with text, or any number not found verbatim in that state's own report |
 | data/clean/market.csv | 102 facts: 34 market figures and 34 patient figures published, 17 of each held back as not yet confirmed |

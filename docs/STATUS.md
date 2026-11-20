@@ -236,6 +236,32 @@ municipality at address level, which beat the village-level assumption: 56 River
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
 
+## Business tab per state, and the glossary (20 Nov 2026)
+
+- **The Business tab now lists the directory's businesses for each state.** The directories' service
+  areas are free text, and only 76 of 1,158 published entries carried coded states, so
+  `scripts/business_states.py` derives them at build time, conservatively, with the basis for each:
+  - **"Based"**: an address in the state ("City, ST 12345", or "City, ST" where no ZIP is
+    published), a recorded home state, or an entry from the California directory.
+  - **"Named"**: the entry's own service-area or scope text names the state, by full name or
+    capitalised code. "Washington-DC" is read as DC, "Virginia Beach" as Virginia, and
+    "Kansas City" is not read as Kansas.
+
+  Nothing is inferred from a region: a Mid-Atlantic directory entry is not attached to every
+  Mid-Atlantic state. National firms are not attached to every state; each state page counts
+  them separately. 896 of the 1,158 published entries now carry at least one state; the other
+  262 have no address and no state named. The clean data is unchanged; the states are added to
+  `site/data/businesses.json` only. The tab works for states with no licence data too (Alaska shows
+  2), and was checked for Colorado, Alaska and New York on a phone.
+- **Glossary** (`site/glossary.html`, linked from the top bar on every page), as HANDOFF's home page
+  asks. It covers how to read the figures (read and checked dates, "not yet confirmed", "not
+  published", records vs licences, never adding issued/approved/licensed/operating), the four
+  legal-status classes, the 16 standard licence types, the 10 standard statuses and the 17
+  business categories. Every definition follows HANDOFF's own wording and decisions, and federal
+  law is left to the Federal law page. verify.py fails if the glossary's types or statuses ever
+  differ from the project's own lists.
+- Fixed: the fourth top-bar link pushed phone pages 5 px too wide. The bar now wraps.
+
 ## The Market tab (20 Nov 2026)
 
 Each state page's Market tab now shows two official figures: **the size of the legal market** in

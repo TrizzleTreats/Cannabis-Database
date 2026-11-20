@@ -38,6 +38,7 @@ import argparse, collections, csv, json, pathlib, re, shutil, sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import us_map  # noqa: E402
+import business_states  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CLEAN = ROOT / "data" / "clean"
@@ -284,7 +285,8 @@ def main():
         OUT / "businesses.json",
         {"note": "primary profiles only, and only entries the audit did not leave unverified",
          "count": len(publishable),
-         "businesses": [public(r, BUSINESS_PUBLIC) for r in publishable]}, args.dry_run)
+         "businesses": [dict(public(r, BUSINESS_PUBLIC), states=business_states.derive(r))
+                        for r in publishable]}, args.dry_run)
     # Kept, not dropped, so the number is visible and nothing is lost. Written OUTSIDE
     # site/, so that everything under site/ is public by construction and the deploy
     # can publish the folder as it stands. data/private/ is git-ignored and never

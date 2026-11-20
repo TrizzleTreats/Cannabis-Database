@@ -116,6 +116,7 @@ function render() {
   if (tab === "laws") return laws(panel);
   if (tab === "taxes") return taxes(panel);
   if (tab === "market") return market(panel);
+  if (tab === "business") return business(panel);
   if (!s) {
     panel.replaceChildren(...(tab === "overview" ? [quickRef()] : []), el("div", { class: "panel" },
       el("p", {}, `This project holds no licence data for ${NAMES[code]} yet. `,
@@ -126,7 +127,6 @@ function render() {
   }
   if (tab === "overview") return overview(panel);
   if (tab === "licences") return licences(panel);
-  if (tab === "business") return business(panel);
   return overview(panel);   // an unknown ?tab= falls back to the Overview
 }
 
@@ -198,22 +198,48 @@ function licences(panel) {
 }
 
 function business(panel) {
-  panel.replaceChildren(
-    el("p", { class: "note" },
-      `${fmt(summary.businesses.publishable)} service businesses are published across all states — `
-      + "lawyers, accountants, insurers, security, packaging and the rest. The database page "
-      + "searches them; a per-state view needs the states_served field parsed into codes, which "
-      + "is not done for every directory yet."),
-    el("p", {}, el("a", { class: "cta", href: "database.html?mode=services" },
-      "Search industry services")),
-  );
+  panel.replaceChildren(el("p", { class: "loading", text: "Loading the business directory…" }));
+  loadJSON("businesses.json").then((data) => {
+    const all = data.businesses;
+    const here = all.filter((b) => b.states && b.states[code])
+      .sort((a, b) => (a.states[code] === b.states[code] ? 0 : a.states[code] === "based" ? -1 : 1)
+        || (a.category || "").localeCompare(b.category || "")
+        || (a.business_name || "").localeCompare(b.business_name || ""));
+    const national = all.filter((b) => /^national/i.test(b.scope || "") && !(b.states && b.states[code]));
+    const based = here.filter((b) => b.states[code] === "based").length;
+    const cats = Object.entries(here.reduce((m, b) => {
+      m[b.category] = (m[b.category] || 0) + 1; return m; }, {})).sort((a, b) => b[1] - a[1]);
+    panel.replaceChildren(
+      el("div", { class: "stats" },
+        stat(here.length, `service businesses in or serving ${NAMES[code]}`),
+        stat(based, "with an address here"),
+        stat(national.length, "national firms elsewhere")),
+      el("p", { class: "note" },
+        "From the audited business directories. A business is listed here only if it has an "
+        + `address in ${NAMES[code]}, or its own service area names ${NAMES[code]}. Nothing is `
+        + "inferred from a region, and national firms are not attached to every state; they are "
+        + "counted separately. Entries an audit could not verify are not published at all."),
+      here.length ? el("h2", {}, "By category") : null,
+      here.length ? el("div", { class: "table-scroll" }, table(["Category", "Businesses"], cats,
+        ([k, v]) => [k, fmt(v)])) : null,
+      here.length ? el("h2", {}, "Businesses") : null,
+      here.length ? el("div", { class: "table-scroll" }, el("table", {},
+        el("thead", {}, el("tr", {}, ["Business", "Category", "Here because", "Scope"]
+          .map((h) => el("th", { text: h })))),
+        el("tbody", {}, here.slice(0, 400).map((b) => el("tr", {},
+          el("td", {}, b.website
+            ? el("a", { href: b.website, target: "_blank", rel: "noopener" }, b.business_name)
+            : b.business_name),
+          el("td", { text: b.category || "" }),
+          el("td", { text: b.states[code] === "based" ? "address here" : "names this state" }),
+          el("td", { text: (b.scope || "").slice(0, 60) })))))) : el("div", { class: "panel" },
+          el("p", { style: "margin:0" }, `No published directory entry has an address in ${NAMES[code]} `
+            + "or names it in its service area.")),
+      el("p", {}, el("a", { class: "cta", href: "database.html?mode=services" },
+        "Search all industry services")),
+    );
+  }).catch(() => panel.replaceChildren(el("p", { class: "note", text: "The business directory could not be loaded." })));
 }
-
-/* ------------------------------------------------------------ the law
-   Every fact below restates the state's audited report, with the citation it
-   gives, an official link it cites and the date the report was audited. A fact
-   the audit could not confirm shows as "not yet confirmed" and its reason —
-   never its unconfirmed text. */
 
 function sourceLine(f, { full = false } = {}) {
   const link = f.source_url

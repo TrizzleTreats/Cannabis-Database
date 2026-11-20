@@ -739,6 +739,18 @@ else:
         check(not drift, "the site shows the market figures the table holds",
               f"({drift[:5]}) — run python3 scripts/build_site_data.py" if drift else "")
 
+head("The glossary uses the project's own vocabularies")
+g = (ROOT / "site/glossary.html").read_text(encoding="utf-8")
+def _dts(section):
+    seg = g.split(f'id="{section}"', 1)[1].split("<h2", 1)[0]
+    return [x.replace("&amp;", "&") for x in re.findall(r"<dt>(.*?)</dt>", seg)]
+sys.path.insert(0, str(ROOT / "scripts"))
+from build_states import STANDARD as _STD_STATUSES
+check(_dts("types") == list(STANDARD_TYPES), "the glossary lists exactly the 16 standard types, in order",
+      "" if _dts("types") == list(STANDARD_TYPES) else str(_dts("types")))
+check(set(_dts("statuses")) == set(_STD_STATUSES) and len(_dts("statuses")) == len(_STD_STATUSES),
+      "the glossary lists exactly the 10 standard statuses", "")
+
 head("Result")
 if fails:
     print("  FAILED: " + "; ".join(fails))

@@ -262,3 +262,9 @@ dl.facts { margin: 0; display: grid; grid-template-columns: 14rem minmax(0, 1fr)
 dl.facts dt { color: var(--ink-soft); }
 dl.facts dd { margin: 0; }
 @media (max-width: 600px) { dl.facts { grid-template-columns: minmax(0, 1fr); } dl.facts dd { margin-bottom: 0.4rem; } }
+dl.facts.gloss { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.9rem 1rem; }
+dl.facts.gloss dt { font-weight: 600; color: var(--ink); }
+
+/* Four top-bar links fit a phone only if the bar may wrap and tighten its gaps. */
+.topbar { flex-wrap: wrap; row-gap: 0.25rem; }
+@media (max-width: 480px) { .topbar { gap: 0.9rem; padding: 0.6rem 1rem; } .topbar .wordmark { flex-basis: 100%; } }
