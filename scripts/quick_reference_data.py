@@ -29,7 +29,8 @@ combined rate varies by town, and adding rates from different bases would be wro
 Written out by scripts/build_quick_reference.py to data/clean/quick_reference.csv.
 """
 
-FIELDS = ["possession", "home_grow", "state_tax", "regulator", "public_use", "employment", "driving"]
+FIELDS = ["possession", "home_grow", "state_tax", "regulator", "public_use", "employment", "driving",
+          "medical"]
 
 
 def F(text, cite, url, confirmed=True, note=""):
@@ -1319,3 +1320,204 @@ DRIVING = {
 
 for _code, _fact in DRIVING.items():
     QUICK[_code]["driving"] = _fact
+
+
+# --------------------------------------------------------------------------------------
+# Who qualifies for medical use (added 20 Nov 2026). Read from each report's medical
+# programme section (§1.4 in most) and its audit rows. A list is published only where the
+# report confirms it from an official source; a list read from a mirror or Justia copy,
+# or from secondary sources, is held back. Where a list is long or the report does not
+# give it whole, the text says "include" or "among them" rather than presenting a part
+# as the whole. Counts are given only where the report confirms the count itself.
+NONE = "None: the state has no medical marijuana programme, so no condition qualifies a patient."
+MEDICAL = {
+    "AK": F("A physician's certification for cancer, glaucoma, HIV or AIDS; a chronic or debilitating "
+            "disease that produces cachexia, severe pain, severe nausea, seizures or persistent muscle "
+            "spasms; or another condition the health department approves.", "AS 17.37.070",
+            "https://health.alaska.gov/en/education/drugs-and-alcohol/marijuana/medical-marijuana/"),
+    "AL": F("One of 16 categories of condition listed in the statute, as the Medical Cannabis Commission's "
+            "patient page shows them. Conventional treatment must have failed first, unless it is not the "
+            "standard of care for the condition.", "Ala. Code §20-2A-3(21); r. 538-X-1-.04",
+            "https://amcc.alabama.gov/patients/"),
+    "AR": F("Cancer, glaucoma, HIV or AIDS, hepatitis C, ALS, Tourette's syndrome, Crohn's disease, ulcerative "
+            "colitis, PTSD, severe arthritis, fibromyalgia or Alzheimer's disease; a chronic or debilitating "
+            "condition that produces cachexia, peripheral neuropathy, intractable pain lasting more than six "
+            "months, severe nausea, seizures or severe persistent muscle spasms; or a condition the "
+            "Department of Health approves.", "Ark. Const. amend. 98 §2(13)",
+            "https://www.dfa.arkansas.gov/office/medical-marijuana-commission/"),
+    "AZ": NOT_CONFIRMED("The report confirms the statutory list only from a mirror of the statute; the "
+                        "official text on azleg.gov was not opened.", "A.R.S. §36-2801"),
+    "CA": F("A physician's recommendation for cancer, anorexia, AIDS, chronic pain, spasticity, glaucoma, "
+            "arthritis, migraine, \"or any other illness for which marijuana provides relief\". The state "
+            "medical ID card is voluntary.", "Health & Safety Code §11362.5; §11362.71(f)",
+            "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=11362.5"),
+    "CO": F("The constitution's list (cancer, glaucoma, HIV or AIDS, or a chronic or debilitating condition "
+            "producing cachexia, severe pain, severe nausea, seizures or persistent muscle spasms), plus PTSD, "
+            "autism spectrum disorder, and any condition for which a physician could prescribe an opioid.",
+            "Colo. Const. art. XVIII §14(1)(a); C.R.S. §25-1.5-106",
+            "https://cdphe.colorado.gov/medical-marijuana-registry-providers",
+            note="The health department's own list of conditions it has added is not yet confirmed."),
+    "CT": F("One of 42 conditions for adults, or 11 for patients under 18, on the state's list; the Board of "
+            "Physicians can recommend more.", "DCP qualifying conditions list",
+            "https://portal.ct.gov/cannabis/knowledge-base/articles/mmp/qualifying-conditions"),
+    "DC": F("Any condition for which an authorised practitioner decides treatment with medical cannabis would "
+            "be beneficial. There is no closed list.", "D.C. Code §7-1671.01(17)",
+            "https://code.dccouncil.gov/us/dc/council/code/titles/7/chapters/16B/index.full.html"),
+    "DE": F("Since 2024, any diagnosed medical condition from which a health-care practitioner decides the "
+            "patient is likely to benefit. Patients 65 and over may certify themselves.",
+            "16 Del.C. §4902A(4); §4908A(a)(1)b; HB 285 (84 Del. Laws c. 264)", "https://omc.delaware.gov/"),
+    "FL": F("Cancer, epilepsy, glaucoma, HIV or AIDS, PTSD, ALS, Crohn's disease, Parkinson's disease, "
+            "multiple sclerosis, conditions of the same kind or comparable to these, a terminal condition, "
+            "or chronic nonmalignant pain.", "Fla. Stat. §381.986(2)",
+            "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0381/Sections/0381.986.html"),
+    "GA": F("Low-THC oil only. The Department of Public Health lists 18 qualifying items, hospice care among "
+            "them; they include cancer, ALS, multiple sclerosis, Parkinson's disease, sickle cell "
+            "disease, Tourette's syndrome, Alzheimer's disease, autism and PTSD (patients 18 and over).",
+            "DPH Low THC Oil Registry; SB 220",
+            "https://dph.georgia.gov/low-thc-oil-registry/patients-and-caregivers"),
+    "HI": F("Three routes since 2025: a listed debilitating condition; a primary treating provider's "
+            "certification that the benefit outweighs the risk; or hospice care.", "Act 241, SLH 2025",
+            "https://data.capitol.hawaii.gov/sessions/sessionlaws/Years/SLH2025/SLH2025_Act241.pdf"),
+    "IA": F("Medical cannabidiol only: one of 13 conditions in the health department's rule, or a condition "
+            "the Medical Cannabidiol Board has added.", "641 IAC 154.1",
+            "https://hhs.iowa.gov/health-prevention/medical-cannabis",
+            note="Whether two of the rule's conditions (ulcerative colitis and corticobasal degeneration) are "
+                 "also in the current Code section is not confirmed."),
+    "ID": F(NONE, "Idaho Code §37-2701 et seq.",
+            "https://legislature.idaho.gov/statutesrules/idstat/Title37/T37CH27/SECT37-2701",
+            note="HJR 4 was voted on 3 Nov 2026 and the result is not yet certified. Nothing here reflects any "
+                 "outcome."),
+    "IL": F("One of 58 debilitating conditions on the Department of Public Health's list.", "410 ILCS 130",
+            "https://dph.illinois.gov/topics-services/prevention-wellness/medical-cannabis/debilitating-conditions",
+            note="The count was checked against the list itself. Whether terminal illness also qualifies is "
+                 "not shown on that page."),
+    "IN": F(NONE, "Ind. Code art. 35-48", "https://public.courts.in.gov/Decisions/api/Document/Opinion?Id="
+            "DmYIl2h3bOKWWdQQvJyPZ_rjZgo14Y_LmDtP2-HSBr7Uf3wsJD127SUP1Lq0Mzh20",
+            note="Hemp and low-THC hemp extract are excluded from the definition of marijuana; that is not a "
+                 "medical programme."),
+    "KS": F(NONE, "K.S.A. 65-4101(aa)", "https://kslegislature.gov/li_2022/b2021_22/statute/065_000_0000_chapter/"
+            "065_041_0000_article/065_041_0001_section/065_041_0001_k/",
+            note="CBD and industrial hemp are excluded from the definition of marijuana; that is not a medical "
+                 "programme."),
+    "KY": F("Any cancer; chronic, severe, intractable or debilitating pain; epilepsy or another intractable "
+            "seizure disorder; multiple sclerosis, muscle spasms or spasticity; chronic nausea or cyclical "
+            "vomiting syndrome that has not responded to other treatment; PTSD; or a condition the Kentucky "
+            "Center for Cannabis approves.", "KRS 218B.010(26)", "https://kymedcan.ky.gov",
+            note="An executive order directing an emergency regulation on conditions is disputed and is not "
+                 "reflected here."),
+    "LA": F("A listed condition, or any other condition an authorised clinician considers debilitating and "
+            "is qualified to treat. There is no patient card or registry.", "La. R.S. 40:1046(A)(2)",
+            "https://ldh.la.gov/page/medical-marijuana"),
+    "MA": F("Cancer, glaucoma, HIV or AIDS, hepatitis C, ALS, Crohn's disease, Parkinson's disease and "
+            "multiple sclerosis, when debilitating.", "935 CMR 501.002",
+            "https://masscannabiscontrol.com/know-the-laws/",
+            note="Whether a provider may also certify other debilitating conditions is not yet confirmed from "
+                 "the regulation's official text."),
+    "MD": F("Cachexia, anorexia, wasting syndrome, severe or chronic pain, severe nausea, seizures, severe or "
+            "persistent muscle spasms, glaucoma, PTSD, or another chronic medical condition which is severe "
+            "and for which other treatments have been ineffective.", "Maryland Cannabis Administration",
+            "https://cannabis.maryland.gov/Pages/patients.aspx"),
+    "ME": F("No list. A medical provider certifies that, in their professional opinion, the patient is likely "
+            "to benefit. Registering with the state is voluntary.", "18-691 CMR ch. 2 §5",
+            "https://www.maine.gov/dafs/ocp/medical-use"),
+    "MI": NOT_CONFIRMED("The report's list of Michigan's conditions comes from secondary sources, and the audit "
+                        "leaves the medical programme section unverified in part.", "MCL 333.26423"),
+    "MN": F("A condition for which the patient's own health care practitioner has recommended cannabis, or "
+            "one of 19 named diagnoses.", "Minn. Stat. §342.01, subd. 63",
+            "https://www.revisor.mn.gov/statutes/cite/342.01"),
+    "MO": F("A physician's or nurse practitioner's certification. The constitution's list includes cancer, "
+            "epilepsy, glaucoma, intractable migraines, chronic conditions causing severe persistent pain or "
+            "muscle spasms, debilitating psychiatric disorders such as PTSD, and HIV or AIDS, and ends with a "
+            "catch-all for other chronic or debilitating conditions a physician certifies.",
+            "Mo. Const. art. XIV §1.2(22)", "https://health.mo.gov/business-professionals/cannabis-regulation"),
+    "MS": NOT_CONFIRMED("The report reads the list (20 named items) from a Justia copy of the statute, not "
+                        "the official text.", "Miss. Code §41-137-3"),
+    "MT": F("A closed list: cancer, glaucoma, HIV or AIDS with serious symptoms; cachexia or wasting syndrome; "
+            "severe chronic pain; intractable nausea or vomiting; epilepsy or an intractable seizure disorder; "
+            "multiple sclerosis; Crohn's disease; painful peripheral neuropathy; a central nervous system "
+            "disorder causing chronic, painful spasticity or muscle spasms; hospice care; or PTSD.",
+            "MCA §16-12-102(10)", "https://leg.mt.gov/bills/mca/title_0160/chapter_0120/"),
+    "NC": F(NONE, "N.C.G.S. 90-87(16), 90-94", "https://ncleg.gov/EnactedLegislation/SessionLaws/HTML/2021-2022/"
+            "SL2022-32.html", note="Hemp extract has a narrow exemption (G.S. 90-94.1); that is not a medical "
+                                   "programme. On Eastern Band of Cherokee trust land, tribal law governs."),
+    "ND": F("The statute's list includes cancer, HIV or AIDS, decompensated cirrhosis from hepatitis C, ALS, "
+            "PTSD, agitation of Alzheimer's disease, Crohn's disease, fibromyalgia, spinal stenosis or chronic "
+            "back pain, glaucoma, epilepsy, anorexia or bulimia, anxiety disorder, Tourette's syndrome, "
+            "Ehlers-Danlos syndrome, endometriosis, interstitial cystitis, neuropathy, migraine, rheumatoid "
+            "arthritis, autism, brain injury and terminal illness, plus chronic conditions with listed symptoms.",
+            "N.D.C.C. §19-24.1-01", "https://www.legis.nd.gov/cencode/t19c24-1.pdf"),
+    "NE": F("No list of conditions. A practitioner's written recommendation that the benefits outweigh the "
+            "harms for a medical condition, its symptoms or the side effects of its treatment.",
+            "Neb. Rev. Stat. §71-24,104", "https://nebraskalegislature.gov/laws/statutes.php?statute=71-24,104"),
+    "NH": F("Adults 21 and over: any debilitating or terminal condition or symptom for which the provider "
+            "judges the benefits likely outweigh the risks (since 1 Oct 2024). Others: a condition on the "
+            "statute's lists, which include generalised anxiety disorder.", "RSA 126-X:1, IX",
+            "https://gc.nh.gov/rsa/html/X/126-X/126-X-mrg.htm"),
+    "NJ": NOT_CONFIRMED("The report's list of New Jersey's conditions rests on a secondary source, and the "
+                        "count it gives (17) does not match the 18 conditions it lists."),
+    "NM": F("One of 30 conditions on the Department of Health's list, among them Alzheimer's disease, ALS, "
+            "anxiety disorder, autism spectrum disorder, cancer, Crohn's disease, epilepsy, glaucoma and "
+            "HIV. Write-in diagnoses are not accepted.", "NM DOH Medical Cannabis Program",
+            "https://prod.nmhealth.org/publication/view/guide/9262/"),
+    "NV": F("A chronic or debilitating condition listed in the statute, among them anxiety disorder, autism, "
+            "autoimmune disease, anorexia nervosa, cancer, opioid dependence, glaucoma, and conditions "
+            "producing cachexia or muscle spasms; or one the Division classifies or approves on petition.",
+            "NRS 678C.030", "https://www.leg.state.nv.us/Division/Legal/Lawlibrary/NRS/NRS-678C.html",
+            note="Whether PTSD qualifies on its own is not confirmed."),
+    "NY": F("Any condition the patient's certifying health care provider deems clinically appropriate; the "
+            "statute's list ends with any other condition the practitioner certifies.", "Cannabis Law §3(18)",
+            "https://cannabis.ny.gov"),
+    "OH": F("One of 26 conditions: 21 in the statute, plus cachexia, Huntington's disease, spasticity, "
+            "terminal illness and irritable bowel syndrome, which the State Medical Board added.",
+            "ORC 3796.01(A)(6)", "https://codes.ohio.gov/ohio-revised-code/chapter-3796"),
+    "OK": F("No list: the statute says \"There are no qualifying conditions\". A licensed physician recommends "
+            "medical marijuana under the reasonable and prudent physician standard.", "63 O.S. §420(M)",
+            "https://oklahoma.gov/omma/"),
+    "OR": NOT_CONFIRMED("The report names the statute (ORS 475C.777) but does not reproduce its list, and "
+                        "the 2026 expansion (HB 4142) is worded from a law-firm summary."),
+    "PA": F("One of 24 serious medical conditions on the Department of Health's list, plus 2 more for "
+            "research only.", "Medical Marijuana Act §103",
+            "https://www.pa.gov/agencies/health/programs/medical-marijuana/medical-marijuana-patients"),
+    "RI": NOT_CONFIRMED("The report quotes only the closing clause of the statutory definition "
+                        "(§21-28.6-3(3)), not its list of conditions."),
+    "SC": F(NONE, "S.C. Code §44-53-110(27), §44-53-370", "https://www.scstatehouse.gov/code/t44c053.php",
+            note="A narrow CBD exception (Julian's Law) exists; it is not a medical programme."),
+    "SD": F("A chronic or debilitating condition producing cachexia or wasting, severe debilitating pain, severe "
+            "nausea (not from pregnancy), seizures or severe persistent muscle spasms; AIDS or HIV; ALS; "
+            "multiple sclerosis; cancer with severe or chronic pain, nausea or vomiting, or wasting; Crohn's "
+            "disease; epilepsy and seizures; or PTSD.", "SDCL 34-20G-1(8)",
+            "https://sdlegislature.gov/Statutes/34-20G-1"),
+    "TN": F(NONE, "Tenn. Code §39-17-402(16)", "",
+            note="A narrow low-THC oil possession exclusion exists; it is not a medical programme. The audited "
+                 "report cites the Tennessee Code, but no official link for it was captured."),
+    "TX": NOT_CONFIRMED("The report reads the list from a Justia copy of the statute (as amended by HB 46), "
+                        "not the official text.", "Tex. Occ. Code §169.003"),
+    "UT": F("The statute's list includes HIV or AIDS, Alzheimer's disease, ALS, cancer, cachexia, persistent "
+            "nausea (with exclusions), Crohn's disease or ulcerative colitis, epilepsy, multiple sclerosis, PTSD "
+            "(with a qualifying diagnosis), autism, terminal illness, hospice care, rare conditions affecting "
+            "fewer than 200,000 people in the US, pain lasting more than 2 weeks, and acute pain.",
+            "Utah Code §26B-4-203",
+            "https://le.utah.gov/xcode/Title26B/Chapter4/C26B-4-S203_2026050620260506.pdf"),
+    "VA": F("No list: any diagnosed condition that the practitioner judges may benefit from cannabis.",
+            "Va. Code §4.1-1601(A)", "https://law.lis.virginia.gov/vacode/4.1-1601/"),
+    "VT": F("Cancer, multiple sclerosis, HIV or AIDS, glaucoma, Crohn's disease, Parkinson's disease, PTSD or "
+            "ulcerative colitis, where the disease or its treatment causes severe, persistent and intractable "
+            "symptoms; or a chronic, debilitating disease or treatment that produces cachexia or wasting, "
+            "chronic pain, severe nausea or seizures.", "7 V.S.A. §951(8)",
+            "https://legislature.vermont.gov/statutes/fullchapter/07/035"),
+    "WA": F("The statute's list includes cancer, HIV, multiple sclerosis, epilepsy or other seizure disorders, "
+            "spasticity disorders, intractable pain, glaucoma, Crohn's disease, hepatitis C, diseases causing "
+            "nausea, vomiting, wasting or spasms, PTSD and traumatic brain injury, most limited to symptoms "
+            "unrelieved by standard treatment. The patient must be a Washington resident at diagnosis.",
+            "RCW 69.51A.010", "https://app.leg.wa.gov/RCW/default.aspx?cite=69.51A.010"),
+    "WI": F(NONE, "Wis. Stat. §961.14(4)(t)", "https://docs.legis.wisconsin.gov/document/acts/2019/68,54n",
+            note="A narrow certified-CBD exception exists; it is not a medical programme."),
+    "WV": F("One of 15 serious medical conditions in the statute, terminal illness among them. Anxiety, "
+            "depression, insomnia, ulcerative colitis and opioid use disorder are not on the list.",
+            "W. Va. Code §16A-2-1(a)(30)", "https://code.wvlegislature.gov/16A-2-1/"),
+    "WY": F(NONE, "W.S. 35-7-1031(c)", "",
+            note="The audited report cites the Wyoming statutes, but no official link for them was captured."),
+}
+
+for _code, _fact in MEDICAL.items():
+    QUICK[_code]["medical"] = _fact

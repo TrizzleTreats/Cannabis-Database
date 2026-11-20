@@ -23,7 +23,7 @@
 ## Next
 1. Post-election re-check: **Idaho HJR 4 — checked 13 Nov 2026, NOT yet certified, re-check on or after 24 Nov 2026.** Idaho HJR 4 was the only 2026 cannabis-related measure on any state ballot (the 2026 Idaho Medical Cannabis Act failed to qualify on 14 July 2026; HANDOFF records that Florida and Arkansas had none). As of 13 Nov the Secretary of State's press site carries no state canvass or certification — its most recent items are county-level and the counts are still moving: "Latah County Recount Complete" (11 Nov 2026) and "Bannock County Reports Additional Election Day Ballots" with a vote-margin correction (10 Nov 2026). Idaho Code §34-1211 requires the State Board of Canvassers to meet "within twenty-one (21) days after the general election", so certification is due by **24 Nov 2026** (https://legislature.idaho.gov/statutesrules/idstat/Title34/T34CH12/SECT34-1211/).
    - **The Idaho report is now past its own expiry and one of its statements is stale.** reports/regions/8-mountain/idaho/idaho-audited.html says on its face: "Do not carry this file forward after 3 November 2026 without replacing the HJR 4 passages with certified Secretary of State / VoteIdaho results." Its Part 0 / 1.9 wording — HJR 4 "on 3 Nov 2026 ballot, not yet voted on" — is no longer true: the vote has happened and only the result is pending. Part 1.2's discipline still holds exactly as written ("No constitutional amendment limiting legalisation currently in force; only PROPOSED HJR 4"), because an uncertified measure is not in force. The report is deliberately NOT edited yet: the plan is to replace those passages once there is a certified result to put in them, and a two-step edit would put an uncertified outcome into an audited file. Until then HJR 4 must be described as voted on 3 Nov 2026 with the result uncertified, never as pending a vote and never with an outcome.
-   - **The home-page map carries Idaho too** (scripts/legal_status_data.py, row ID). Its note says HJR 4 was voted and is uncertified. Update it in the same change as the report, then re-run build_legal_status.py and build_site_data.py.
+   - **The home-page map carries Idaho too** (scripts/legal_status_data.py, row ID), and so does the Laws tab's medical row (scripts/quick_reference_data.py, MEDICAL["ID"]). Its note says HJR 4 was voted and is uncertified. Update it in the same change as the report, then re-run build_legal_status.py and build_site_data.py.
    - Do not take a result from the unofficial county totals. A recount has already changed one county's count, and the project's rule against reconciling two differently-dated figures applies to election returns as much as to licence counts.
 2. The remaining **1,006** county gaps (CA 275, CO 240, NY 196, HI 64, FL 59, TX 51, IL 36, ME 23, PA 22, MO 11, AL 9, CT 5, VA 5, MD 3, MA 2, RI 2, NJ 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish. Down from 1,133: New Jersey's permits closed 86, Connecticut's villages 8, and fixing the wrong-state geocode query closed 34 in Texas.
 3. Resolve the licence numbers **PA and DE** do not publish — they publish none anywhere found so far. **NJ and MD are DONE**: NJ's 655 licences carry the CRC's real numbers, and MD's 191 carry the MCA's (see "New Jersey: rebuilt from the permit PDFs" and "Maryland publishes licence numbers after all" below).
@@ -31,7 +31,7 @@
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They now cover seven facts per state (possession, home grow, tax, regulator, where it may be used, employment and driving); packaging and advertising, qualifying conditions, pending bills and local taxes are still to come, and each tab says so.
+8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They now cover eight facts per state (possession, home grow, tax, regulator, where it may be used, employment, driving, and who qualifies for medical use); packaging and advertising, pending bills and local taxes are still to come, and each tab says so.
 
 9. **Turn on the daily update** — BUILT 19 Nov 2026, NOT YET RUNNING (see "The daily update" below). Three steps, all yours: merge to the default branch (scheduled workflows only run there); to publish the site, set Settings > Pages to "GitHub Actions" and add the repository variable `DEPLOY_SITE` = `true`; and check the first run's summary. GitHub Pages on a private repository needs a paid plan.
 
@@ -295,6 +295,42 @@ as the rest of the quick reference. The table now holds 357 facts.
   and pending bills. Checked in headless Chromium for Colorado, Illinois, Iowa, Delaware, Georgia,
   Texas (held back) and Wyoming on a phone, with no page errors and no sideways scroll. verify.py
   passes.
+
+## Laws tab: who qualifies for medical use (20 Nov 2026)
+
+An eighth law topic on every state's Laws tab: **who qualifies for medical use**, meaning the
+qualifying conditions or, where there is no list, the rule a practitioner applies. It is in
+`MEDICAL` in `scripts/quick_reference_data.py`, under the same checks as the rest of the quick
+reference (official link, citation guard, figure guard). The table now holds 408 facts.
+
+- Read from each report's medical-programme section (§1.4 in most) and its audit rows.
+- **44 published, 7 held back.** A list is published only where the report confirms it from an
+  official source:
+  - Arizona, Mississippi and Texas: the report reads the list from a mirror or a Justia copy of
+    the statute, not the official text (CLAUDE.md: Justia is never a source of truth).
+  - Michigan: the list comes from secondary sources and the audit leaves the section unverified
+    in part.
+  - New Jersey: the list rests on a secondary source, and its stated count (17) does not match the
+    18 conditions it names.
+  - Oregon: the report names ORS 475C.777 but does not reproduce its list; the 2026 HB 4142
+    expansion is worded from a law-firm summary.
+  - Rhode Island: the report quotes only the closing clause of the definition.
+- **Counts are given only where the report confirms the count itself**: Alabama 16, Connecticut 42
+  adult and 11 under-18, Illinois 58, Minnesota 19 named plus practitioner discretion, New Mexico
+  30, Ohio 26, Pennsylvania 24 plus 2 research-only, Iowa 13, Georgia 18, West Virginia 15. Where
+  a list is long or the report gives only part of it, the text says "includes" or "among them"
+  instead of passing a part off as the whole (Missouri, New Mexico, North Dakota, Nevada, Utah,
+  Washington).
+- **No-list states say so** (Delaware since 2024, DC, Maine, Nebraska, New York, Oklahoma,
+  Virginia, and New Hampshire for adults 21+), with the practitioner's test in the law's words.
+- **The 8 states with no programme** say "None", and a note names any narrow CBD or low-THC oil
+  exception, which is not a medical programme. Idaho's row carries the HJR 4 note: change it with
+  the rest of the Idaho rows once the result is certified (Next, item 1).
+- One wording caught on re-reading: Georgia's list was first written as ending with hospice care;
+  the report says only that the 18 items include it.
+- The Laws tab's "not covered yet" list is now: packaging and advertising, and pending bills.
+  Checked in headless Chromium for California, Ohio, Nebraska, Texas (held back), Idaho and Wyoming
+  on a phone, with no page errors and no sideways scroll. verify.py passes.
 
 ## Business tab per state, and the glossary (20 Nov 2026)
 
