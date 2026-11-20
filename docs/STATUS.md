@@ -236,6 +236,32 @@ municipality at address level, which beat the village-level assumption: 56 River
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
 
+## Laws tab: where it may be used, and employment (20 Nov 2026)
+
+Two more law topics on every state's Laws tab, on the same terms as the quick reference:
+**where cannabis may be used** (public consumption, vehicles, places it is banned) and
+**employment** (what protection, if any, employees and patients have). They are in `LAW_MORE` in
+`scripts/quick_reference_data.py`, merged into the quick reference, so the build's checks apply to
+them too: an official link, the citation guard (every cited section must be in the state's own
+report), and no text for an unconfirmed fact. The table now holds 306 facts.
+
+- Read from each report's "Employment and drug-testing protections" section and its
+  public-consumption rules (§1.3, Part 12 and the audit rows).
+- **14 of the 102 new facts are held back**, almost all employment rules the report quotes only
+  from a mirror, a bill reproduction, a search excerpt or law-firm analyses:
+  - Employment: Alabama, Arizona, Colorado, Hawaii, Maryland, Missouri, Montana, Nevada, New
+    Mexico, North Dakota, Oklahoma (whose rules changed on 1 Nov 2026).
+  - Public use: Alabama, New York (§222.10 only partly corrected) and West Virginia (a searched
+    absence).
+- **The wording keeps each protection's real reach.** Kentucky's and South Dakota's patients are
+  treated "as if prescribed a pharmaceutical drug" for testing, not given a general shield.
+  Louisiana's protection covers state employers only, and Utah's public employers only.
+  Washington's covers initial hiring. Georgia's public-use ban targets vapour devices, not every
+  form. Where a statute has exceptions not spelled out on the page, a note says to read it in full.
+- The Laws tab's "not covered yet" list is now: driving, packaging and advertising, qualifying
+  conditions, and pending bills. Checked in headless Chromium for California, Arizona and
+  Wyoming on a phone. verify.py passes.
+
 ## Business tab per state, and the glossary (20 Nov 2026)
 
 - **The Business tab now lists the directory's businesses for each state.** The directories' service

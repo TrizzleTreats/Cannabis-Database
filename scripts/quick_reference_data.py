@@ -29,7 +29,7 @@ combined rate varies by town, and adding rates from different bases would be wro
 Written out by scripts/build_quick_reference.py to data/clean/quick_reference.csv.
 """
 
-FIELDS = ["possession", "home_grow", "state_tax", "regulator"]
+FIELDS = ["possession", "home_grow", "state_tax", "regulator", "public_use", "employment"]
 
 
 def F(text, cite, url, confirmed=True, note=""):
@@ -742,3 +742,439 @@ QUICK = {
                        "https://amcc.alabama.gov/"),
     },
 }
+
+
+# Two further law topics for the Laws tab, added 20 Nov 2026 on the same terms:
+# where consumption is allowed, and what protection employees have. Merged into
+# QUICK so every check in build_quick_reference.py applies to them too.
+LAW_MORE = {
+    "ID": {
+        "public_use": F("Not legal anywhere: possession itself is the offence.", "Idaho Code §37-2732(c)(3)",
+                        "https://legislature.idaho.gov/statutesrules/idstat/title37/t37ch27/sect37-2732/"),
+        "employment": F("None: there is no medical or adult-use programme, so no use is protected.",
+                        "Idaho Code §37-2701",
+                        "https://legislature.idaho.gov/statutesrules/idstat/Title37/T37CH27/SECT37-2701"),
+    },
+    "AL": {
+        "public_use": NOT_CONFIRMED("The Act's limits on where patients may use medical cannabis are quoted "
+                                    "in the report from a mirror of the Code, still to be checked against "
+                                    "the official text.", "Ala. Code §20-2A-1 et seq."),
+        "employment": NOT_CONFIRMED("The report finds essentially no employment protection, but quotes the "
+                                    "governing section (§20-2A-6) from a mirror of the Code, still to be "
+                                    "checked against the official text.", "Ala. Code §20-2A-6"),
+    },
+    "AK": {
+        "public_use": F("Not in public. Public consumption is a violation with a fine of up to $100.",
+                        "AS 17.38.020(4); AS 17.38.040", "https://www.akleg.gov/"),
+        "employment": F("No protection, for medical patients either: employers need not permit or "
+                        "accommodate use, and may keep and enforce drug-free workplace policies.",
+                        "AS 17.38.220(a)", "https://www.akleg.gov/"),
+    },
+    "AZ": {
+        "public_use": F("Smoking marijuana in a public place or open space is a petty offence.",
+                        "A.R.S. §36-2853(C)",
+                        "https://www.azleg.gov/viewdocument/?docName=https://www.azleg.gov/ars/36/02853.htm"),
+        "employment": NOT_CONFIRMED("Registered patients have a qualified protection against discrimination, "
+                                    "but the report quotes it from a secondary source, still to be checked "
+                                    "against the official statute.", "A.R.S. §36-2813"),
+    },
+    "AR": {
+        "public_use": F("Patients may not use medical marijuana in a public place, on public transport, "
+                        "at schools, colleges, treatment or community centres, in correctional "
+                        "facilities, or wherever tobacco smoking is banned.",
+                        "Ark. Const. Amendment 98; Acts 740 and 271",
+                        "https://www.dfa.arkansas.gov/wp-content/uploads/Medical_Marijuana_Rules_1.pdf"),
+        "employment": F("An employer may not discriminate in hiring, firing or the terms of employment "
+                        "based on an applicant's or employee's status as a qualifying patient.",
+                        "Ark. Const. Amendment 98 §6(f)",
+                        "https://www.dfa.arkansas.gov/wp-content/uploads/Medical_Marijuana_Rules_1.pdf",
+                        note="The amendment sets exceptions to this protection; see its full text."),
+    },
+    "CA": {
+        "public_use": F("Not in a public place, by smoking or by eating, except at an on-site consumption "
+                        "business the city or county has authorised.", "HSC §11362.3; BPC §26200",
+                        "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=11362.1"),
+        "employment": F("Since 1 Jan 2024 employers may not discriminate based on cannabis use off the job "
+                        "and away from the workplace, or on a drug test that finds only non-psychoactive "
+                        "metabolites.", "Gov. Code §12954 (AB 2188, SB 700)",
+                        "https://www.cannabis.ca.gov/cannabis-laws/",
+                        note="The statute has exceptions; see its full text."),
+    },
+    "CO": {
+        "public_use": F("Illegal in public, including openly and publicly. Allowed on private property "
+                        "with the owner's permission, or at a licensed hospitality business where the "
+                        "town has opted in.", "Colo. Const. art. XVIII §16(3)(d)", "https://med.colorado.gov/"),
+        "employment": NOT_CONFIRMED("The constitution preserves employers' policies (art. XVIII §16(6)), but the "
+                                    "report could quote the exact wording only from a reproduction, still to be "
+                                    "checked against the official text.", "Colo. Const. art. XVIII §16(6)"),
+    },
+    "CT": {
+        "public_use": F("Smoking or vaping cannabis is banned wherever tobacco smoking is banned. Medical "
+                        "patients may not use it in any public place.", "Conn. Gen. Stat. §§19a-342, 19a-342a; 21a-408a",
+                        "https://cga.ct.gov/current/pub/chap_420f.htm"),
+        "employment": F("A positive test only for the THC metabolite is not, without other evidence, proof "
+                        "of impairment. Further limits on acting against employees for off-duty use apply, "
+                        "except at \"exempted employers\" in listed industries such as utilities, "
+                        "construction, manufacturing and transport.", "Conn. Gen. Stat. §§21a-422, 21a-422o to 21a-422s",
+                        "https://www.cga.ct.gov/current/pub/chap_420h.htm"),
+    },
+    "DE": {
+        "public_use": F("Public consumption is prohibited.", "Office of the Marijuana Commissioner FAQ",
+                        "https://omc.delaware.gov/faq/"),
+        "employment": F("Adult use: no protection; employers keep every right to set policies and "
+                        "discipline. Medical patients have statutory protection against discrimination.",
+                        "4 Del.C. §1304; 16 Del.C. ch. 49A", "https://omc.delaware.gov/adult-use/"),
+    },
+    "DC": {
+        "public_use": F("Not in public: not on streets, alleys, sidewalks, parks or parking areas, in "
+                        "vehicles there, or anywhere the public is invited.", "D.C. Code §48-911.01",
+                        "https://oag.dc.gov/release/office-attorney-general-releases-frequently-asked"),
+        "employment": F("Employers may not take adverse action for cannabis use, medical patient status, "
+                        "or a test showing only metabolites without other signs of impairment. "
+                        "Exceptions: safety-sensitive jobs, federal requirements, and use or impairment at work.",
+                        "D.C. Law 24-190", "https://code.dccouncil.gov/us/dc/council/laws/24-190"),
+    },
+    "FL": {
+        "public_use": F("Patients may not use it in a public place or on public transport (low-THC "
+                        "cannabis not smoked is the exception), nor in a school bus, vehicle, aircraft "
+                        "or motorboat, at work, in prisons or on school grounds.",
+                        "Fla. Stat. §381.986(1)(k)5.",
+                        "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0381/Sections/0381.986.html"),
+        "employment": F("No protection: the law does not limit drug-free workplace programmes and does "
+                        "not require any employer to accommodate medical use.", "Fla. Stat. §381.986(15)",
+                        "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0381/Sections/0381.986.html"),
+    },
+    "GA": {
+        "public_use": F("Vaping or otherwise heating medical cannabis in a public place is prohibited.",
+                        "O.C.G.A. §16-12-234(a)(3)", "https://dph.georgia.gov/low-thc-oil-registry/patients-and-caregivers",
+                        note="That section does not ban every form of public use; it targets vapour-producing devices."),
+        "employment": F("No protection: employers may keep zero-tolerance policies, including for "
+                        "off-duty use and detectable amounts at work.", "O.C.G.A. §16-12-191(e)",
+                        "https://dph.georgia.gov/low-thc-oil-registry/patients-and-caregivers"),
+    },
+    "HI": {
+        "public_use": F("Patients may not smoke or vape in public, in a vehicle, at work, on school "
+                        "grounds, at parks, beaches or recreation centres, or anywhere open to the public. "
+                        "Use by anyone else is not legal.", "HRS §329-122(e); HRS ch. 328J",
+                        "https://health.hawaii.gov/medicalcannabisregistry/general-information/marijuana-laws-and-related-documents/"),
+        "employment": NOT_CONFIRMED("The patient protections in §329-125.5 are quoted in the report from bill "
+                                    "reproductions and secondary summaries, still to be checked against the "
+                                    "current statute.", "HRS §329-125.5"),
+    },
+    "IL": {
+        "public_use": F("Not in any public place, and the Smoke Free Illinois Act applies; private "
+                        "businesses may ban it. A licensed consumption lounge does not count as a public place.",
+                        "410 ILCS 705/10-35; 705/55-25(3)",
+                        "https://ilga.gov/legislation/ILCS/details?ActID=3992&ActName=Cannabis+Regulation+and+Tax+Act."),
+        "employment": F("Employers may adopt and enforce reasonable zero-tolerance or drug-free workplace "
+                        "policies, including drug testing and rules on use at work, and may discipline "
+                        "employees who break them.", "410 ILCS 705/10-50",
+                        "https://ilga.gov/legislation/ILCS/details?ActID=3992&ActName=Cannabis+Regulation+and+Tax+Act."),
+    },
+    "IN": {
+        "public_use": F("Not legal anywhere: possession itself is the offence.", "IC 35-48-4-11",
+                        "https://public.courts.in.gov/Decisions/api/Document/Opinion?Id=DmYIl2h3bOKWWdQQvJyPZ_rjZgo14Y_LmDtP2-HSBr7Uf3wsJD127SUP1Lq0Mzh20"),
+        "employment": F("None: there is no medical programme to protect, and no cannabis-specific "
+                        "employment or drug-testing protection was found.", "IC 35-48",
+                        "https://www.in.gov/dor/i-am-a/business-corp/business-faq/"),
+    },
+    "IA": {
+        "public_use": F("For anyone but a patient, use is unlawful anywhere. Dispensaries and "
+                        "manufacturers may not let anyone consume medical cannabidiol on their property.",
+                        "Iowa Code §§124E.7(5), 124E.9(5); §124.401(5)",
+                        "https://www.legis.iowa.gov/docs/code/2024/124E.pdf"),
+        "employment": F("No protection: employers need not allow use or possession at work, and may "
+                        "enforce zero-tolerance policies with drug testing.", "Iowa Code §124E.21; §730.5",
+                        "https://www.legis.iowa.gov/docs/code/2024/124E.pdf"),
+    },
+    "KS": {
+        "public_use": F("Not legal anywhere: possession itself is the offence.", "K.S.A. 21-5706",
+                        "https://kslegislature.gov/li_2022/b2021_22/statute/065_000_0000_chapter/065_041_0000_article/065_041_0001_section/065_041_0001_k/"),
+        "employment": F("None: there is no medical programme to protect, and no general private-employer "
+                        "drug-testing statute was found.", "K.S.A. 44-1009",
+                        "https://kslegislature.gov/li_2022/b2021_22/statute/065_000_0000_chapter/065_041_0000_article/065_041_0001_section/065_041_0001_k/"),
+    },
+    "KY": {
+        "public_use": F("Smoking raw plant material is prohibited even for patients, and vaping is banned "
+                        "on public transport, in public places and in places of public accommodation.",
+                        "KRS 218B.035(1)(g)-(h), (3)(a)",
+                        "https://apps.legislature.ky.gov/law/acts/24RS/documents/0195.pdf"),
+        "employment": F("Narrow: for drug testing that state or local law requires, a registered patient "
+                        "is treated as if prescribed a pharmaceutical drug. There is no general right to "
+                        "use at work or to test positive.", "KRS 218B.045(1)",
+                        "https://apps.legislature.ky.gov/law/statutes/statute.aspx?id=55795"),
+    },
+    "LA": {
+        "public_use": F("Smoking or vaping in a vehicle is banned, with a $100 fine. No general statute "
+                        "banning public consumption by patients was found.", "La. R.S. 32:300.4.1",
+                        "https://www.legis.la.gov/Legis/Law.aspx?p=y&d=96986"),
+        "employment": F("State employers only: they may not penalise an employee or applicant solely for a "
+                        "positive marijuana test if a physician has recommended it for a diagnosed "
+                        "debilitating condition. No private-employer protection was found.",
+                        "La. R.S. 49:1016 (Act 651 of 2022)", "https://www.legis.la.gov/Legis/Law.aspx?p=y&d=96986"),
+    },
+    "ME": {
+        "public_use": F("Only in a private residence (including its grounds), or on private property not "
+                        "generally open to the public with the owner's explicit permission.",
+                        "28-B MRS §1501(2)", "https://legislature.maine.gov/statutes/28-B/title28-Bch1.pdf"),
+        "employment": F("Employers may not penalise or refuse to hire someone solely for off-duty, "
+                        "off-premises use. They may prohibit use, possession and impairment at work, and "
+                        "safety-sensitive and federally mandated roles are exempt.",
+                        "28-B MRS §112; 26 MRS §681(8)", "https://legislature.maine.gov/statutes/28-B/title28-Bch1.pdf"),
+    },
+    "MD": {
+        "public_use": F("Public consumption is unlawful, except at a licensed on-site consumption business.",
+                        "Alc. Bev. & Cann. Title 36", "https://cannabis.maryland.gov/pages/cannabisfaq.aspx"),
+        "employment": NOT_CONFIRMED("The report finds no general off-duty protection, but its account of the "
+                                    "employer section (§36-1301) is a secondary summary still to be checked "
+                                    "against the statute.", "Md. Alc. Bev. & Cann. §36-1301"),
+    },
+    "MA": {
+        "public_use": F("Public consumption is a civil offence with a fine of up to $100; an open container "
+                        "in a vehicle's passenger area, up to $500.", "M.G.L. c.94G §13(c)-(d)",
+                        "https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXV/Chapter94G"),
+        "employment": F("No general protection for off-duty adult use was found. Employers may have their "
+                        "own policies on marijuana use.", "M.G.L. c.94G; Cannabis Control Commission",
+                        "https://masscannabiscontrol.com/know-the-laws/"),
+    },
+    "MI": {
+        "public_use": F("Not in public, and not in a vehicle's passenger area on a public road.",
+                        "MCL 333.27954(1)(a), (e)", "https://www.michigan.gov/cra"),
+        "employment": F("Little protection: no statute stops a private employer from testing for "
+                        "marihuana or requires it to accommodate off-duty use, and the act preserves "
+                        "employers' policies.", "MCL 333.27954(3)", "https://www.michigan.gov/cra"),
+    },
+    "MN": {
+        "public_use": F("Not in public, not in a vehicle and not at schools; no smoking or vaping where "
+                        "smoking is banned.", "Minn. Stat. §342.09, subd. 1",
+                        "https://www.revisor.mn.gov/statutes/cite/342.09"),
+        "employment": F("Off-duty, off-premises use is protected in hiring, discipline and firing. Use, "
+                        "possession or impairment at work, in working hours or with the employer's "
+                        "vehicles or equipment is not.", "Minn. Stat. §181.951",
+                        "https://www.revisor.mn.gov/statutes/cite/342"),
+    },
+    "MS": {
+        "public_use": F("Patients may not smoke, vape or inhale medical cannabis in a public place or a "
+                        "motor vehicle. A private dwelling is not a public place, and a property holder "
+                        "may allow use on the property.", "Miss. Code §41-137-13(2); §41-137-3(gg); §41-137-19(3)",
+                        "https://www.mmcp.ms.gov/"),
+        "employment": F("No meaningful protection: employers need not accommodate patients and may refuse "
+                        "to hire, discipline or dismiss for medical cannabis use.",
+                        "Miss. Code §41-137-13(1)(b)-(f)", "https://www.mmcp.ms.gov/"),
+    },
+    "MO": {
+        "public_use": F("The constitution does not allow public use; smoking in public draws a civil fine.",
+                        "Mo. Const. art. XIV §2.1",
+                        "https://revisor.mo.gov/main/OneSection.aspx?section=XIV%20Section%202&bid=51541"),
+        "employment": NOT_CONFIRMED("Medical patients have a limited protection (art. XIV §1.7), but the report "
+                                    "takes its text from secondary sources, still to be checked against the "
+                                    "Revisor's official text.", "Mo. Const. art. XIV §1"),
+    },
+    "MT": {
+        "public_use": F("Not in public: smoking in public carries a civil fine of up to $50. Not on public "
+                        "transport, on school, health-care or correctional grounds, or where tobacco smoking "
+                        "is banned.", "MCA §16-12-106(4); §16-12-108",
+                        "https://leg.mt.gov/bills/mca/title_0160/chapter_0120/"),
+        "employment": NOT_CONFIRMED("Two statutes must be read together: the cannabis act preserves employers' "
+                                    "workplace policies (§16-12-108(5), confirmed), while the lawful-products law "
+                                    "(§39-2-313) limits action over off-duty use, but the report describes that "
+                                    "one only from secondary summaries.", "MCA §16-12-108(5); §39-2-313"),
+    },
+    "NE": {
+        "public_use": F("No statute specifically permits or bans public use of medical cannabis; the "
+                        "patient protection states no limit on where.", "Neb. Rev. Stat. §71-24,105",
+                        "https://nebraskalegislature.gov/laws/statutes.php?statute=71-24,105"),
+        "employment": F("None: the medical cannabis statutes say nothing about employers, hiring, "
+                        "accommodation or drug testing.", "Neb. Rev. Stat. §§71-24,104 to 71-24,105",
+                        "https://nebraskalegislature.gov/laws/statutes.php?statute=71-24,105"),
+    },
+    "NV": {
+        "public_use": F("Public consumption is a misdemeanor (fine up to $600), except inside a licensed "
+                        "consumption lounge.", "NRS 678D.310(3)", "https://www.leg.state.nv.us/nrs/NRS-678D.html"),
+        "employment": NOT_CONFIRMED("Nevada restricts pre-employment marijuana screening (NRS 613.132), but the "
+                                    "report quotes it from the bill's text, still to be checked against the "
+                                    "codified statute.", "NRS 613.132"),
+    },
+    "NH": {
+        "public_use": F("Patients may use it on private property only. Smoking or vaping in any public "
+                        "place, including buses, parks and beaches, is not protected, nor is use at work, "
+                        "school or in prison.", "RSA 126-X:3", "https://gc.nh.gov/rsa/html/X/126-X/126-X-mrg.htm"),
+        "employment": F("No duty to accommodate use at work, and employers may discipline employees for "
+                        "using cannabis in the workplace.", "RSA 126-X:3, III(c)",
+                        "https://gc.nh.gov/rsa/html/X/126-X/126-X-mrg.htm"),
+    },
+    "NJ": {
+        "public_use": F("Smoking, vaping or aerosolising cannabis is unlawful wherever the Smoke-Free Air "
+                        "Act bans smoking.", "N.J. Smoke-Free Air Act; CREAMM Act",
+                        "https://www.nj.gov/cannabis/adult-personal/index.shtml",
+                        note="Towns enforce their own civil fines."),
+        "employment": F("Employers may not refuse to hire, dismiss or act against someone because they "
+                        "do or do not use cannabis, nor solely because of a positive drug test.",
+                        "N.J.S.A. 24:6I-52 (as amended by P.L.2025, c.325)",
+                        "https://www.njleg.state.nj.us/2020/Bills/PL21/16_.HTM",
+                        note="The statute allows action for use or impairment at work; see its full text."),
+    },
+    "NM": {
+        "public_use": F("Only in a private residence or a licensed consumption area. Smoking in a public "
+                        "place carries a $50 civil penalty.", "NMSA §26-2C-26(B)",
+                        "https://www.rld.nm.gov/cannabis/cannabis-in-new-mexico/yes-and-knows/"),
+        "employment": NOT_CONFIRMED("Medical patients have an employment protection (§26-2B-9), but the report "
+                                    "quotes it from a search-index excerpt, still to be checked against the "
+                                    "official statute.", "NMSA §26-2B-9"),
+    },
+    "NY": {
+        "public_use": NOT_CONFIRMED("The report's account of where consumption is allowed (Penal Law §222.10) "
+                                    "was only partly corrected in the audit.", "Penal Law §222.10",
+                                    "https://www.nysenate.gov/legislation/laws/PEN/222.10"),
+        "employment": F("Employers may not discriminate against an employee for lawful cannabis use "
+                        "off duty, off the premises and without the employer's equipment.",
+                        "Labor Law §201-d (as amended by the MRTA)",
+                        "https://www.nysenate.gov/legislation/laws/CAN/3",
+                        note="Exceptions apply, for example impairment at work; see the statute."),
+    },
+    "NC": {
+        "public_use": F("Not legal anywhere under state law.", "N.C.G.S. 90-95(a)",
+                        "https://ncleg.gov/EnactedLegislation/SessionLaws/HTML/2021-2022/SL2022-32.html"),
+        "employment": F("No protection: employers may keep drug-free workplace policies and refuse to hire "
+                        "or dismiss for a confirmed positive THC test.", "N.C.G.S. 90-95(a)",
+                        "https://ncleg.gov/EnactedLegislation/SessionLaws/HTML/2021-2022/SL2022-32.html"),
+    },
+    "ND": {
+        "public_use": F("Patients may not use it in the places the law lists, which include public places, "
+                        "nor drive or control a vehicle under its influence.", "NDCC §19-24.1-33",
+                        "https://www.legis.nd.gov/cencode/t19c24-1.pdf"),
+        "employment": NOT_CONFIRMED("The statute is described as preserving employer discipline (§19-24.1-34), "
+                                    "but the report's text comes from secondary summaries, still to be checked "
+                                    "verbatim.", "NDCC §19-24.1-34"),
+    },
+    "OH": {
+        "public_use": F("Public consumption is prohibited, and Ohio licenses no consumption lounges.",
+                        "ORC ch. 3796", "https://codes.ohio.gov/ohio-revised-code/chapter-3796"),
+        "employment": F("No protection: the law does not require employers to permit or accommodate use, "
+                        "and preserves their right to act on it, for adult and medical use alike.",
+                        "ORC 3796.28 (SB 56, eff. 20 Mar 2026)",
+                        "https://codes.ohio.gov/ohio-revised-code/chapter-3796"),
+    },
+    "OK": {
+        "public_use": F("No statewide ban on public consumption was confirmed. Property and business owners "
+                        "may ban smoking and vaping on their premises and within 10 ft of an entrance.",
+                        "63 O.S. §427.8(C)", "https://oklahoma.gov/omma/"),
+        "employment": NOT_CONFIRMED("Patient protections changed on 1 Nov 2026 (HB 3127); the report describes the "
+                                    "new text only from law-firm analyses, still to be checked against the "
+                                    "enrolled bill.", "63 O.S. §427.8"),
+    },
+    "OR": {
+        "public_use": F("Use in a public place is unlawful, a Class B violation.", "ORS 475C.377",
+                        "https://www.oregonlegislature.gov/bills_laws/ors/ors475C.html"),
+        "employment": F("No general protection for off-duty use or for a positive test, for adults or "
+                        "medical patients.", "ORS ch. 475C",
+                        "https://www.oregonlegislature.gov/bills_laws/ors/ors475C.html"),
+    },
+    "PA": {
+        "public_use": F("Smoking medical marijuana is unlawful, and the Act authorises no public consumption.",
+                        "Act 16 of 2016 §304(1)", "https://www.legis.state.pa.us/WU01/LI/LI/US/HTM/2016/0/0016..HTM"),
+        "employment": F("Employers may not discriminate in pay, terms or conditions of employment solely "
+                        "because someone is a certified patient.", "Act 16 of 2016 §2103(b)(1)",
+                        "https://www.legis.state.pa.us/WU01/LI/LI/US/HTM/2016/0/0016..HTM",
+                        note="Employers need not allow use on their premises; see §2103 in full."),
+    },
+    "RI": {
+        "public_use": F("Smoking or vaping is prohibited in any public place or anywhere tobacco smoking is "
+                        "banned, on school buses and public transport, on school grounds and in "
+                        "correctional facilities.", "R.I. Gen. Laws §21-28.11-29(a)(2)",
+                        "http://webserver.rilegislature.gov/Statutes/TITLE21/21-28.11/21-28.11-29.htm"),
+        "employment": F("Employers need not accommodate use, possession or being under the influence at "
+                        "work, including remote work, and may adopt policies banning it there.",
+                        "R.I. Gen. Laws ch. 21-28.11",
+                        "http://webserver.rilegislature.gov/Statutes/TITLE21/21-28.11/21-28.11-29.htm"),
+    },
+    "SC": {
+        "public_use": F("Not legal anywhere: public use is charged as possession.", "S.C. Code §44-53-370",
+                        "https://www.scstatehouse.gov/code/t44c053.php"),
+        "employment": F("No protection: marijuana is illegal, and no statute restricts private-employer "
+                        "drug testing.", "S.C. Code §41-1-15", "https://www.scstatehouse.gov/code/t44c053.php"),
+    },
+    "SD": {
+        "public_use": F("Patients may not use it on public transport, in public places or in vehicles, "
+                        "and those under 21 may not smoke or vape it.", "SDCL §34-20G-18",
+                        "https://sdlegislature.gov/Statutes/34-20G-18"),
+        "employment": F("For dealings with an employer and employer drug testing, a registered patient is "
+                        "treated as if prescribed a pharmaceutical drug. In safety-sensitive jobs an "
+                        "employer may still act on a positive test alone.", "SDCL §34-20G-22 (as amended by SB 12, 2024)",
+                        "https://sdlegislature.gov/Statutes/34-20G-22"),
+    },
+    "TN": {
+        "public_use": F("Not legal anywhere: public use is charged as possession.", "Tenn. Code §39-17-418", "",
+                        note="The audited report cites the Tennessee Code, but no official link for it was captured."),
+        "employment": F("None: marijuana is illegal, and no statute protects its use.", "Tenn. Code §39-17-418", "",
+                        note="The audited report cites the Tennessee Code, but no official link for it was captured."),
+    },
+    "TX": {
+        "public_use": F("Smoking is prohibited for Compassionate Use patients in any setting; inhalation "
+                        "only as prescribed, through an approved device.", "Health & Safety Code ch. 487",
+                        "https://www.dps.texas.gov/section/compassionate-use-program"),
+        "employment": F("No protection for Compassionate Use patients: the law has no anti-discrimination, "
+                        "accommodation or hiring protection.", "Health & Safety Code ch. 487",
+                        "https://www.dps.texas.gov/section/compassionate-use-program"),
+    },
+    "UT": {
+        "public_use": F("No use in public view, except in a medical emergency. A first offence is an "
+                        "infraction with a fine of up to $100.", "Utah Code §26B-4-216(2)",
+                        "https://medicalcannabis.utah.gov/"),
+        "employment": F("State and local government employers must treat lawful medical use and card "
+                        "status like any other prescribed medication, with exceptions for federal funding, "
+                        "security clearances and federally licensed positions.", "Utah Code §26B-4-207(2)",
+                        "https://medicalcannabis.utah.gov/",
+                        note="This protection covers public employers; the section sets no rule for private ones."),
+    },
+    "VT": {
+        "public_use": F("No one may consume cannabis in a public place unless the law specifically allows it.",
+                        "7 V.S.A. §833", "https://ccb.vermont.gov/laws-rules-and-regulations"),
+        "employment": F("Employers need not permit or accommodate use at work. Separately, Vermont law "
+                        "restricts when an employer may require a drug test.", "18 V.S.A. §4230a(e); 21 V.S.A. §513",
+                        "http://legislature.vermont.gov/statutes/section/18/084/04230a"),
+    },
+    "VA": {
+        "public_use": F("Public consumption is a $25 civil penalty for a first offence and a Class 4 "
+                        "misdemeanor from the third; the civil penalty rises to $250 on 1 July 2027.",
+                        "Va. Code §4.1-1108", "https://law.lis.virginia.gov/vacode/title4.1/chapter6/"),
+        "employment": F("Employers may not dismiss, discipline or discriminate against an employee for "
+                        "lawful use of medical cannabis oil under a practitioner's written certification. "
+                        "No such protection was found for adult use.", "Va. Code §40.1-27.4",
+                        "https://law.lis.virginia.gov/vacode/title4.1/chapter6/"),
+    },
+    "WA": {
+        "public_use": F("Only in private, out of public view; not in a public place.", "RCW 69.50.445",
+                        "https://app.leg.wa.gov/rcW/default.aspx?cite=69.50"),
+        "employment": F("In initial hiring, employers may not discriminate based on cannabis use off the job "
+                        "and away from the workplace, or on a pre-employment test for non-psychoactive "
+                        "metabolites.", "RCW 49.44.240 (SB 5123, 2023)",
+                        "https://app.leg.wa.gov/rcW/default.aspx?cite=69.50",
+                        note="The statute has exceptions; see its full text."),
+    },
+    "WV": {
+        "public_use": NOT_CONFIRMED("The report records the claim that patients may use it only in private as a "
+                                    "searched absence in the Act, still to be confirmed in the rules.",
+                                    "W. Va. Code ch. 16A"),
+        "employment": F("Employers may not dismiss, threaten, refuse to hire or otherwise discriminate "
+                        "against an employee solely because they are certified to use medical cannabis.",
+                        "W. Va. Code ch. 16A", "https://code.wvlegislature.gov/16A-3/"),
+    },
+    "WI": {
+        "public_use": F("Not legal anywhere: possession itself is the offence.", "Wis. Stat. §961.41(3g)(e)",
+                        "https://docs.legis.wisconsin.gov/document/acts/2019/68,54n"),
+        "employment": F("None: marijuana is illegal, there is no medical programme, and no statute protects "
+                        "an employee for use or a positive test.", "Wis. Stat. ch. 961",
+                        "https://docs.legis.wisconsin.gov/document/acts/2019/68,54n"),
+    },
+    "WY": {
+        "public_use": F("Not legal anywhere: possession itself is the offence.", "W.S. 35-7-1031", "",
+                        note="The audited report cites the Wyoming statutes, but no official link for them was captured."),
+        "employment": F("None: there is no programme to protect, and no statute stops an employer acting "
+                        "on a positive marijuana test.", "W.S. 35-7-1031", "",
+                        note="The audited report cites the Wyoming statutes, but no official link for them was captured."),
+    },
+}
+
+for _code, _facts in LAW_MORE.items():
+    QUICK[_code].update(_facts)
