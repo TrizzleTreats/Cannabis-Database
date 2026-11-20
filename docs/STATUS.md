@@ -31,7 +31,7 @@
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They now cover eight facts per state (possession, home grow, tax, regulator, where it may be used, employment, driving, and who qualifies for medical use); packaging and advertising, pending bills and local taxes are still to come, and each tab says so.
+8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They now cover nine facts per state (possession, home grow, tax, regulator, where it may be used, employment, driving, who qualifies for medical use, and edibles); advertising, wider packaging rules, pending bills and local taxes are still to come, and each tab says so.
 
 9. **Turn on the daily update** — BUILT 19 Nov 2026, NOT YET RUNNING (see "The daily update" below). Three steps, all yours: merge to the default branch (scheduled workflows only run there); to publish the site, set Settings > Pages to "GitHub Actions" and add the repository variable `DEPLOY_SITE` = `true`; and check the first run's summary. GitHub Pages on a private repository needs a paid plan.
 
@@ -331,6 +331,45 @@ reference (official link, citation guard, figure guard). The table now holds 408
 - The Laws tab's "not covered yet" list is now: packaging and advertising, and pending bills.
   Checked in headless Chromium for California, Ohio, Nebraska, Texas (held back), Idaho and Wyoming
   on a phone, with no page errors and no sideways scroll. verify.py passes.
+
+## Laws tab: edibles (20 Nov 2026)
+
+A ninth law topic on every state's Laws tab: **edibles**, meaning the THC limits per serving and
+per package, plus the product rules that go with them (shape and candy bans, forms allowed). It is
+in `EDIBLES` in `scripts/quick_reference_data.py`, under the same checks as the rest. The quick
+reference now holds 459 facts.
+
+- **37 published, 14 held back.** A limit is published only where the report ties it to an
+  official statute, rule or regulator page. Nevada (NRS 678D.420(1), (2)(e)) and Delaware
+  (4 Del.C. §1331) were also read online. Hemp products follow other rules and are left out.
+- **A report that found no limit is held back, not read as "none"**: DC, Missouri, New Hampshire,
+  West Virginia, Hawaii, Louisiana and Utah. Each note says what the report did find.
+- Held back for the source:
+  - Colorado: rules read via Cornell.
+  - Michigan: CRA bulletin via a secondary reproduction.
+  - Arkansas: a secondary claim only.
+  - Montana: HB 636 not yet opened in official text.
+  - Minnesota: only hemp-edible figures in the report.
+  - Ohio: medical product forms only.
+  - Nebraska: no dispensary licensed.
+- Partial, saying so in the note:
+  - California: 10 mg per serving from the official bill digest; the 100 mg package rule was read
+    only from an unofficial copy.
+  - New York: 100 mg per package is secondary-only.
+  - Kentucky: no package limit confirmed.
+  - South Dakota: 50 mg per serving under the 2023 rules, while a labelling rule still says 10 mg.
+- Shapes that differ from the usual 10 mg / 100 mg:
+  - Alabama: no food edibles; gelatin cubes and lozenges only.
+  - Iowa: no edibles at all (§124E.7(12)(c)).
+  - Pennsylvania: no commercial edibles (Act 16 §304).
+  - North Dakota: square lozenges only, 5 mg / 50 mg.
+  - Oklahoma: no milligram cap; HB 4454's child-appeal and labelling rules apply from 1 Nov 2026.
+  - Florida: 10 mg / 200 mg.
+  - Maine: 10 mg / 200 mg.
+  - Connecticut, Massachusetts and Vermont: 5 mg per serving.
+- The Laws tab's "not covered yet" list is now: advertising, packaging and labelling beyond the
+  edible limits, and pending bills. Checked in headless Chromium for Massachusetts, Pennsylvania,
+  Michigan (held back) and Wyoming. verify.py passes.
 
 ## Quick reference: facts that rested only on Justia or FindLaw copies (20 Nov 2026)
 

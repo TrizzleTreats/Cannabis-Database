@@ -30,7 +30,7 @@ Written out by scripts/build_quick_reference.py to data/clean/quick_reference.cs
 """
 
 FIELDS = ["possession", "home_grow", "state_tax", "regulator", "public_use", "employment", "driving",
-          "medical"]
+          "medical", "edibles"]
 
 
 def F(text, cite, url, confirmed=True, note=""):
@@ -1534,3 +1534,142 @@ MEDICAL = {
 
 for _code, _fact in MEDICAL.items():
     QUICK[_code]["medical"] = _fact
+
+
+# --------------------------------------------------------------------------------------
+# Edibles (added 20 Nov 2026): THC limits per serving and per package, and the product
+# rules that go with them. A limit is published only where the report ties it to an
+# official source (statute, rule or regulator page); Nevada's NRS 678D.420 and Delaware's
+# 4 Del.C. §1331 were also read online. Hemp and hemp-derived products follow other rules
+# and are not covered here. A report that found NO limit is held back, not read as "none".
+NO_MARKET = "None: there is no legal marijuana market, so no marijuana edibles."
+HEMP = "Hemp-derived products follow separate rules, not covered here."
+NO_LINK = HEMP + " The audited report cites the state's statutes, but no official link for them was captured."
+EDIBLES = {
+    "AK": F("No more than 10 mg of THC per serving and 100 mg per packaged unit.", "3 AAC 306",
+            "https://www.commerce.alaska.gov/web/amco/",
+            note="A total-THC formula is only a 2026 proposal (AO-360), not current law."),
+    "AL": F("No food edibles: products baked, mixed or infused into food, such as cookies or candies, are "
+            "banned. Oral forms are tablets, capsules, tinctures and non-sugar-coated gelatin cubes or "
+            "lozenges.", "Ala. Code §20-2A-3(14)", "https://amcc.alabama.gov/patients/"),
+    "AR": NOT_CONFIRMED("A 100 mg per-package edible limit appears only in a secondary source; the report "
+                        "found it in no official text.", "Ark. Const. amend. 98"),
+    "AZ": F("No more than 10 mg of THC per serving and 100 mg per package, delineated or scored into "
+            "servings.", "A.R.S. §36-2854", "https://www.azleg.gov/ars/36/02854.htm"),
+    "CA": F("No more than 10 mg of THC per serving, in standardised servings.", "MAUCRSA, as the AB 2532 "
+            "digest restates it",
+            "https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202520260AB2532",
+            note="The 100 mg per package limit is in the regulations (4 CCR), which the report read only "
+                 "from an unofficial copy."),
+    "CO": NOT_CONFIRMED("The report reads the edible limits (Rule 4-115) only from Cornell's reproduction of "
+                        "the rules, not the official text.", "1 CCR 212-3"),
+    "CT": F("No more than 5 mg of THC per serving and 100 mg per package.", "DCP and Attorney General release",
+            "https://portal.ct.gov/ag/press-releases/2024-press-releases/attorney-general-dcp-commissioner-"
+            "cafferelli-announce-psa-regarding-illegal-cannabis-edibles"),
+    "DC": NOT_CONFIRMED("The report found no per-serving or per-package edible limit in the D.C. Code sections "
+                        "it opened, but did not establish that none exists."),
+    "DE": F("No more than 10 mg of total THC per serving and 100 mg in a multi-serving package.",
+            "4 Del.C. §1331", "https://delcode.delaware.gov/title4/c013/sc03/index.html", note=CHK),
+    "FL": F("No more than 10 mg of THC per serving and 200 mg per edible. Edibles may not be attractive to "
+            "children, shaped like a person, cartoon or animal, or resemble commercial candy.",
+            "Fla. Stat. §381.986(8)(e)8.",
+            "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0381/Sections/0381.986.html"),
+    "GA": F("Medical cannabis products (low-THC only): up to 1,200 mg of THC per package.",
+            "SB 220; DPH Low THC Oil Registry",
+            "https://dph.georgia.gov/low-thc-oil-registry/patients-and-caregivers",
+            note="Whether gummies count as an allowed ingestible or a banned candy or food product is "
+                 "unresolved."),
+    "HI": NOT_CONFIRMED("The report lists the product forms Hawaii's dispensaries may sell but gives no "
+                        "confirmed per-serving or per-package limit for edibles.", "HRS §329D-10"),
+    "IA": F("No edibles: manufacturers may not make edible medical cannabidiol products. Oral, topical, "
+            "nebulised or vaporised, and rectal or vaginal forms are allowed; nothing smokable.",
+            "Iowa Code §124E.7(12)(c); §124E.17", IA_URL, note=CHK),
+    "IL": F("No more than 10 mg of THC per serving and 100 mg per package; the Department of Agriculture may "
+            "change the amounts by rule.", "410 ILCS 705/55-21(k)",
+            "https://ilga.gov/legislation/ilcs/fulltext?DocName=041007050K55-21"),
+    "KY": F("Edibles and other oral products: no more than 10 mg of delta-9 THC per serving.",
+            "915 KAR 1:070", "https://apps.legislature.ky.gov/law/kar/titles/915/001/070/",
+            note="Whether there is also a per-package limit (915 KAR 1:100) is not confirmed."),
+    "LA": NOT_CONFIRMED("The report finds edible forms (such as gelatin chewables) allowed by rule but no "
+                        "confirmed per-serving or per-package limit.", "La. R.S. 40:1046"),
+    "MA": F("5 mg of THC per serving and 100 mg per package (5.5 mg and 110 mg with the allowed 10% "
+            "variance), and no more than 20 servings a package.", "935 CMR 500.150(4)",
+            "https://masscannabiscontrol.com/document/935-cmr-500-000-adult-use-of-marijuana-effective-06-18-26-pdf-2/"),
+    "MD": F("Adult use: no more than 10 mg of THC per serving and 100 mg per package. Higher-potency products "
+            "are for patients only.", "COMAR 14.17.13.05", "https://cannabis.maryland.gov/Pages/law.aspx"),
+    "ME": F("No more than 10 mg of THC per serving and 200 mg per package.", "28-B M.R.S. §703(1)(F)",
+            "https://www.mainelegislature.org/LEGIS/STATUTES/28-B/title28-Bsec703.pdf"),
+    "MI": NOT_CONFIRMED("The report takes Michigan's edible limits from a secondary reproduction of a CRA "
+                        "bulletin, and its sources conflict on the medical limits."),
+    "MN": NOT_CONFIRMED("The report's per-serving and per-package figures are for lower-potency hemp edibles; "
+                        "it does not give the limits for adult-use cannabis edibles.", "Minn. Stat. ch. 342"),
+    "MO": NOT_CONFIRMED("The report found no general per-serving or per-package edible limit in Article XIV or "
+                        "19 CSR 100-1.120 as read, and rejects the 10 mg / 100 mg figures in secondary sources.",
+                        "19 CSR 100-1.120"),
+    "MS": F("No more than 10 mg of THC per serving (within ±10%).", "MSDH Medical Cannabis Program rules",
+            "https://www.mmcp.ms.gov/sites/default/files/Documents/RevisedAdminRegulationsMMCPBOHADOPTED10.11.2023.pdf"),
+    "MT": NOT_CONFIRMED("The report's figures (5 mg per serving from 1 July 2026 under HB 636; 100 mg per "
+                        "package) are among the sections it lists as not yet opened in official text.",
+                        "MCA §16-12-224"),
+    "ND": F("Only low-dose lozenges, soft or hard and square in shape: no more than 5 mg of THC per serving "
+            "and 50 mg per package, with the Department's prior approval. Other THC foods and drinks are not "
+            "allowed.", "N.D.C.C. §19-24.1-24.1 (HB 1203, 2025)", "https://www.legis.nd.gov/cencode/t19c24-1.pdf"),
+    "NE": NOT_CONFIRMED("No dispensary had been licensed as of 30 Oct 2026, and the report gives no confirmed "
+                        "product rules for edibles.", "Neb. Rev. Stat. §71-24,104"),
+    "NH": NOT_CONFIRMED("The report found no edible limit in New Hampshire law; the figures in search results "
+                        "come from failed adult-use bills."),
+    "NJ": F("No more than 10 mg of THC per serving and 100 mg per package.", "N.J.A.C. 17:30",
+            "http://www.state.nj.us/cannabis/documents/businesses/Business%20Resources/Labeling%20of%20Total%20Active%20THC%20for%20Ingestibles%20Guidance%20.pdf"),
+    "NM": F("Adult use: no more than 10 mg of total THC per serving and 100 mg per container. Medical edibles "
+            "may have up to 50 mg per serving.", "16.8.3.12 NMAC",
+            "https://www.srca.nm.gov/nmac/nmregister/xxxiii/16.8.3_xxxiii01.pdf"),
+    "NV": F("No more than 10 mg of THC per serving and 100 mg per package.", "NRS 678D.420(1), (2)(e)",
+            "https://www.leg.state.nv.us/NRS/NRS-678D.html", note=CHK),
+    "NY": F("No more than 10 mg of THC per serving.", "9 NYCRR Part 128",
+            "https://cannabis.ny.gov/part-128-guidance",
+            note="A 100 mg per package limit is reported only by secondary sources so far."),
+    "OH": NOT_CONFIRMED("The report gives limits for medical product forms (oral drops, patches and others) "
+                        "but not for adult-use edibles."),
+    "OK": F("No per-serving or per-package THC limit. From 1 Nov 2026, packages must state the servings and the "
+            "THC per serving, and edibles may not be attractive to children, shaped like a person, animal or "
+            "cartoon, or resemble commercial candy.", "63 O.S. §423(C)(7) (HB 4454)",
+            "https://oklahoma.gov/omma/about/news/2026/hb-4454-clarification-processor-and-dispensary-requirements.html"),
+    "OR": F("Adult use: no more than 10 mg of THC per serving and 100 mg per package (since 1 Apr 2022). "
+            "Medical-grade edibles: up to 100 mg per package, with no serving-size rule.",
+            "OAR 845-026-0210, -0220",
+            "http://cms.oregon.gov/olcc/marijuana/Documents/Bulletins/IB2022-01-Potency-Limits-Edibles.pdf"),
+    "PA": F("No commercial edibles: making medical marijuana into an edible is unlawful, except a patient or "
+            "caregiver mixing it into food to help take it.", "Medical Marijuana Act §304",
+            "https://www.legis.state.pa.us/WU01/LI/LI/US/HTM/2016/0/0016..HTM"),
+    "RI": F("No more than 10 mg of THC per serving and 100 mg per package; some designated medical products "
+            "may exceed these.", "560-RICR-10-10-2", "https://ccc.ri.gov/media/2311/download?language=en"),
+    "SD": F("No more than 50 mg of THC per serving, under the 2023 rules.", "ARSD 44:90:07:04",
+            "https://rules.sd.gov/Uploads/782_AdoptedRules.pdf",
+            note="A labelling rule (44:90:10:12) still refers to 10 mg servings; the report flags the "
+                 "conflict."),
+    "TX": F("Low-THC products only, which may include edibles: no more than 10 mg of THC per dose and 1 g per "
+            "package.", "HB 46 (2025)", "https://capitol.texas.gov/tlodocs/89R/analysis/html/HB00046E.htm"),
+    "UT": NOT_CONFIRMED("The report gives no confirmed per-serving or per-package limit for Utah's medical "
+                        "edible products."),
+    "VA": F("No adult-use sales are licensed. Medical products: no more than 10 mg of THC per dose, except as "
+            "§4.1-1603.2 allows.", "Va. Code §4.1-1602", "https://law.lis.virginia.gov/vacode/4.1-1602/"),
+    "VT": F("No more than 5 mg of THC per serving and 100 mg per package, in opaque, child-resistant "
+            "packaging with the standard symbol.", "7 V.S.A. §881(a)(3)",
+            "https://legislature.vermont.gov/statutes/section/07/033/00881"),
+    "WA": F("No more than 10 mg of active THC per serving and 100 mg per package, at most 10 servings. Some "
+            "patient-only products (capsules, tinctures and similar, not edibles) may have up to 50 mg per "
+            "serving.", "WAC 314-55-095", "https://lcb.wa.gov/education2cb/reading_a_product_label"),
+    "WV": NOT_CONFIRMED("The report found no statutory per-serving or per-package limit; any limit would be in "
+                        "the bureau's rules or product approvals, which it did not confirm.", "W. Va. Code ch. 16A"),
+    "ID": F(NO_MARKET, 'Idaho Code §37-2701 et seq.', 'https://legislature.idaho.gov/statutesrules/idstat/Title37/T37CH27/SECT37-2701', note=HEMP),
+    "IN": F(NO_MARKET, 'Ind. Code art. 35-48 (marijuana now defined at IC 35-48-1.1-29)', 'https://public.courts.in.gov/Decisions/api/Document/Opinion?Id=DmYIl2h3bOKWWdQQvJyPZ_rjZgo14Y_LmDtP2-HSBr7Uf3wsJD127SUP1Lq0Mzh20', note=HEMP),
+    "KS": F(NO_MARKET, 'K.S.A. 65-4101(aa) and 21-5706', 'https://kslegislature.gov/li_2022/b2021_22/statute/065_000_0000_chapter/065_041_0000_article/065_041_0001_section/065_041_0001_k/', note=HEMP),
+    "NC": F(NO_MARKET, 'N.C.G.S. 90-87(16), 90-94 (Schedule VI), 90-95', 'https://ncleg.gov/EnactedLegislation/SessionLaws/HTML/2021-2022/SL2022-32.html', note=HEMP),
+    "SC": F(NO_MARKET, 'S.C. Code §44-53-110(27), §44-53-370', 'https://www.scstatehouse.gov/code/t44c053.php', note=HEMP),
+    "TN": F(NO_MARKET, 'Tenn. Code §39-17-402(16) and Schedule VI', '', note=NO_LINK),
+    "WI": F(NO_MARKET, 'Wis. Stat. ch. 961 (§961.41', 'https://docs.legis.wisconsin.gov/document/acts/2019/68,54n', note=HEMP),
+    "WY": F(NO_MARKET, 'Wyoming Controlled Substances Act, W.S. 35-7-1001 et seq. (35-7-1031(c))', '', note=NO_LINK),
+}
+
+for _code, _fact in EDIBLES.items():
+    QUICK[_code]["edibles"] = _fact
