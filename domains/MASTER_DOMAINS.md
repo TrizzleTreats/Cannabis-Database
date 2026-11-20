@@ -2,7 +2,7 @@
 
 Built 12 November 2026 from the official sources cited in the audited state reports (Regions 1–9) and the audited federal report, merged with the New England and Mid-Atlantic lists made in the earlier chat. These are the sites Claude Code needs access to for licence data, laws, rules and local codes. News sites, blogs, law firms, directories and unofficial law copies (Justia, FindLaw, LegiScan, Wikipedia) are deliberately left out.
 
-**Total unique sites:** 1257 (a plain one-per-line copy is in all-domains.txt).
+**Total unique sites:** 1258 (a plain one-per-line copy is in all-domains.txt).
 
 ## Federal
 ```
@@ -107,9 +107,9 @@ agriculture.sc.gov, businessfilings.sc.gov, charleston-sc.gov, cma.sc.gov, des.s
 agenda.savannahga.gov, agr.georgia.gov, agr.state.ga.us, apps.dca.ga.gov, citycouncil.atlantaga.gov, dch.georgia.gov, dor.georgia.gov, dph.georgia.gov, ecorp.sos.ga.gov, gbi.georgia.gov, gbp.georgia.gov, gov.georgia.gov, medicalboard.georgia.gov, rules.sos.ga.gov, rules.sos.georgia.gov, rules.sos.state.ga.us, sos.ga.gov, www.agr.georgia.gov, www.agr.state.ga.us, www.gmcc.ga.gov, www.legis.ga.gov, www.miltonga.gov
 ```
 
-### Florida (35)
+### Florida (36)
 ```
-broward.us, ccmedia.fdacs.gov, constitutionalinitiatives.dos.fl.gov, discover.pbcgov.org, dos.fl.gov, dunedin.granicus.com, edr.state.fl.us, flgaming.gov, flgov.com, flhouse.gov, floridaelectionwatch.gov, floridarevenue.com, flrules.org, flsenate.gov, foodpermit.fdacs.gov, forms.fdacs.gov, initiativepetitions.dos.fl.gov, miccosukee.com, palmbayflorida.primegov.com, plant.fdacs.gov, sb.flleg.gov, supremecourt.flcourts.gov, webdocs.fortlauderdale.gov, www.columbiacountyfla.com, www.fdacs.gov, www.fdle.state.fl.us, www.flgov.com, www.flhealthsource.gov, www.flhouse.gov, www.flrules.org, www.flsenate.gov, www.hemp.fdacs.gov, www.leg.state.fl.us, www.miamidade.gov, www.transparencyflorida.gov
+broward.us, ccmedia.fdacs.gov, constitutionalinitiatives.dos.fl.gov, discover.pbcgov.org, dos.fl.gov, dunedin.granicus.com, edr.state.fl.us, flgaming.gov, flgov.com, flhouse.gov, floridaelectionwatch.gov, floridarevenue.com, flrules.org, flsenate.gov, foodpermit.fdacs.gov, forms.fdacs.gov, initiativepetitions.dos.fl.gov, knowthefactsmmj.com, miccosukee.com, palmbayflorida.primegov.com, plant.fdacs.gov, sb.flleg.gov, supremecourt.flcourts.gov, webdocs.fortlauderdale.gov, www.columbiacountyfla.com, www.fdacs.gov, www.fdle.state.fl.us, www.flgov.com, www.flhealthsource.gov, www.flhouse.gov, www.flrules.org, www.flsenate.gov, www.hemp.fdacs.gov, www.leg.state.fl.us, www.miamidade.gov, www.transparencyflorida.gov
 ```
 
 ## Region 4 — South Central

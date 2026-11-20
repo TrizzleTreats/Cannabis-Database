@@ -116,10 +116,8 @@ MARKET = {
     "FL": {
         "market": NOT_CONFIRMED("No official dollar figure for sales was found in the audited report."),
         "patients": F("943,271 qualified patients with an active ID card, 23 Oct 2026.",
-                      "Office of Medical Marijuana Use, weekly update (23 Oct 2026)", "",
-                      note="Published on knowthefactsmmj.com, the Department of Health's medical marijuana "
-                           "site. That host is not yet on this project's list of official domains, so no "
-                           "link is shown until it is added."),
+                      "Office of Medical Marijuana Use, weekly update (23 Oct 2026)",
+                      "https://knowthefactsmmj.com/about/weekly-updates/"),
     },
     "GA": {
         "market": NOT_CONFIRMED("No official sales figure for Georgia's low-THC programme was found."),

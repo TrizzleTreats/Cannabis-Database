@@ -35,7 +35,7 @@
 
 9. **Turn on the daily update** — BUILT 19 Nov 2026, NOT YET RUNNING (see "The daily update" below). Three steps, all yours: merge to the default branch (scheduled workflows only run there); to publish the site, set Settings > Pages to "GitHub Actions" and add the repository variable `DEPLOY_SITE` = `true`; and check the first run's summary. GitHub Pages on a private repository needs a paid plan.
 
-10. **Approve one official host: knowthefactsmmj.com** (the Florida Department of Health's medical marijuana site, where OMMU publishes its weekly update). Florida's patient count (943,271, 23 Oct 2026) comes from it, but the host is not on domains/all-domains.txt, and adding it also needs a `WebFetch(domain:knowthefactsmmj.com)` rule in .claude/settings.json, which the session was not permitted to edit. Until then the figure shows with "no official link captured yet" and a note naming the source. Once added, put the URL back in scripts/market_data.py (FL.patients) and rebuild.
+10. DONE (20 Nov 2026, at your request): **knowthefactsmmj.com approved** as an official host (the Florida Department of Health's medical marijuana site, where OMMU publishes its weekly update). It is in domains/all-domains.txt (now 1,258 sites) and the Florida section of domains/MASTER_DOMAINS.md, and has a `WebFetch(domain:knowthefactsmmj.com)` rule in .claude/settings.json. Florida's patient count (943,271, 23 Oct 2026) now links to https://knowthefactsmmj.com/about/weekly-updates/.
 
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
@@ -548,8 +548,8 @@ whatever measure the state publishes, and **registered medical patients**. Both 
 - **A number guard.** The build refuses any figure whose numbers do not appear verbatim in
   that state's own audited report. Tested by changing one digit in Colorado's sales and one in
   New Jersey's patients: both rejected.
-- **One link withheld:** Florida's patient count comes from knowthefactsmmj.com (the Department of
-  Health's site), which is not yet on the official-domain list (item 10).
+- **Florida's patient count** comes from knowthefactsmmj.com (the Department of Health's site). It
+  was withheld until that host was approved on 20 Nov 2026 (item 10) and now carries its link.
 - `verify.py` checks the table and that the site matches it. `update_all.py` runs
   `build_market.py` daily. Checked in headless Chromium: Colorado, Oklahoma (tax, not sales),
   Texas (both held back), Florida (no link), Idaho (no market) and Alaska on a phone. No errors.
