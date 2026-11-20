@@ -13,7 +13,8 @@ Checks, each of which refuses to write:
     site) and a note saying why it is unconfirmed;
   * every statute or section number in a citation appears in that state's own
     audited report, as a whole token: "41-137-3" does not count as found inside
-    "41-137-35". This is the guard against a citation written from memory;
+    "41-137-35", and a bare "§4177" must be there too. This is the guard against a
+    citation written from memory;
   * every figure in a published fact's text or note (three or more digits, or a
     decimal: "$1,000", "5.00 ng/mL", "17.38.020") appears, as written, in that same
     report. The guard against a figure typed from memory (added 20 Nov 2026, after a
@@ -48,7 +49,9 @@ def report_text(path):
 
 
 def tokens(cite):
-    out = []
+    """Section-like tokens in a citation, plus bare section or volume numbers of three or
+    more digits ("§4177", "271 Ga. 398"), which the token pattern alone would skip."""
+    out = [m.group(0) for m in re.finditer(r"(?<![\w.,:-])\d{3,}[A-Za-z]?(?![\w]|[-.:,]\d)", cite)]
     for m in TOKEN.finditer(cite):
         tok = m.group(0).rstrip(".,:-")
         if re.fullmatch(r"\d{1,2}[.:]\d{1,2}", tok):

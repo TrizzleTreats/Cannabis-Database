@@ -12,7 +12,9 @@ Checks, each of which refuses to write:
     off the public site);
   * every number in a fact's text (three or more digits, or a decimal) appears, as
     written, in that state's own audited report. This is the guard against a figure
-    typed from memory or mistyped: "$1,315,678,364" must be in the Colorado report.
+    typed from memory or mistyped: "$1,315,678,364" must be in the Colorado report;
+  * every section number in a citation is in that report too (the quick reference's
+    citation guard, added here 20 Nov 2026).
 
 Usage:
   python3 scripts/build_market.py [--dry-run]
@@ -21,7 +23,7 @@ import argparse, csv, pathlib, re, sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from build_legal_status import is_official, official_hosts  # noqa: E402
-from build_quick_reference import report_text  # noqa: E402
+from build_quick_reference import present as cited_in, report_text, tokens  # noqa: E402
 from market_data import FIELDS, MARKET  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -79,6 +81,9 @@ def build():
                     problems.append(f"{where} unconfirmed facts must carry no text")
                 if not f["note"]:
                     problems.append(f"{where} unconfirmed with no reason")
+            for tok in tokens(f["cite"]):
+                if not cited_in(tok, text_of_report):
+                    problems.append(f"{where} cites {tok!r}, which is not in the audited report")
             rows.append({"state": code, "fact": field, "text": f["text"] or "", "cite": f["cite"],
                          "source_url": f["url"], "confirmed": "Y" if f["confirmed"] else "N",
                          "note": f["note"], "report_last_audited": legal[code]["report_last_audited"]})

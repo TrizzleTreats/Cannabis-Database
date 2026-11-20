@@ -287,6 +287,10 @@ as the rest of the quick reference. The table now holds 357 facts.
   all 357 facts found none astray, and `build_quick_reference.py` now refuses a figure (three or
   more digits, or a decimal) that its report does not hold, the same rule as the market table.
   A planted "3.00 ng/mL" for Washington and a "$1,250" fine for Alaska were both refused.
+- **The citation guard now tests bare section numbers too** ("§4177", "271 Ga. 398"), which the
+  token pattern used to skip: 414 citation tokens across the quick reference, all found. The market
+  table had no citation guard; it now has the same one (36 tokens, all found). A planted "§4178" for
+  Delaware was refused.
 - The Laws tab's "not covered yet" list is now: packaging and advertising, qualifying conditions,
   and pending bills. Checked in headless Chromium for Colorado, Illinois, Iowa, Delaware, Georgia,
   Texas (held back) and Wyoming on a phone, with no page errors and no sideways scroll. verify.py
