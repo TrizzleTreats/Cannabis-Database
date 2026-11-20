@@ -332,6 +332,24 @@ reference (official link, citation guard, figure guard). The table now holds 408
   Checked in headless Chromium for California, Ohio, Nebraska, Texas (held back), Idaho and Wyoming
   on a phone, with no page errors and no sideways scroll. verify.py passes.
 
+## Held-back facts released after reading the official text (20 Nov 2026)
+
+With the new environment's hosts, held-back facts in the reachable states were read in the
+official text:
+
+- **Published:**
+  - Arizona's qualifying conditions (§36-2801, azleg.gov) and patient employment protection
+    (§36-2813(B)).
+  - Nevada's pre-employment screening rule (NRS 613.132), with its exceptions.
+  - New Mexico's patient employment protection (§26-2B-9, from RLD's copy of Article 2B).
+  - Iowa's advertising rule (§124E.7(11), §124E.9(11): the department sets the restrictions).
+- **Strengthened reason, still held back:** Arkansas edibles. The DFA's compilation of the
+  amendment and rules gives no milligram limit either.
+- **Not reachable from this session:** New Mexico driving (§66-8-102; NMOneSource shows a bot
+  check) and Arkansas driving (§5-65-103; the Arkansas Code is not on an allowed host).
+
+The quick reference now holds 510 facts, 79 held back.
+
 ## Laws tab: advertising (20 Nov 2026)
 
 A tenth law topic: **advertising**, in `ADVERTISING` in `scripts/quick_reference_data.py`. You

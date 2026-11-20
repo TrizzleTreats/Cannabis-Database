@@ -788,9 +788,11 @@ LAW_MORE = {
         "public_use": F("Smoking marijuana in a public place or open space is a petty offence.",
                         "A.R.S. §36-2853(C)",
                         "https://www.azleg.gov/viewdocument/?docName=https://www.azleg.gov/ars/36/02853.htm"),
-        "employment": NOT_CONFIRMED("Registered patients have a qualified protection against discrimination, "
-                                    "but the report quotes it from a secondary source, still to be checked "
-                                    "against the official statute.", "A.R.S. §36-2813"),
+        "employment": F("Registered medical patients: an employer may not penalise a person for being a "
+                        "cardholder, or for a positive test, unless the patient used, possessed or was "
+                        "impaired by marijuana at work or during working hours, or the employer would lose a "
+                        "federal benefit.", "A.R.S. §36-2813(B)", "https://www.azleg.gov/ars/36/02813.htm",
+                        note=CHK),
     },
     "AR": {
         "public_use": F("Patients may not use medical marijuana in a public place, on public transport "
@@ -1007,9 +1009,11 @@ LAW_MORE = {
     "NV": {
         "public_use": F("Public consumption is a misdemeanor (fine up to $600), except inside a licensed "
                         "consumption lounge.", "NRS 678D.310(3)", "https://www.leg.state.nv.us/nrs/NRS-678D.html"),
-        "employment": NOT_CONFIRMED("Nevada restricts pre-employment marijuana screening (NRS 613.132), but the "
-                                    "report quotes it from the bill's text, still to be checked against the "
-                                    "codified statute.", "NRS 613.132"),
+        "employment": F("An employer may not refuse to hire someone because a pre-employment test shows "
+                        "marijuana, except for firefighters, EMTs, driving jobs that require testing, roles the "
+                        "employer judges could affect others' safety, and where federal law or a contract "
+                        "conflicts. A new hire tested in the first 30 days may take a second test to rebut it.",
+                        "NRS 613.132", "https://www.leg.state.nv.us/NRS/NRS-613.html", note=CHK),
     },
     "NH": {
         "public_use": F("Patients may use it on private property only. Smoking or vaping in any public "
@@ -1035,9 +1039,13 @@ LAW_MORE = {
                         "and carries a $50 civil penalty. The regulator says cannabis may only be "
                         "consumed at a licensed consumption lounge or at a private residence.",
                         "NMSA §26-2C-26(A)-(B)", NM_PDF, note=NM_NOTE),
-        "employment": NOT_CONFIRMED("Medical patients have an employment protection (§26-2B-9), but the report "
-                                    "quotes it from a search-index excerpt, still to be checked against the "
-                                    "official statute.", "NMSA §26-2B-9"),
+        "employment": F("Medical patients: no adverse action against an applicant or employee for conduct the "
+                        "medical cannabis law allows, unless the employer would lose a federal benefit. Employers "
+                        "may still act on use or impairment at work or during working hours, and the protection "
+                        "does not cover safety-sensitive positions.", "NMSA §26-2B-9",
+                        "https://www.rld.nm.gov/wp-content/uploads/2023/08/ARTICLE-2B-Lynn-and-Erin-Compassionate-Use-Act-_-Chapter-26-Drugs-and-Cosmetics.pdf",
+                        note="From the Regulation and Licensing Department's own copy of the Act (posted August "
+                             "2023). " + CHK),
     },
     "NY": {
         "public_use": NOT_CONFIRMED("The report's account of where consumption is allowed (Penal Law §222.10) "
@@ -1358,8 +1366,11 @@ MEDICAL = {
             "months, severe nausea, seizures or severe persistent muscle spasms; or a condition the "
             "Department of Health approves.", "Ark. Const. amend. 98 §2(13)",
             "https://www.dfa.arkansas.gov/office/medical-marijuana-commission/"),
-    "AZ": NOT_CONFIRMED("The report confirms the statutory list only from a mirror of the statute; the "
-                        "official text on azleg.gov was not opened.", "A.R.S. §36-2801"),
+    "AZ": F("Cancer, glaucoma, HIV or AIDS, hepatitis C, ALS, Crohn's disease or agitation of Alzheimer's "
+            "disease; a chronic or debilitating condition that produces cachexia or wasting, severe and chronic "
+            "pain, severe nausea, seizures, or severe and persistent muscle spasms; or a condition the "
+            "Department of Health Services adds.", "A.R.S. §36-2801", "https://www.azleg.gov/ars/36/02801.htm",
+            note="Which conditions the department has added (such as PTSD) is not yet confirmed. " + CHK),
     "CA": F("A physician's recommendation for cancer, anorexia, AIDS, chronic pain, spasticity, glaucoma, "
             "arthritis, migraine, \"or any other illness for which marijuana provides relief\". The state "
             "medical ID card is voluntary.", "Health & Safety Code §11362.5; §11362.71(f)",
@@ -1552,8 +1563,9 @@ EDIBLES = {
     "AL": F("No food edibles: products baked, mixed or infused into food, such as cookies or candies, are "
             "banned. Oral forms are tablets, capsules, tinctures and non-sugar-coated gelatin cubes or "
             "lozenges.", "Ala. Code §20-2A-3(14)", "https://amcc.alabama.gov/patients/"),
-    "AR": NOT_CONFIRMED("A 100 mg per-package edible limit appears only in a secondary source; the report "
-                        "found it in no official text.", "Ark. Const. amend. 98"),
+    "AR": NOT_CONFIRMED("A 100 mg per-package edible limit appears only in a secondary source. Neither the "
+                        "report nor the DFA's compilation of the amendment and rules (read 20 Nov 2026) gives "
+                        "an edible milligram limit.", "Ark. Const. amend. 98"),
     "AZ": F("No more than 10 mg of THC per serving and 100 mg per package, delineated or scored into "
             "servings.", "A.R.S. §36-2854", "https://www.azleg.gov/ars/36/02854.htm"),
     "CA": F("No more than 10 mg of THC per serving, in standardised servings.", "MAUCRSA, as the AB 2532 "
@@ -1744,7 +1756,9 @@ ADVERTISING = {
     "DC": NOT_CONFIRMED("The D.C. Code's bans on child-appealing packaging and marketing are confirmed, but the advertising regulations (22-C DCMR ch. 58) were not opened."),
     "GA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
     "HI": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
-    "IA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "IA": F("Manufacturers and dispensaries must follow the restrictions the Department of Health and Human "
+            "Services sets on signage, marketing, display and advertising.", "Iowa Code §124E.7(11), §124E.9(11)",
+            IA_URL, note="The department's restrictions themselves are not yet confirmed. " + CHK),
     "IL": NOT_CONFIRMED("The report confirms only a ban on misleading or copy-cat marketing (SB 3222, from the Governor's release), not the Act's advertising rules."),
     "KY": NOT_CONFIRMED('The report confirms only that 915 KAR chapter 1 covers advertising, not what the rules require.'),
     "LA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
