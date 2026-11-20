@@ -374,11 +374,12 @@ QUICK = {
     },
     "MS": {
         "possession": F("Residents with a registry card: 28 MMCEUs, and may buy 24 per 30 days "
-                        "(1 MMCEU is 3.5 g of flower). Visiting cardholders: 14. For anyone else, "
-                        "30 g or less on a first conviction is a fine only; it is not legal.",
-                        "Mississippi Medical Cannabis Act (SB 2095, 2022); Miss. Code §41-29-139(c)", "https://www.mmcp.ms.gov/"),
-        "home_grow": F("Not allowed, including for patients.", "Miss. Code §41-137-1 et seq.",
-                       "https://www.mmcp.ms.gov/"),
+                        "(1 MMCEU is 3.5 g of flower). Visiting cardholders: 14. For anyone else it is "
+                        "not legal.", "Mississippi Medical Cannabis Act (SB 2095, 2022)", "https://www.mmcp.ms.gov/",
+                        note="The penalty for a small amount without a card is not shown: the report reads "
+                             "it only from a Justia copy of the Code."),
+        "home_grow": NOT_CONFIRMED("The report's statement that home grow is not allowed rests only on a "
+                                   "Justia copy of the Code (§41-137-39).", "Miss. Code §41-137-39"),
         "state_tax": F("5% excise on a cultivator's first sale of flower or trim, and the 7% "
                        "state sales tax on retail sales to cardholders.",
                        "Miss. Code §27-72-1(2)-(3)", "https://www.mmcp.ms.gov/"),
@@ -616,8 +617,8 @@ QUICK = {
                         "Tenn. Code §39-17-418; §39-17-402(16)", "",
                         note="The audited report cites the Tennessee Code, but no official link for it "
                              "was captured."),
-        "home_grow": F("Not allowed: growing is \"production\", charged as manufacture.",
-                       "Tenn. Code §§39-17-402(24), 39-17-417", "",
+        "home_grow": F("Not allowed: there is no legal way to grow marijuana.",
+                       "Tenn. Code §39-17-402(16)", "",
                        note="The audited report cites the Tennessee Code, but no official link for it "
                             "was captured."),
         "state_tax": F("No marijuana tax: there is no legal sale to tax. Hemp-derived cannabinoid "
@@ -713,10 +714,10 @@ QUICK = {
                        "Wis. Stat. ch. 961", "https://hemp.wi.gov/"),
     },
     "WY": {
-        "possession": F("Not legal. Up to 3 oz of plant form is a misdemeanor; more is a felony.",
-                        "W.S. 35-7-1031(c)(i)", "",
+        "possession": F("Not legal in any amount.", "W.S. 35-7-1031(c)", "",
                         note="The audited report cites the Wyoming statutes, but no official link for "
-                             "them was captured."),
+                             "them was captured. The penalty tiers are not shown: the report reads them "
+                             "only from a FindLaw copy."),
         "home_grow": F("Not allowed.", "W.S. 35-7-1031", "",
                        note="The audited report cites the Wyoming statutes, but no official link for "
                             "them was captured."),
@@ -849,9 +850,9 @@ LAW_MORE = {
         "public_use": F("Vaping or otherwise heating medical cannabis in a public place is prohibited.",
                         "O.C.G.A. §16-12-234(a)(3)", "https://dph.georgia.gov/low-thc-oil-registry/patients-and-caregivers",
                         note="That section does not ban every form of public use; it targets vapour-producing devices."),
-        "employment": F("No protection: employers may keep zero-tolerance policies, including for "
-                        "off-duty use and detectable amounts at work.", "O.C.G.A. §16-12-191(e)",
-                        "https://dph.georgia.gov/low-thc-oil-registry/patients-and-caregivers"),
+        "employment": NOT_CONFIRMED("The report finds no employment protection (§16-12-191(e)), but that "
+                                    "reading rests only on a Justia copy of the Code; the report lists the "
+                                    "live legis.ga.gov text as still unverified.", "O.C.G.A. §16-12-191(e)"),
     },
     "HI": {
         "public_use": F("Patients may not smoke or vape in public, in a vehicle, at work, on school "
@@ -955,13 +956,13 @@ LAW_MORE = {
                         "https://www.revisor.mn.gov/statutes/cite/342"),
     },
     "MS": {
-        "public_use": F("Patients may not smoke, vape or inhale medical cannabis in a public place or a "
-                        "motor vehicle. A private dwelling is not a public place, and a property holder "
-                        "may allow use on the property.", "Miss. Code §41-137-13(2); §41-137-3(gg); §41-137-19(3)",
-                        "https://www.mmcp.ms.gov/"),
-        "employment": F("No meaningful protection: employers need not accommodate patients and may refuse "
-                        "to hire, discipline or dismiss for medical cannabis use.",
-                        "Miss. Code §41-137-13(1)(b)-(f)", "https://www.mmcp.ms.gov/"),
+        "public_use": NOT_CONFIRMED("The report's reading of the public-use rules (§41-137-13(2), "
+                                    "§41-137-3(gg)) rests only on a Justia copy of the Code; the report "
+                                    "says every §41-137 quotation does, unless an official bill text "
+                                    "corroborates it.", "Miss. Code §41-137-13(2)"),
+        "employment": NOT_CONFIRMED("The report finds no employment protection (§41-137-13(1)(b)-(f)), "
+                                    "but reads it only from Justia and FindLaw copies of the Code.",
+                                    "Miss. Code §41-137-13(1)"),
     },
     "MO": {
         "public_use": F("The constitution does not allow public use; smoking in public draws a civil fine.",
@@ -1209,13 +1210,10 @@ DRIVING = {
             "https://oag.dc.gov/public-safety/driving-under-influence/marijuana-and-impaired-driving"),
     "FL": F("Impairment-based: no per se THC limit; the only per se limit is for alcohol.", "Fla. Stat. §316.193(1)",
             "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0381/Sections/0381.986.html"),
-    "GA": F("No numeric THC blood limit. Driving under the influence of any drug to the extent it is less "
-            "safe to drive is DUI. The statute also covers any amount of marijuana in the blood or urine, "
-            "but the Georgia Supreme Court substantially narrowed that provision (Love v. State, 1999).",
-            "O.C.G.A. §40-6-391(a)(2), (a)(6), (b); Love v. State, 271 Ga. 398",
-            "https://dph.georgia.gov/low-thc-oil-registry/patients-and-caregivers",
-            note="A registry card is not a defence to a DUI charge. How the any-amount provision is "
-                 "charged today is not confirmed."),
+    "GA": NOT_CONFIRMED("The report's reading of §40-6-391 (no numeric THC limit; the any-amount provision "
+                        "narrowed by Love v. State) rests only on a Justia copy of the Code; the report "
+                        "lists the live legis.ga.gov text as still unverified.",
+                        "O.C.G.A. §40-6-391"),
     "HI": F("Impairment-based: no per se THC limit; the test is whether ability to drive carefully is impaired.",
             "HRS §291E-61(a)", "https://health.hawaii.gov/medicalcannabisregistry/general-information/marijuana-laws-and-related-documents/"),
     "ID": F("Impairment-based: no THC concentration, nanogram limit or metabolite threshold.", "Idaho Code §18-8004",
@@ -1248,8 +1246,8 @@ DRIVING = {
     "MN": F("Impairment-based: the \"any amount\" drug offence expressly excludes cannabis, so cannabis is "
             "charged under the impairment clause.", "Minn. Stat. §169A.20, subd. 1(7)-(8)",
             "https://www.revisor.mn.gov/statutes/cite/342"),
-    "MS": F("Impairment-based: no per se THC limit, and the impairment rule applies to registered patients too.",
-            "Miss. Code §63-11-30", "https://www.mmcp.ms.gov/"),
+    "MS": NOT_CONFIRMED("The report reads §63-11-30 only from a Justia copy, and lists the per se question "
+                        "among the sections it did not open.", "Miss. Code §63-11-30"),
     "MO": F("Impairment-based: a conviction needs evidence of actual influence, not THC or metabolites alone.",
             "Mo. Const. art. XIV §2.3(1)(d)",
             "https://revisor.mo.gov/main/OneSection.aspx?section=XIV%20Section%202&bid=51541"),
@@ -1292,8 +1290,8 @@ DRIVING = {
             "S.C. Code §56-5-2930(A)", "https://www.scstatehouse.gov/code/t44c053.php"),
     "SD": F("No per se THC limit for adults, and a medical card gives no driving immunity. Drivers under 21: "
             "zero tolerance.", "SDCL §32-23-1; §32-23-21", "http://sdlegislature.gov/api/Statutes/34-20G.html"),
-    "TN": F("Impairment-based: no per se THC limit.", "Tenn. Code §55-10-401(a)(1)", "",
-            note="The audited report cites the Tennessee Code, but no official link for it was captured."),
+    "TN": NOT_CONFIRMED("The report reads §55-10-401 only from a Justia copy and says its Code links are "
+                        "reproductions, to be checked against the official text.", "Tenn. Code §55-10-401"),
     "TX": NOT_CONFIRMED("The report describes DWI as impairment-based, but marks its per se detail "
                         "unverified, resting on secondary summaries.", "Texas Penal Code ch. 49"),
     "UT": F("Zero tolerance: any measurable controlled substance or metabolite is an offence, without proof of "
@@ -1313,9 +1311,8 @@ DRIVING = {
     "WI": F("Driving with 1 ng/mL or more of delta-9 THC in the blood is an offence; metabolites alone do not "
             "count. Impaired driving is a separate offence.", "Wis. Stat. §346.63(1)(am); §340.01(50m)(e)",
             "https://docs.legis.wisconsin.gov/document/acts/2019/68,54n"),
-    "WY": F("Impairment-based: no per se THC limit, and lawful use elsewhere is no defence.",
-            "W.S. 31-5-233(b)(iii), (d)", "",
-            note="The audited report cites the Wyoming statutes, but no official link for them was captured."),
+    "WY": NOT_CONFIRMED("The report reads §31-5-233 only from Justia and FindLaw copies of the statutes.",
+                        "W.S. 31-5-233"),
 }
 
 for _code, _fact in DRIVING.items():

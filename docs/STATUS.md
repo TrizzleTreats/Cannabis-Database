@@ -332,6 +332,38 @@ reference (official link, citation guard, figure guard). The table now holds 408
   Checked in headless Chromium for California, Ohio, Nebraska, Texas (held back), Idaho and Wyoming
   on a phone, with no page errors and no sideways scroll. verify.py passes.
 
+## Quick reference: facts that rested only on Justia or FindLaw copies (20 Nov 2026)
+
+CLAUDE.md: "News, blogs, law firms, Justia, FindLaw, LegiScan and Wikipedia are never a source of
+truth." Holding back the medical lists that came from mirror copies raised the same question for
+facts already published. Several audit rows mark a statement "Confirmed" when the text was read
+from a Justia republication, and the official link on the site was a programme page that does not
+itself state the fact. Four reports say so outright, and those were reviewed fact by fact:
+
+- **Georgia**: the report lists the live legis.ga.gov text of §§16-12-*, 16-13-*, 31-2A-18 and
+  40-6-391 as still unverified. Employment (§16-12-191(e)) and driving (§40-6-391) were confirmed
+  only from Justia: **now held back**. Possession, home grow, public use and the medical list rest
+  on DPH and GMCC pages and stay.
+- **Mississippi**: "every §41-137, §41-29, §27-72-1 … quotation rests on Justia/FindLaw
+  reproductions except where an official bill text corroborates it." Home grow, public use,
+  employment and driving: **now held back**. Possession keeps the cardholder limits (MMCP and
+  SB 2748) but drops the penalty for a small amount without a card. Tax (Department of Revenue,
+  SOS rules) and regulator stay.
+- **Tennessee**: the report says its Code links are reproductions, "never … official Code
+  citations". Driving: **now held back**. Home grow drops the "production" detail. The rest follow
+  from the legal status the map already shows (no programme, so nothing to grow, use or protect).
+- **Wyoming**: possession tiers and driving were read from FindLaw and Justia. Driving: **now held
+  back**. Possession drops the 3 oz misdemeanour line and says why in its note.
+
+The quick reference now holds 408 facts, 38 held back, 11 without an official link. **Still to
+review by hand** (not known to be wrong): facts whose cited sections a report lists among those it
+did not open in official text. These are Arkansas driving (§5-65-103) and public use (Act 271),
+Arizona public use (§36-2853), Delaware's Ch. 49A citations (OMC confirms the possession limits
+themselves), Florida driving (§316.193, "partly resolved"), Iowa possession and public use (Code
+2026 not re-opened), New Mexico possession, home grow, tax and public use (NMOneSource "direct
+opens"), and Nevada tax (§372A.290). For each, the question is whether the official page the
+fact links to states the fact itself.
+
 ## Business tab per state, and the glossary (20 Nov 2026)
 
 - **The Business tab now lists the directory's businesses for each state.** The directories' service
