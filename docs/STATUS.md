@@ -31,7 +31,7 @@
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They now cover nine facts per state (possession, home grow, tax, regulator, where it may be used, employment, driving, who qualifies for medical use, and edibles); advertising, wider packaging rules, pending bills and local taxes are still to come, and each tab says so.
+8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They now cover ten facts per state (possession, home grow, tax, regulator, where it may be used, employment, driving, who qualifies for medical use, edibles and advertising); wider packaging rules, pending bills and local taxes are still to come, and each tab says so.
 
 9. **Turn on the daily update** — BUILT 19 Nov 2026, NOT YET RUNNING (see "The daily update" below). Three steps, all yours: merge to the default branch (scheduled workflows only run there); to publish the site, set Settings > Pages to "GitHub Actions" and add the repository variable `DEPLOY_SITE` = `true`; and check the first run's summary. GitHub Pages on a private repository needs a paid plan.
 
@@ -331,6 +331,42 @@ reference (official link, citation guard, figure guard). The table now holds 408
 - The Laws tab's "not covered yet" list is now: packaging and advertising, and pending bills.
   Checked in headless Chromium for California, Ohio, Nebraska, Texas (held back), Idaho and Wyoming
   on a phone, with no page errors and no sideways scroll. verify.py passes.
+
+## Laws tab: advertising (20 Nov 2026)
+
+A tenth law topic: **advertising**, in `ADVERTISING` in `scripts/quick_reference_data.py`. You
+chose (20 Nov) to publish only rules confirmed from an official source, the same as every other
+topic, although most states would show a gap. The quick reference now holds 510 facts.
+
+- **12 states with rules published, 8 with no legal market ("None"), 31 held back.** Most reports
+  name the advertising rule (a CMR chapter, an ARM or R number) without confirming what it requires,
+  or mark the detail "Verify".
+- **Read in the official text on 20 Nov 2026:**
+  - Arizona §36-2859: under-21 targeting ban, 73.6% audience rule, 1,000-ft billboard buffer,
+    warning.
+  - Arkansas 20 CAR §810-1701: 30%-under-18 audience cap, 1,000 ft from schools and daycares,
+    warnings.
+  - Delaware 4 Del.C. §1331(15)-(16): the Commissioner must restrict advertising; the regulation's
+    detail is unconfirmed.
+  - Florida §381.986(8)(h): nothing visible from public places except the dispensary sign; internet
+    ads Department-approved.
+  - New Mexico §26-2C-20: RLD's copy.
+  - Nevada NRS 678B.520(4): child-appeal ban. §678B.530 was also read, but it is not cited in the
+    audited report, so the citation guard keeps it off.
+- **From the report's confirmed rows:**
+  - Massachusetts 935 CMR 500.105(4) and the 2026 discount rule.
+  - Maine 28-B §702.
+  - Ohio ORC 3796.32: prior approval; billboard, broadcast and transit bans.
+  - Rhode Island 560-RICR-10-10-2 §2.8: 85% audience rule, 500 ft from schools.
+  - Utah §4-41a-109: a general ban.
+  - Washington WAC 314-55-155.
+- **Held back with a specific reason** where the report confirms only a fragment: California (a
+  2027 beverage provision), Illinois (SB 3222's copy-cat ban), Connecticut (discount ads),
+  Kentucky (the rule's scope only), New Jersey (71.6% from a reproduction), DC (packaging only),
+  Maryland (SB 594 changed the rules, not stated). The rest carry a general reason.
+- The Laws tab's "not covered yet" list is now: packaging and labelling beyond the edible limits,
+  and pending bills. Checked in headless Chromium for Arizona, Rhode Island, California (held
+  back) and Wyoming. verify.py passes.
 
 ## Laws tab: edibles (20 Nov 2026)
 

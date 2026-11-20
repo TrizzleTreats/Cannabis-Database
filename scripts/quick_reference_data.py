@@ -30,7 +30,7 @@ Written out by scripts/build_quick_reference.py to data/clean/quick_reference.cs
 """
 
 FIELDS = ["possession", "home_grow", "state_tax", "regulator", "public_use", "employment", "driving",
-          "medical", "edibles"]
+          "medical", "edibles", "advertising"]
 
 
 def F(text, cite, url, confirmed=True, note=""):
@@ -1673,3 +1673,109 @@ EDIBLES = {
 
 for _code, _fact in EDIBLES.items():
     QUICK[_code]["edibles"] = _fact
+
+
+# --------------------------------------------------------------------------------------
+# Advertising (added 20 Nov 2026). Published only where the rule is confirmed from an
+# official source: the report's own confirmed row, or the official text read online on
+# 20 Nov 2026 (AZ, AR, DE, FL, NM, NV). Most reports name the advertising rule without
+# confirming what it says; those states are held back with the reason.
+NO_ADS = "None: there is no legal marijuana market, so no marijuana advertising."
+NO_LINK_ADS = "The audited report cites the state's statutes, but no official link for them was captured."
+ADVERTISING = {
+    "AR": F("Dispensary ads may not be false or misleading, target children (cartoons, toys), show use, or "
+            "promote marijuana as an intoxicant, and must carry four warnings. No ads within 1,000 feet of a "
+            "school or daycare, on public transit or on public property; TV, radio, print and internet ads "
+            "only where no more than 30% of the audience is expected to be under 18. Cultivators may not "
+            "advertise to the public.", "ABC medical marijuana rules, Subpart 17",
+            "https://www.dfa.arkansas.gov/wp-content/uploads/Medical_Marijuana_Rules_1.pdf", note=CHK),
+    "AZ": F("No advertising aimed at under-21s (cartoons, imitation food brands, scenes of use, THC potency). "
+            "Online and social-media ads only where at least 73.6% of the audience is 21 or over. No ads at "
+            "public airports or on public transport, and no untrue health claims. No billboards within 1,000 "
+            "feet of a school, child care centre, church, recovery facility, park or playground. Every ad "
+            "carries a set warning.", "A.R.S. §36-2859", "https://www.azleg.gov/ars/36/02859.htm", note=CHK),
+    "DE": F("The Commissioner must restrict advertising, marketing and signage, including a ban on mass-market "
+            "campaigns likely to reach minors, and products may not be displayed so they are visible from a "
+            "public right-of-way.", "4 Del.C. §1331(15)-(16)",
+            "https://delcode.delaware.gov/title4/c013/sc03/index.html",
+            note="The detailed rules are in the Commissioner's regulations, not yet confirmed. " + CHK),
+    "FL": F("No advertising visible from any street, sidewalk, park or other public place, except a sign on the "
+            "dispensary naming it. Internet ads must be approved by the Department, may not attract children "
+            "or promote recreational use, and may not be unsolicited pop-ups.", "Fla. Stat. §381.986(8)(h)",
+            "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0381/Sections/0381.986.html",
+            note=CHK),
+    "MA": F("Ads only where at least 85% of the audience is reasonably expected to be 21 or over, with set "
+            "warnings. No price advertising or free promotional items; since 2026 discounts may be advertised "
+            "only inside the store or by opt-in email, not on websites.", "935 CMR 500.105(4); St. 2026, c. 65",
+            "https://masscannabiscontrol.com/2026/09/bulletin-advertising-compliance-regard"),
+    "ME": F("No health-benefit claims, unsolicited internet ads, or opt-in ads without an easy permanent "
+            "opt-out. No signs or ads within 1,000 feet of a school; a town may reduce this to no less than "
+            "500 feet.", "28-B M.R.S. §702", "https://mainelegislature.org/statutes/28-B/title28-Bsec402.html"),
+    "NM": F("No broadcast, internet pop-up or mass-transit ads (except to subscribers who are 21 or over), no "
+            "false or unproven health claims, no billboards or posters within 300 feet of a school, daycare "
+            "or church, and no cartoons or people who look under 21. Print and digital ads only where the "
+            "audience is reasonably expected to be 21 or over.", "NMSA §26-2C-20", NM_PDF, note=NM_NOTE),
+    "NV": F("No advertising that in any way makes cannabis appeal to children (cartoons, mascots, toys, fruit "
+            "and similar images).", "NRS 678B.520(4)",
+            "https://www.leg.state.nv.us/NRS/NRS-678B.html",
+            note="The Cannabis Compliance Board's own advertising rules are not yet confirmed. " + CHK),
+    "OH": F("Every ad needs the Division of Cannabis Control's written approval first. No billboards, radio, TV "
+            "or internet programming, public transit, stadiums or arenas, or publicly owned property, and no "
+            "promotions. Websites must check age (18 for patients, 21 for adult use).",
+            "ORC 3796.32; OAC 1301:18-4-22", "https://codes.ohio.gov/ohio-revised-code/section-3796.32"),
+    "RI": F("Online (age-gated), broadcast, print and outdoor ads are allowed if at least 85% of the audience is "
+            "reasonably expected to be 21 or over, with the universal symbol, licence number and \"For Ages 21+ "
+            "and medical cannabis patients\". No therapeutic claims, nothing aimed at or attractive to minors, "
+            "no showing use, and nothing within 500 feet of a K-12 school.", "560-RICR-10-10-2 §2.8",
+            "https://ccc.ri.gov/media/3386/download?language=en"),
+    "UT": F("Advertising medical cannabis is banned in general: no ads for discounts or incentives, particular "
+            "products, brands or dosage forms, or promises of medical outcomes. Narrow exceptions apply.",
+            "Utah Code §4-41a-109", "https://le.utah.gov/xcode/Title4/Chapter41A"),
+    "WA": F("No false, misleading or therapeutic claims, no promoting overconsumption, and nothing that appeals "
+            "to young people. No ads within 1,000 feet of the sites the rule protects (a local ordinance may "
+            "reduce this). Ads must say they are for 21 and over, may not target other states, no giveaways, "
+            "and no coupons below cost.", "WAC 314-55-155",
+            "https://app.leg.wa.gov/wac/default.aspx?cite=314-55-155"),
+    "AK": NOT_CONFIRMED('The report names the advertising regulation (3 AAC 306.360) but marks its current text, and the 2026 replacement drafts, as unverified.'),
+    "AL": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "CA": NOT_CONFIRMED('The report confirms only a 2027 beverage-advertising provision (AB 2532); the general advertising rules are not confirmed from official text.'),
+    "CO": NOT_CONFIRMED('The report takes the advertising rules (the Rule 3-700 series) from a reproduction; they were not opened in official text.'),
+    "CT": NOT_CONFIRMED('The report confirms only a narrow rule against advertising discounted prices, not the general advertising rules.'),
+    "DC": NOT_CONFIRMED("The D.C. Code's bans on child-appealing packaging and marketing are confirmed, but the advertising regulations (22-C DCMR ch. 58) were not opened."),
+    "GA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "HI": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "IA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "IL": NOT_CONFIRMED("The report confirms only a ban on misleading or copy-cat marketing (SB 3222, from the Governor's release), not the Act's advertising rules."),
+    "KY": NOT_CONFIRMED('The report confirms only that 915 KAR chapter 1 covers advertising, not what the rules require.'),
+    "LA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "MD": NOT_CONFIRMED('The report confirms that SB 594 (2026) changed the advertising rules but does not set out the rules themselves.'),
+    "MI": NOT_CONFIRMED('The report names the advertising rule but does not confirm what it requires.'),
+    "MN": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "MS": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "MO": NOT_CONFIRMED('The report keeps the dispensary advertising rule (19 CSR 100-1.100(5)) flagged for verification.'),
+    "MT": NOT_CONFIRMED('The report names the advertising rule (ARM 42.39.123) but does not confirm what it requires.'),
+    "ND": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "NE": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "NH": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "NJ": NOT_CONFIRMED('The 71.6% audience rule is read from a reproduction of N.J.A.C. 17:30-17.2, and the report says not to present it without a caveat.'),
+    "NY": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "OK": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "OR": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "PA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "SD": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "TX": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "VA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "VT": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "WV": NOT_CONFIRMED("The report's citation (§16A-3-1(a)(14)) was not re-opened in its audit."),
+    "ID": F(NO_ADS, 'Idaho Code §37-2701 et seq.', 'https://legislature.idaho.gov/statutesrules/idstat/Title37/T37CH27/SECT37-2701'),
+    "IN": F(NO_ADS, 'Ind. Code art. 35-48 (marijuana now defined at IC 35-48-1.1-29)', 'https://public.courts.in.gov/Decisions/api/Document/Opinion?Id=DmYIl2h3bOKWWdQQvJyPZ_rjZgo14Y_LmDtP2-HSBr7Uf3wsJD127SUP1Lq0Mzh20'),
+    "KS": F(NO_ADS, 'K.S.A. 65-4101(aa) and 21-5706', 'https://kslegislature.gov/li_2022/b2021_22/statute/065_000_0000_chapter/065_041_0000_article/065_041_0001_section/065_041_0001_k/'),
+    "NC": F(NO_ADS, 'N.C.G.S. 90-87(16), 90-94 (Schedule VI), 90-95', 'https://ncleg.gov/EnactedLegislation/SessionLaws/HTML/2021-2022/SL2022-32.html'),
+    "SC": F(NO_ADS, 'S.C. Code §44-53-110(27), §44-53-370', 'https://www.scstatehouse.gov/code/t44c053.php'),
+    "TN": F(NO_ADS, 'Tenn. Code §39-17-402(16) and Schedule VI', '', note=NO_LINK_ADS),
+    "WI": F(NO_ADS, 'Wis. Stat. ch. 961 (§961.41', 'https://docs.legis.wisconsin.gov/document/acts/2019/68,54n'),
+    "WY": F(NO_ADS, 'Wyoming Controlled Substances Act, W.S. 35-7-1001 et seq. (35-7-1031(c))', '', note=NO_LINK_ADS),
+}
+
+for _code, _fact in ADVERTISING.items():
+    QUICK[_code]["advertising"] = _fact
