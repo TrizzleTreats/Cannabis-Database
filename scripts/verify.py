@@ -713,6 +713,32 @@ else:
         check(not drift, "the site shows the facts the table holds",
               f"({drift[:5]}) — run python3 scripts/build_site_data.py" if drift else "")
 
+head("Market: every published figure is confirmed, sourced and in its report")
+p = ROOT / "data/clean/market.csv"
+if not p.exists():
+    check(False, "data/clean/market.csv exists", "run python3 scripts/build_market.py")
+else:
+    import build_market as bmk
+    expected, problems = bmk.build()
+    check(not problems, "every figure is confirmed with a source, or unconfirmed with no text and a "
+          "reason, and every number in it appears in its own report",
+          f"({problems[:2]})" if problems else f"{len(expected)} facts")
+    have = list(csv.DictReader(open(p, encoding="utf-8")))
+    by_key = {(h["state"], h["fact"]): h for h in have}
+    stale = [f"{r['state']}.{r['fact']}" for r in expected if by_key.get((r["state"], r["fact"])) != r]
+    check(len(have) == len(expected) and not stale, "market.csv matches its source",
+          f"stale: {stale[:5]} — run python3 scripts/build_market.py" if stale else "")
+    built = ROOT / "site/data/market.json"
+    if built.exists():
+        site_m = json.loads(built.read_text(encoding="utf-8"))["states"]
+        leaked = [f"{r['state']}.{r['fact']}" for r in have if r["confirmed"] != "Y"
+                  and site_m.get(r["state"], {}).get(r["fact"], {}).get("text")]
+        drift = [f"{r['state']}.{r['fact']}" for r in have
+                 if (site_m.get(r["state"], {}).get(r["fact"], {}).get("text") or "") != r["text"]]
+        check(not leaked, "no unconfirmed market figure reaches the site", str(leaked[:5]) if leaked else "")
+        check(not drift, "the site shows the market figures the table holds",
+              f"({drift[:5]}) — run python3 scripts/build_site_data.py" if drift else "")
+
 head("Result")
 if fails:
     print("  FAILED: " + "; ".join(fails))

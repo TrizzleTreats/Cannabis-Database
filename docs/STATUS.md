@@ -31,9 +31,11 @@
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below). Still to build: the Market tab. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They cover four facts per state; the rest of the law (public consumption, driving, employment, packaging, pending bills, local taxes) is still to come, and each tab says so.
+8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They cover four facts per state; the rest of the law (public consumption, driving, employment, packaging, pending bills, local taxes) is still to come, and each tab says so.
 
 9. **Turn on the daily update** — BUILT 19 Nov 2026, NOT YET RUNNING (see "The daily update" below). Three steps, all yours: merge to the default branch (scheduled workflows only run there); to publish the site, set Settings > Pages to "GitHub Actions" and add the repository variable `DEPLOY_SITE` = `true`; and check the first run's summary. GitHub Pages on a private repository needs a paid plan.
+
+10. **Approve one official host: knowthefactsmmj.com** (the Florida Department of Health's medical marijuana site, where OMMU publishes its weekly update). Florida's patient count (943,271, 23 Oct 2026) comes from it, but the host is not on domains/all-domains.txt, and adding it also needs a `WebFetch(domain:knowthefactsmmj.com)` rule in .claude/settings.json, which the session was not permitted to edit. Until then the figure shows with "no official link captured yet" and a note naming the source. Once added, put the URL back in scripts/market_data.py (FL.patients) and rebuild.
 
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
@@ -233,6 +235,44 @@ villages" below. The Census geocoder's County Subdivisions layer resolves a vill
 municipality at address level, which beat the village-level assumption: 56 River Rd, Cornwall
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
+
+## The Market tab (20 Nov 2026)
+
+Each state page's Market tab now shows two official figures: **the size of the legal market** in
+whatever measure the state publishes, and **registered medical patients**. Both are in
+`scripts/market_data.py`, and `scripts/build_market.py` writes them to `data/clean/market.csv`.
+
+- **Mostly taken from rows of the audit tables marked Confirmed or Corrected, with an official
+  source**, so each figure carries the audit's own verdict. 34 market figures and 34 patient
+  figures are published; 17 of each are held back.
+  - **Held back because the audit marks them Unverified or secondary-only:** for example
+    California's annual sales ("do not use": they do not reconcile with CDTFA's quarterly
+    figures), Arkansas, Michigan, Oregon, Washington and Maryland sales, and Texas, Michigan,
+    Minnesota and Missouri patient counts.
+  - **Held back because no official figure exists yet:** for example Alabama, which began
+    sales in June 2026.
+
+  A held-back fact shows "not yet confirmed" and the reason, never the figure.
+- **Measures are never mixed or converted.**
+  - Where a state publishes tax collected rather than sales (Arizona, Oklahoma, Vermont,
+    Hawaii, California's quarter), the figure says so. Oklahoma's sales are not back-computed
+    from its 7% excise, because that is arithmetic, not an OMMA figure.
+  - Rhode Island's "combined sales" adds wholesale to retail, so the retail figure is shown
+    and the difference explained.
+  - Pennsylvania's $9.6B is cumulative since 2018 and says so.
+  - Ohio's 476,589 registered patients are shown beside the 73,396 who had an active
+    registration and recommendation.
+  - A month, a quarter or nine months is labelled as such. The tab warns that figures from
+    different states are not comparable side by side.
+- **A number guard.** The build refuses any figure whose numbers do not appear verbatim in
+  that state's own audited report. Tested by changing one digit in Colorado's sales and one in
+  New Jersey's patients: both rejected.
+- **One link withheld:** Florida's patient count comes from knowthefactsmmj.com (the Department of
+  Health's site), which is not yet on the official-domain list (item 10).
+- `verify.py` checks the table and that the site matches it. `update_all.py` runs
+  `build_market.py` daily. Checked in headless Chromium: Colorado, Oklahoma (tax, not sales),
+  Texas (both held back), Florida (no link), Idaho (no market) and Alaska on a phone. No errors.
+  Also fixed: an unknown `?tab=` used to call a removed function; it now opens the Overview.
 
 ## Town pages and local rules (20 Nov 2026)
 

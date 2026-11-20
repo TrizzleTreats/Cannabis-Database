@@ -339,6 +339,22 @@ def main():
                  "date it was checked. confirmed=N facts are deliberately shown without text.",
          "states": quick}, args.dry_run)
 
+    # Market facts per state (scripts/build_market.py), on the same terms as the
+    # quick reference: an unconfirmed fact is published only as its reason.
+    market = collections.defaultdict(dict)
+    for r in rows_of("market.csv"):
+        if r["confirmed"] != "Y" and r["text"]:
+            sys.exit(f"market.csv: {r['state']}.{r['fact']} is unconfirmed but carries text")
+        market[r["state"]][r["fact"]] = public(r, QUICK_PUBLIC)
+    if len(market) != 51:
+        sys.exit(f"market.csv covers {len(market)} jurisdictions, not 51 — "
+                 "run python3 scripts/build_market.py")
+    bytes_written["market"] = write(
+        OUT / "market.json",
+        {"note": "Official market measures and patient counts, each restating that state's audited "
+                 "report. confirmed=N facts are deliberately shown without text.",
+         "states": market}, args.dry_run)
+
     # Town-level local rules where a regulator publishes them: the Massachusetts CCC
     # municipal zoning tracker and Connecticut DCP's "Cannabis Zoning" dataset. The
     # regulator's own wording is kept verbatim; a blank stays a blank.

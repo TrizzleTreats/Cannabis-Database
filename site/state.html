@@ -32,26 +32,27 @@ const NAMES = { AL:"Alabama", AK:"Alaska", AZ:"Arizona", AR:"Arkansas", CA:"Cali
   VA:"Virginia", WA:"Washington", WV:"West Virginia", WI:"Wisconsin", WY:"Wyoming" };
 
 /* HANDOFF's state page has six tabs. Laws and Taxes carry the confirmed
-   quick-reference facts (data/clean/quick_reference.csv), each with its citation,
-   official source and the date its report was audited. Market rests on research
-   not yet turned into sourced statements, so it says so instead of showing an
-   empty frame that looks like "nothing here". */
+   quick-reference facts (data/clean/quick_reference.csv) and Market the official
+   market and patient figures (data/clean/market.csv), each with its source and the
+   date its report was audited. What a tab does not cover yet, it says so. */
 const TABS = [
   ["overview", "Overview", true],
   ["licences", "Licences", true],
   ["laws", "Laws", true],
   ["taxes", "Taxes", true],
   ["business", "Business", true],
-  ["market", "Market", false],
+  ["market", "Market", true],
 ];
 
 const q = new URLSearchParams(location.search);
 const code = (q.get("state") || "").toUpperCase();
 let tab = q.get("tab") || "overview";
-const [summary, quickAll, lawAll] = await Promise.all(
-  [loadJSON("summary.json"), loadJSON("quick_reference.json"), loadJSON("legal_status.json")]);
+const [summary, quickAll, lawAll, marketAll] = await Promise.all(
+  [loadJSON("summary.json"), loadJSON("quick_reference.json"), loadJSON("legal_status.json"),
+   loadJSON("market.json")]);
 const s = summary.states[code];
 const qf = quickAll.states[code] || {};
+const mf = marketAll.states[code] || {};
 const law = lawAll.states[code];
 // Declared before the first render(): render() runs during module evaluation, and a
 // const read before its line throws (the bug STATUS.md records for this page).
@@ -114,6 +115,7 @@ function render() {
     : "";
   if (tab === "laws") return laws(panel);
   if (tab === "taxes") return taxes(panel);
+  if (tab === "market") return market(panel);
   if (!s) {
     panel.replaceChildren(...(tab === "overview" ? [quickRef()] : []), el("div", { class: "panel" },
       el("p", {}, `This project holds no licence data for ${NAMES[code]} yet. `,
@@ -125,7 +127,7 @@ function render() {
   if (tab === "overview") return overview(panel);
   if (tab === "licences") return licences(panel);
   if (tab === "business") return business(panel);
-  return notYet(panel, tab);
+  return overview(panel);   // an unknown ?tab= falls back to the Overview
 }
 
 function stat(n, label) {
@@ -293,19 +295,23 @@ function taxes(panel) {
   );
 }
 
-function notYet(panel, which) {
-  const why = {
-    market: "sales, patient and operator counts published by the regulator",
-  }[which];
-  panel.replaceChildren(el("div", { class: "panel" },
-    el("h2", { style: "margin-top:0" }, "Not published yet"),
-    el("p", {}, `This tab will cover ${why}.`),
+function market(panel) {
+  panel.replaceChildren(
+    el("section", { class: "law-block" },
+      el("h2", { text: "Size of the legal market" }), ...factBody(mf.market, { full: true }).filter(Boolean)),
+    el("section", { class: "law-block" },
+      el("h2", { text: "Registered medical patients" }), ...factBody(mf.patients, { full: true }).filter(Boolean)),
     el("p", { class: "note" },
-      "It rests on the law rather than on licence data, and this project's rule is that every "
-      + "fact carries a source and a date. The research exists in the audited state report for "
-      + `${NAMES[code]}, but it has not been turned into sourced, dated statements yet, and `
-      + "showing an unsourced summary of the law would be worse than showing nothing. "
-      + "The licence data on the other tabs is complete and sourced.")));
+      "Each state publishes a different measure, for a different period: calendar-year sales, a "
+      + "fiscal year, one month, tax collected rather than sales, active cards rather than people. "
+      + "Each figure says exactly what it measures, and figures from different states are not "
+      + "comparable side by side. A figure the audit could not confirm from an official source is "
+      + "not shown."),
+    el("div", { class: "panel" },
+      el("p", { style: "margin:0" }, el("strong", { text: "Not covered yet: " }),
+        "prices, licence counts over time, hemp acreage, and sales by county. The audited report "
+        + "covers them; they are not yet turned into sourced, dated statements.")),
+  );
 }
 
 function table(headers, rows, cells) {

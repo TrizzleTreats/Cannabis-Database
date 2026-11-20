@@ -12,7 +12,7 @@ first failure, so a bad day never reaches the site.
   3. counties   fill_counties.py: geocode new addresses (cached), then apply,
                 canonicalise and validate, then resolve_independent_cities.py.
   4. types      add_standard_type.py --apply (the builders do not write it).
-  5. law        build_legal_status.py and build_quick_reference.py (hand-curated; they
+  5. law        build_legal_status.py, build_quick_reference.py and build_market.py (hand-curated; they
                 only change when someone edits their data files, but are re-checked).
   6. site       build_site_data.py: the public JSON, on its allowlist.
   7. verify     verify.py. A failure here fails the run.
@@ -53,6 +53,7 @@ STEPS = [
     ("review worksheet", ["build_review_worksheet.py"], None),
     ("legal status", ["build_legal_status.py"], None),
     ("quick reference", ["build_quick_reference.py"], None),
+    ("market", ["build_market.py"], None),
     ("site data", ["build_site_data.py"], None),
     ("verify", ["verify.py"], None),
 ]
