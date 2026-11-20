@@ -258,6 +258,12 @@ def main():
             "towns_by_county": {c: dict(collections.Counter(
                 r["town"] for r in rows if r["county"] == c and r["town"]).most_common())
                 for c in counties},
+            "towns_without_county": dict(collections.Counter(
+                r["town"] for r in rows if not r["county"] and r["town"]).most_common()),
+            # A Connecticut village's local rules are its municipality's; the row
+            # records which municipality (fill_counties.py, from the Census geocoder).
+            "municipality_of": {r["town"]: m.group(1) for r in rows
+                                if (m := re.search(r"municipality=([^;]+)", r["extra_details"]))},
             "rows_without_a_county": sum(1 for r in rows if not r["county"]),
             "programs": dict(collections.Counter(
                 r["program"] for r in rows if r["program"]).most_common()),
@@ -332,6 +338,28 @@ def main():
         {"note": "Each fact restates that state's audited report; report_last_audited is the "
                  "date it was checked. confirmed=N facts are deliberately shown without text.",
          "states": quick}, args.dry_run)
+
+    # Town-level local rules where a regulator publishes them: the Massachusetts CCC
+    # municipal zoning tracker and Connecticut DCP's "Cannabis Zoning" dataset. The
+    # regulator's own wording is kept verbatim; a blank stays a blank.
+    local = {"MA": {}, "CT": {}}
+    for r in rows_of("ma_towns.csv"):
+        local["MA"][r["town"]] = {
+            "adult_use": r["adult_use_status"], "delivery": r["delivery_status"],
+            "social_consumption": r["social_consumption_status"],
+            "source": "Cannabis Control Commission, municipal zoning tracker",
+            "source_url": r["source_url"], "data_as_of": r["data_as_of"]}
+    for r in rows_of("ct_towns.csv"):
+        local["CT"][r["town"]] = {
+            "municipal_law": r["status"],
+            "adopted": r["date_adopted"], "effective": r["date_effective"], "notes": r["notes"],
+            "source": "Department of Consumer Protection, Cannabis Zoning dataset (khc7-gd9u)",
+            "source_url": r["source_url"], "data_as_of": r["data_as_of"]}
+    bytes_written["local_rules"] = write(
+        OUT / "local_rules.json",
+        {"note": "Town-level rules as each regulator words them. Only MA and CT publish one.",
+         "states": {st: {t: {k: v for k, v in rec.items() if v} for t, rec in towns.items()}
+                    for st, towns in local.items()}}, args.dry_run)
 
     geo = us_map.build({r["state_name"]: r["state"] for r in legal})
     bytes_written["us_map"] = write(OUT / "us_map.json", geo, args.dry_run)

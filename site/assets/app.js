@@ -202,6 +202,7 @@ function licenceDetailParts(d, { heading = "h3" } = {}) {
       fact("Address", d.street_address && d.town
         && !d.street_address.toLowerCase().includes(d.town.toLowerCase())
         ? `${d.street_address}, ${d.town}` : (d.street_address || d.town)),
+      fact("Town", d.town ? el("a", { href: townHref(d.state, d.county, d.town) }, d.town) : ""),
       fact("County", county),
       fact("Town as listed", d.town_as_listed !== d.town ? d.town_as_listed : ""),
       fact("County source", d.county_source),
@@ -228,6 +229,10 @@ function licenceDetailParts(d, { heading = "h3" } = {}) {
    is navigation, and the counts are in the tooltip and the tables. */
 export const countyHref = (state, county) =>
   `county.html?state=${encodeURIComponent(state)}&county=${encodeURIComponent(county)}`;
+
+export const townHref = (state, county, town) =>
+  `town.html?state=${encodeURIComponent(state)}&county=${encodeURIComponent(county || "")}`
+  + `&town=${encodeURIComponent(town)}`;
 
 export function countyMap(cm, { counts = {}, highlight = null, link = true, label = "" } = {}) {
   const SVG = "http://www.w3.org/2000/svg";

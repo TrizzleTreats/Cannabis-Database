@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Town — US Cannabis &amp; Hemp Law</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main id="main">
+  <p class="crumbs" id="crumbs"></p>
+  <h2 id="title" style="margin-top:0">Town</h2>
+  <p class="note" id="lede"></p>
+  <div class="two-col">
+    <div id="body"><p class="loading">Loading…</p></div>
+    <aside id="side"></aside>
+  </div>
+</main>
+
+<script type="module">
+import { loadJSON, fmt, el, mountFooter, mountTopbar, statusBadge, profileHref,
+         countyMap, countyHref, townHref } from "./assets/app.js";
+
+mountTopbar(document.body, "town.html");
+mountFooter(document.body);
+
+/* HANDOFF's local page: quick facts, local rules, database link. A town is keyed
+   by state AND county, because the same town name repeats across counties
+   (CLAUDE.md: always store the county for same-name places). Local rules are
+   shown only where a regulator publishes them town by town (Massachusetts and
+   Connecticut), in the regulator's own words. */
+const q = new URLSearchParams(location.search);
+const state = (q.get("state") || "").toUpperCase();
+const county = q.get("county") || "";
+const town = q.get("town") || "";
+const SHOW = 500;
+
+const [summary, law, local] = await Promise.all(
+  [loadJSON("summary.json"), loadJSON("legal_status.json"), loadJSON("local_rules.json")]);
+const stateName = law.states[state]?.state_name || state;
+const st = summary.states[state];
+const countyName = county ? (st?.county_names?.[county] || county) : "";
+const body = document.getElementById("body");
+
+document.getElementById("crumbs").replaceChildren(
+  el("a", { href: `state.html?state=${state}` }, stateName),
+  ...(county ? [" › ", el("a", { href: countyHref(state, county) }, countyName)] : []),
+  " › ", town || "Town");
+document.getElementById("title").textContent = `${town}, ${stateName}`;
+document.title = `${town}, ${stateName} — cannabis and hemp licences`;
+
+const longDate = (iso) => iso ? new Date(iso + "T12:00:00Z").toLocaleDateString(
+  "en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }) : "";
+
+/* ------------------------------------------------------------ local rules */
+function localRules() {
+  const towns = local.states[state];
+  const head = el("h2", {}, "Local rules");
+  if (!towns) {
+    return [head, el("div", { class: "panel" }, el("p", { style: "margin:0" },
+      `Not published yet. ${stateName}'s regulator publishes no town-by-town list of local rules, `
+      + "and the rules are set by each town's own ordinance. The audited state report covers the "
+      + "larger local governments, but those are not yet turned into sourced, dated statements."))];
+  }
+  const muni = st?.municipality_of?.[town];
+  const key = towns[town] ? town : (muni && towns[muni] ? muni : null);
+  if (!key) {
+    return [head, el("div", { class: "panel" }, el("p", { style: "margin:0" },
+      `The regulator's list has no entry for ${town}. It lists municipalities, and ${town} may be `
+      + "a village or neighbourhood within one, or a premises address outside the state."))];
+  }
+  const r = towns[key];
+  const rows = state === "MA"
+    ? [["Adult-use establishments", r.adult_use], ["Delivery", r.delivery],
+       ["Social consumption", r.social_consumption]]
+    : [["Municipal law on cannabis businesses", r.municipal_law || "No status recorded"],
+       ["Adopted", r.adopted], ["Effective", r.effective], ["Notes", r.notes]];
+  return [head, el("section", { class: "law-block" },
+    key !== town ? el("p", { class: "note", style: "margin-top:0" },
+      `${town} is a village in the municipality of ${key}, so these are ${key}'s rules.`) : null,
+    el("dl", { class: "facts" }, rows.filter(([, v]) => v).flatMap(([k, v]) =>
+      [el("dt", { text: k }), el("dd", { text: v })])),
+    el("p", { class: "source" }, `${r.source}, in the regulator's own words — `,
+      el("a", { href: r.source_url, rel: "noopener" }, "official source"),
+      ` · read ${longDate(r.data_as_of)}`))];
+}
+
+/* ------------------------------------------------------------ the licences */
+const list = st ? await loadJSON(`licences/${state}.json`) : { licences: [] };
+const rows = list.licences.filter((r) => r.town === town && (r.county || "") === county)
+  .sort((a, b) => (a.legal_name || "").localeCompare(b.legal_name || ""));
+const live = rows.filter((r) => r.standard_status === "Active" || r.standard_status === "Provisional");
+const count = (key) => Object.entries(rows.reduce((m, r) => {
+  const k = r[key] || "not published"; m[k] = (m[k] || 0) + 1; return m; }, {}))
+  .sort((a, b) => b[1] - a[1]);
+const table = (headers, data, cells) => el("div", { class: "table-scroll" }, el("table", {},
+  el("thead", {}, el("tr", {}, headers.map((h) => el("th", { class: h === "Records" ? "num" : "" }, h)))),
+  el("tbody", {}, data.map((r) => el("tr", {}, cells(r).map((c, i) =>
+    el("td", { class: headers[i] === "Records" ? "num" : (i === 0 && headers[0] === "Licence" ? "id" : "") }, c)))))));
+const dbHref = `database.html?state=${state}${county ? `&county=${encodeURIComponent(county)}` : ""}`
+  + `&status=&q=${encodeURIComponent(town)}`;
+
+document.getElementById("lede").textContent = rows.length
+  ? `${fmt(rows.length)} licence records place their premises in ${town}`
+    + (county ? `, ${countyName}` : "") + `; ${fmt(live.length)} are Active or Provisional.`
+  : "";
+
+body.replaceChildren(
+  ...localRules(),
+  ...(rows.length ? [
+    el("div", { class: "stats" },
+      el("div", { class: "stat" }, el("b", { text: fmt(rows.length) }), el("span", { text: "licence records" })),
+      el("div", { class: "stat" }, el("b", { text: fmt(live.length) }), el("span", { text: "Active or Provisional" }))),
+    el("h2", {}, "By standard type"),
+    table(["Type", "Records"], count("standard_type"), ([k, v]) => [k, fmt(v)]),
+    el("h2", {}, "Licences"),
+    table(["Licence", "Name", "Type", "Status"], rows.slice(0, SHOW), (r) => [
+      el("a", { href: profileHref(r) }, r.licence_id),
+      r.dba ? `${r.legal_name || ""} (trading as ${r.dba})` : (r.legal_name || ""),
+      r.standard_type || "", statusBadge(r.standard_status, r.status)]),
+    rows.length > SHOW ? el("p", { class: "note" }, `Showing ${SHOW} of ${fmt(rows.length)}.`) : null,
+    el("p", {}, el("a", { class: "cta", href: dbHref }, `Search ${town} in the database`)),
+  ] : [el("div", { class: "panel" }, el("p", { style: "margin:0" },
+      `No licence record in this database places its premises in ${town}`
+      + (county ? `, ${countyName}` : "") + ". That is not proof there is no licensed business "
+      + "here: some regulators publish no address, and those records carry no town."))]),
+);
+
+if (county) {
+  try {
+    const cm = await loadJSON(`counties/${state}.json`);
+    if (cm.counties.some((c) => c.county === county)) {
+      document.getElementById("side").replaceChildren(el("div", { class: "map-card map-small" },
+        countyMap(cm, { highlight: county, counts: st?.by_county || {}, label: `${countyName} within ${stateName}` }),
+        el("p", { class: "map-note" }, `${town} is in ${countyName}. The map shows counties, not towns.`)));
+    }
+  } catch { /* the map is a nicety */ }
+}
+</script>
+</body>
+</html>

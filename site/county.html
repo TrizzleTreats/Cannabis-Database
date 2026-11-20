@@ -19,7 +19,7 @@
 
 <script type="module">
 import { loadJSON, fmt, el, mountFooter, mountTopbar, statusBadge, profileHref,
-         countyMap } from "./assets/app.js";
+         countyMap, townHref } from "./assets/app.js";
 
 mountTopbar(document.body, "county.html");
 mountFooter(document.body);
@@ -32,7 +32,8 @@ const state = (q.get("state") || "").toUpperCase();
 const county = q.get("county") || "";
 const SHOW = 300;
 
-const [summary, law] = await Promise.all([loadJSON("summary.json"), loadJSON("legal_status.json")]);
+const [summary, law, local] = await Promise.all(
+  [loadJSON("summary.json"), loadJSON("legal_status.json"), loadJSON("local_rules.json")]);
 const stateName = law.states[state]?.state_name || state;
 const st = summary.states[state];
 let cm = null;
@@ -89,6 +90,21 @@ if (!st || !known) {
     el("tbody", {}, data.map((r) => el("tr", {}, cells(r).map((c, i) =>
       el("td", { class: headers[i] === "Records" ? "num" : (i === 0 && headers[0] === "Licence" ? "id" : "") }, c)))))));
 
+  // Massachusetts and Connecticut publish each town's rule; show it, in the
+  // regulator's own words, beside the town (a village takes its municipality's).
+  const rules = local.states[state];
+  const ruleOf = (t) => {
+    const r = rules && (rules[t] || rules[st.municipality_of?.[t]]);
+    if (!r) return rules ? "no entry in the regulator's list" : "";
+    return state === "MA" ? r.adult_use : (r.municipal_law || "no status recorded");
+  };
+  const townTable = (towns) => rules
+    ? table(["Town, as the record places it", state === "MA" ? "Adult use (CCC tracker)"
+             : "Municipal law (DCP)", "Records"], towns,
+            ([k, v]) => [el("a", { href: townHref(state, county, k) }, k), ruleOf(k), fmt(v)])
+    : table(["Town, as the record places it", "Records"], towns,
+            ([k, v]) => [el("a", { href: townHref(state, county, k) }, k), fmt(v)]);
+
   body.replaceChildren(
     el("div", { class: "stats" },
       el("div", { class: "stat" }, el("b", { text: fmt(rows.length) }), el("span", { text: "licence records" })),
@@ -102,7 +118,7 @@ if (!st || !known) {
     table(["Status", "Records"], count("standard_status"), ([k, v]) =>
       [statusBadge(k === "not published" ? "" : k, ""), fmt(v)]),
     towns.length ? el("h2", {}, "Towns and cities") : null,
-    towns.length ? table(["Town, as the record places it", "Records"], towns, ([k, v]) => [k, fmt(v)]) : null,
+    towns.length ? townTable(towns) : null,
     el("h2", {}, "Licences"),
     table(["Licence", "Name", "Type", "Status", "Town"], rows.slice(0, SHOW), (r) => [
       el("a", { href: profileHref(r) }, r.licence_id),
@@ -115,10 +131,18 @@ if (!st || !known) {
     el("p", {}, el("a", { class: "cta", href: dbHref() }, `Open ${name} in the database`)),
     el("h2", {}, "Local rules"),
     el("div", { class: "panel" },
-      el("p", { style: "margin:0" }, "Not published yet. Whether a town or county allows "
-        + "cannabis businesses, and where, is set by local ordinance. The audited state report "
-        + "covers the larger local governments, but those rules are not yet turned into sourced, "
-        + "dated statements, and an unsourced summary would be worse than none.")),
+      el("p", { style: "margin:0" }, rules
+        ? (state === "MA"
+            ? "Each town's adult-use rule is in the table above, as the Cannabis Control "
+              + "Commission's municipal zoning tracker words it; each town's page also gives its "
+              + "delivery rule and the source."
+            : "Each town's municipal-law status is in the table above, as the Department of "
+              + "Consumer Protection's Cannabis Zoning dataset words it; each town's page gives "
+              + "the source and date.")
+        : "Not published yet. Whether a town or county allows "
+          + "cannabis businesses, and where, is set by local ordinance. The audited state report "
+          + "covers the larger local governments, but those rules are not yet turned into sourced, "
+          + "dated statements, and an unsourced summary would be worse than none.")),
   );
 }
 </script>

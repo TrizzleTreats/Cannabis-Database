@@ -258,3 +258,7 @@ p.unconfirmed { margin: 0.35rem 0 0; font-size: 14px; color: var(--amber); }
 .law-block { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.9rem 1rem; margin-bottom: 0.75rem; }
 .law-block h2 { margin: 0 0 0.5rem; font-size: 1.05rem; }
 .law-block .fact { margin: 0.4rem 0 0; }
+dl.facts { margin: 0; display: grid; grid-template-columns: 14rem minmax(0, 1fr); gap: 0.35rem 0.9rem; font-size: 14px; }
+dl.facts dt { color: var(--ink-soft); }
+dl.facts dd { margin: 0; }
+@media (max-width: 600px) { dl.facts { grid-template-columns: minmax(0, 1fr); } dl.facts dd { margin-bottom: 0.4rem; } }
