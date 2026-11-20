@@ -30,7 +30,7 @@ Written out by scripts/build_quick_reference.py to data/clean/quick_reference.cs
 """
 
 FIELDS = ["possession", "home_grow", "state_tax", "regulator", "public_use", "employment", "driving",
-          "medical"]
+          "medical", "edibles", "advertising"]
 
 
 def F(text, cite, url, confirmed=True, note=""):
@@ -39,6 +39,13 @@ def F(text, cite, url, confirmed=True, note=""):
 
 def NOT_CONFIRMED(why, cite="", url=""):
     return F(None, cite, url, confirmed=False, note=why)
+
+
+# Re-checked against official pages on 20 Nov 2026 (see docs/STATUS.md).
+CHK = 'Re-read in the official text on 20 Nov 2026.'
+NM_PDF = 'https://www.rld.nm.gov/wp-content/uploads/2023/08/ARTICLE-2C-Cannabis-Regulation-_-Chapter-26-Drugs-and-Cosmetics.pdf'
+NM_NOTE = "From the Regulation and Licensing Department's own copy of the Act (posted August 2023). Re-read in the official text on 20 Nov 2026."
+IA_URL = 'https://www.legis.iowa.gov/docs/code/124E.pdf'
 
 
 QUICK = {
@@ -133,13 +140,17 @@ QUICK = {
     "DE": {
         "possession": F("Adults 21+: a personal-use quantity of 1 oz of leaf marijuana, or 12 g "
                         "of concentrate, or products containing up to 750 mg THC.",
-                        "16 Del.C. §4701", "https://omc.delaware.gov/adult-use/",
-                        note="Registered medical patients may possess up to 6 oz of usable marijuana (16 Del.C. §4903A)."),
-        "home_grow": F("Not allowed, for adults or for medical patients and caregivers.",
-                       "16 Del.C. §4764A(c)", "https://omc.delaware.gov/adult-use/"),
-        "state_tax": F("15% of the retail price on adult-use sales; medical sales are exempt. "
-                       "From 21 Oct 2026 infused beverages pay a per-container tax instead.",
-                       "4 Del.C. §1382", "https://revenue.delaware.gov/marijuana-establishments-and-retail-tax-faqs/"),
+                        "16 Del.C. §4701(36)", "https://delcode.delaware.gov/title16/c047/sc01/index.html",
+                        note="Registered medical patients may possess up to 6 oz of usable marijuana "
+                             "(16 Del.C. §4903A). " + CHK),
+        "home_grow": F("Not allowed: home cultivation remains prohibited.",
+                       "Office of the Marijuana Commissioner", "https://omc.delaware.gov/adult-use/",
+                       note=CHK),
+        "state_tax": F("15% of the retail price on adult-use sales. Medical sales are exempt, and so "
+                       "are infused beverages sold by a package store or marijuana retail store.",
+                       "4 Del.C. §1382(a)-(b)", "https://delcode.delaware.gov/title4/c013/sc08/index.html",
+                       note="The tax infused beverages pay instead is not yet confirmed from official "
+                            "text. " + CHK),
         "regulator": F("Office of the Marijuana Commissioner (OMC), Department of Safety and "
                        "Homeland Security", "4 Del.C. ch. 13; HB 425 (2024)", "https://omc.delaware.gov/"),
     },
@@ -247,11 +258,11 @@ QUICK = {
     },
     "IA": {
         "possession": F("Registered patients only: medical cannabidiol products, up to 4.5 g of "
-                        "total THC per 90 days (more by waiver). Marijuana is not legal in any amount.",
-                        "Iowa Code §124E.9(14)-(15); §124.401(5)",
-                        "https://www.legis.iowa.gov/docs/code/2024/124E.pdf"),
-        "home_grow": F("Not allowed, including for patients.", "Iowa Code ch. 124E",
-                       "https://www.legis.iowa.gov/docs/code/2024/124E.pdf"),
+                        "total THC per 90 days (more only in the cases the statute lists). Marijuana is "
+                        "not legal in any amount.", "Iowa Code §124E.9(14)-(15); §124.401(5)",
+                        IA_URL, note=CHK),
+        "home_grow": F("Not allowed, including for patients: only licensed manufacturers may cultivate.",
+                       "Iowa Code §124E.6", IA_URL, note=CHK),
         "state_tax": F("No cannabis-specific tax. Medical cannabidiol pays the 6% state sales tax "
                        "with no exemption, plus a 1% local option tax where adopted.",
                        "Iowa Code §423.2", "https://www.legis.iowa.gov/docs/code/2024/124E.pdf",
@@ -436,10 +447,10 @@ QUICK = {
         "home_grow": F("6 plants per adult, 12 per residence, enclosed and locked, but only if "
                        "the home is more than 25 miles from a licensed retail store.",
                        "NRS 678D.200; NRS 678D.310(1)", "https://www.leg.state.nv.us/nrs/NRS-678D.html"),
-        "state_tax": F("15% wholesale excise on the first wholesale sale (medical and adult use), "
-                       "and a 10% retail excise on adult-use sales, on top of sales tax (at least "
-                       "6.85%). Medical sales are exempt from the 10%.", "NRS 372A.290",
-                       "https://www.leg.state.nv.us/NRS/NRS-372A.html"),
+        "state_tax": F("15% excise on the first wholesale sale (medical and adult use), and a 10% "
+                       "excise on adult-use retail sales, on top of state and local sales tax. Medical "
+                       "sales to cardholders are exempt from the 10%.", "NRS 372A.290(1)-(3), (8)",
+                       "https://www.leg.state.nv.us/NRS/NRS-372A.html", note=CHK),
         "regulator": F("Cannabis Compliance Board (CCB)", "NRS ch. 678A, 678B",
                        "https://ccb.nv.gov/faq/"),
     },
@@ -472,13 +483,14 @@ QUICK = {
     "NM": {
         "possession": F("Adults 21+, outside the home: 2 oz of cannabis, 16 g of concentrate and "
                         "800 mg of edibles. At home, no weight limit if kept out of public view.",
-                        "NMSA §26-2C-25(A)", "https://www.rld.nm.gov/cannabis/cannabis-in-new-mexico/adult-use/"),
+                        "NMSA §26-2C-25(A)(2)", NM_PDF, note=NM_NOTE),
         "home_grow": F("6 mature and 6 immature plants per adult; no more than 12 mature plants "
-                       "per household.", "NMSA §26-2C-25(A)(9)",
-                       "https://www.rld.nm.gov/cannabis/cannabis-in-new-mexico/adult-use/personal-use-of-cannabis/"),
-        "state_tax": F("Cannabis excise: 14% from 1 July 2026 (13% the year before), rising one "
-                       "point each 1 July to 18% in 2030. Medical sales to patients are exempt.",
-                       "NMSA §7-42-3(B)-(C)", "https://www.rld.nm.gov/cannabis/compliance/tax-reporting/"),
+                       "per household.", "NMSA §26-2C-25(A)(9)", NM_PDF, note=NM_NOTE),
+        "state_tax": F("Cannabis excise: 12% until 1 July 2025, then rising gradually to 18% from "
+                       "1 July 2030. Medical sales to patients are exempt.",
+                       "NMSA §7-42-3", "https://www.rld.nm.gov/cannabis/compliance/tax-reporting/",
+                       note="The rate for each year in between is set in §7-42-3, which is not yet checked "
+                            "in official text. " + CHK),
         "regulator": F("Regulation and Licensing Department, Cannabis Control Division (CCD); the "
                        "Department of Health runs the medical programme.", "Cannabis Regulation Act",
                        "https://www.rld.nm.gov/cannabis/"),
@@ -776,15 +788,18 @@ LAW_MORE = {
         "public_use": F("Smoking marijuana in a public place or open space is a petty offence.",
                         "A.R.S. §36-2853(C)",
                         "https://www.azleg.gov/viewdocument/?docName=https://www.azleg.gov/ars/36/02853.htm"),
-        "employment": NOT_CONFIRMED("Registered patients have a qualified protection against discrimination, "
-                                    "but the report quotes it from a secondary source, still to be checked "
-                                    "against the official statute.", "A.R.S. §36-2813"),
+        "employment": F("Registered medical patients: an employer may not penalise a person for being a "
+                        "cardholder, or for a positive test, unless the patient used, possessed or was "
+                        "impaired by marijuana at work or during working hours, or the employer would lose a "
+                        "federal benefit.", "A.R.S. §36-2813(B)", "https://www.azleg.gov/ars/36/02813.htm",
+                        note=CHK),
     },
     "AR": {
-        "public_use": F("Patients may not use medical marijuana in a public place, on public transport, "
-                        "at schools, colleges, treatment or community centres, in correctional "
-                        "facilities, or wherever tobacco smoking is banned.",
-                        "Ark. Const. Amendment 98; Acts 740 and 271",
+        "public_use": F("Patients may not use medical marijuana in a public place, on public transport "
+                        "or a school bus, on the grounds of a school, college or daycare, at a drug or "
+                        "alcohol treatment facility or community centre, in a correctional facility, or "
+                        "on military property; and may not smoke it inside a vehicle or wherever smoking "
+                        "tobacco is banned.", "Ark. Const. amend. 98 §6(a)(2), (a)(4)",
                         "https://www.dfa.arkansas.gov/wp-content/uploads/Medical_Marijuana_Rules_1.pdf"),
         "employment": F("An employer may not discriminate in hiring, firing or the terms of employment "
                         "based on an applicant's or employee's status as a qualifying patient.",
@@ -823,9 +838,11 @@ LAW_MORE = {
     "DE": {
         "public_use": F("Public consumption is prohibited.", "Office of the Marijuana Commissioner FAQ",
                         "https://omc.delaware.gov/faq/"),
-        "employment": F("Adult use: no protection; employers keep every right to set policies and "
-                        "discipline. Medical patients have statutory protection against discrimination.",
-                        "4 Del.C. §1304; 16 Del.C. ch. 49A", "https://omc.delaware.gov/adult-use/"),
+        "employment": F("Adult use: no protection; the law places no requirement on employers' "
+                        "accommodation, policies or discipline. Registered medical patients may not be "
+                        "penalised for being a cardholder or for a positive test, unless they used, "
+                        "possessed or were impaired at work.", "4 Del.C. §1304; 16 Del.C. §4905A(a)(3)",
+                        "https://delcode.delaware.gov/title4/c013/sc01/index.html", note=CHK),
     },
     "DC": {
         "public_use": F("Not in public: not on streets, alleys, sidewalks, parks or parking areas, in "
@@ -883,8 +900,7 @@ LAW_MORE = {
     "IA": {
         "public_use": F("For anyone but a patient, use is unlawful anywhere. Dispensaries and "
                         "manufacturers may not let anyone consume medical cannabidiol on their property.",
-                        "Iowa Code §§124E.7(5), 124E.9(5); §124.401(5)",
-                        "https://www.legis.iowa.gov/docs/code/2024/124E.pdf"),
+                        "Iowa Code §§124E.7(5), 124E.9(5); §124.401(5)", IA_URL, note=CHK),
         "employment": F("No protection: employers need not allow use or possession at work, and may "
                         "enforce zero-tolerance policies with drug testing.", "Iowa Code §124E.21; §730.5",
                         "https://www.legis.iowa.gov/docs/code/2024/124E.pdf"),
@@ -993,9 +1009,11 @@ LAW_MORE = {
     "NV": {
         "public_use": F("Public consumption is a misdemeanor (fine up to $600), except inside a licensed "
                         "consumption lounge.", "NRS 678D.310(3)", "https://www.leg.state.nv.us/nrs/NRS-678D.html"),
-        "employment": NOT_CONFIRMED("Nevada restricts pre-employment marijuana screening (NRS 613.132), but the "
-                                    "report quotes it from the bill's text, still to be checked against the "
-                                    "codified statute.", "NRS 613.132"),
+        "employment": F("An employer may not refuse to hire someone because a pre-employment test shows "
+                        "marijuana, except for firefighters, EMTs, driving jobs that require testing, roles the "
+                        "employer judges could affect others' safety, and where federal law or a contract "
+                        "conflicts. A new hire tested in the first 30 days may take a second test to rebut it.",
+                        "NRS 613.132", "https://www.leg.state.nv.us/NRS/NRS-613.html", note=CHK),
     },
     "NH": {
         "public_use": F("Patients may use it on private property only. Smoking or vaping in any public "
@@ -1017,12 +1035,17 @@ LAW_MORE = {
                         note="The statute allows action for use or impairment at work; see its full text."),
     },
     "NM": {
-        "public_use": F("Only in a private residence or a licensed consumption area. Smoking in a public "
-                        "place carries a $50 civil penalty.", "NMSA §26-2C-26(B)",
-                        "https://www.rld.nm.gov/cannabis/cannabis-in-new-mexico/yes-and-knows/"),
-        "employment": NOT_CONFIRMED("Medical patients have an employment protection (§26-2B-9), but the report "
-                                    "quotes it from a search-index excerpt, still to be checked against the "
-                                    "official statute.", "NMSA §26-2B-9"),
+        "public_use": F("Smoking in a public place is not allowed except in a licensed consumption area, "
+                        "and carries a $50 civil penalty. The regulator says cannabis may only be "
+                        "consumed at a licensed consumption lounge or at a private residence.",
+                        "NMSA §26-2C-26(A)-(B)", NM_PDF, note=NM_NOTE),
+        "employment": F("Medical patients: no adverse action against an applicant or employee for conduct the "
+                        "medical cannabis law allows, unless the employer would lose a federal benefit. Employers "
+                        "may still act on use or impairment at work or during working hours, and the protection "
+                        "does not cover safety-sensitive positions.", "NMSA §26-2B-9",
+                        "https://www.rld.nm.gov/wp-content/uploads/2023/08/ARTICLE-2B-Lynn-and-Erin-Compassionate-Use-Act-_-Chapter-26-Drugs-and-Cosmetics.pdf",
+                        note="From the Regulation and Licensing Department's own copy of the Act (posted August "
+                             "2023). " + CHK),
     },
     "NY": {
         "public_use": NOT_CONFIRMED("The report's account of where consumption is allowed (Penal Law §222.10) "
@@ -1191,9 +1214,9 @@ DRIVING = {
             "AS 28.35.030", "https://www.akleg.gov/"),
     "AZ": F("Impairment-based: no per se THC blood limit. For adults 21+, impairment must be shown.",
             "A.R.S. §36-2852(B)", "https://www.azleg.gov/viewdocument/?docName=https://www.azleg.gov/ars/36/02850.htm"),
-    "AR": F("Impairment-based: the per se limit applies to alcohol only, and being entitled to use "
-            "marijuana under state law is no defence.", "Ark. Code §5-65-103",
-            "https://www.dfa.arkansas.gov/wp-content/uploads/Medical_Marijuana_Rules_1.pdf"),
+    "AR": NOT_CONFIRMED("The report reads Ark. Code §5-65-103 only from unofficial copies. The official "
+                        "compilation of Amendment 98 confirms only that a patient may not drive under the "
+                        "influence of marijuana, not whether there is a per se limit.", "Ark. Code §5-65-103"),
     "CA": F("Impairment-based: California has never set a per se limit for THC.", "Cal. Vehicle Code",
             "https://www.cannabis.ca.gov/cannabis-laws/"),
     "CO": F("No per se limit, but 5 ng/mL or more of delta-9 THC in whole blood allows a court to infer "
@@ -1209,7 +1232,8 @@ DRIVING = {
             "noticeably impaired.", "D.C. Code §50-2206.11",
             "https://oag.dc.gov/public-safety/driving-under-influence/marijuana-and-impaired-driving"),
     "FL": F("Impairment-based: no per se THC limit; the only per se limit is for alcohol.", "Fla. Stat. §316.193(1)",
-            "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0381/Sections/0381.986.html"),
+            "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0316/Sections/0316.193.html",
+            note=CHK),
     "GA": NOT_CONFIRMED("The report's reading of §40-6-391 (no numeric THC limit; the any-amount provision "
                         "narrowed by Love v. State) rests only on a Justia copy of the Code; the report "
                         "lists the live legis.ga.gov text as still unverified.",
@@ -1342,8 +1366,11 @@ MEDICAL = {
             "months, severe nausea, seizures or severe persistent muscle spasms; or a condition the "
             "Department of Health approves.", "Ark. Const. amend. 98 §2(13)",
             "https://www.dfa.arkansas.gov/office/medical-marijuana-commission/"),
-    "AZ": NOT_CONFIRMED("The report confirms the statutory list only from a mirror of the statute; the "
-                        "official text on azleg.gov was not opened.", "A.R.S. §36-2801"),
+    "AZ": F("Cancer, glaucoma, HIV or AIDS, hepatitis C, ALS, Crohn's disease or agitation of Alzheimer's "
+            "disease; a chronic or debilitating condition that produces cachexia or wasting, severe and chronic "
+            "pain, severe nausea, seizures, or severe and persistent muscle spasms; or a condition the "
+            "Department of Health Services adds.", "A.R.S. §36-2801", "https://www.azleg.gov/ars/36/02801.htm",
+            note="Which conditions the department has added (such as PTSD) is not yet confirmed. " + CHK),
     "CA": F("A physician's recommendation for cancer, anorexia, AIDS, chronic pain, spasticity, glaucoma, "
             "arthritis, migraine, \"or any other illness for which marijuana provides relief\". The state "
             "medical ID card is voluntary.", "Health & Safety Code §11362.5; §11362.71(f)",
@@ -1518,3 +1545,251 @@ MEDICAL = {
 
 for _code, _fact in MEDICAL.items():
     QUICK[_code]["medical"] = _fact
+
+
+# --------------------------------------------------------------------------------------
+# Edibles (added 20 Nov 2026): THC limits per serving and per package, and the product
+# rules that go with them. A limit is published only where the report ties it to an
+# official source (statute, rule or regulator page); Nevada's NRS 678D.420 and Delaware's
+# 4 Del.C. §1331 were also read online. Hemp and hemp-derived products follow other rules
+# and are not covered here. A report that found NO limit is held back, not read as "none".
+NO_MARKET = "None: there is no legal marijuana market, so no marijuana edibles."
+HEMP = "Hemp-derived products follow separate rules, not covered here."
+NO_LINK = HEMP + " The audited report cites the state's statutes, but no official link for them was captured."
+EDIBLES = {
+    "AK": F("No more than 10 mg of THC per serving and 100 mg per packaged unit.", "3 AAC 306",
+            "https://www.commerce.alaska.gov/web/amco/",
+            note="A total-THC formula is only a 2026 proposal (AO-360), not current law."),
+    "AL": F("No food edibles: products baked, mixed or infused into food, such as cookies or candies, are "
+            "banned. Oral forms are tablets, capsules, tinctures and non-sugar-coated gelatin cubes or "
+            "lozenges.", "Ala. Code §20-2A-3(14)", "https://amcc.alabama.gov/patients/"),
+    "AR": NOT_CONFIRMED("A 100 mg per-package edible limit appears only in a secondary source. Neither the "
+                        "report nor the DFA's compilation of the amendment and rules (read 20 Nov 2026) gives "
+                        "an edible milligram limit.", "Ark. Const. amend. 98"),
+    "AZ": F("No more than 10 mg of THC per serving and 100 mg per package, delineated or scored into "
+            "servings.", "A.R.S. §36-2854", "https://www.azleg.gov/ars/36/02854.htm"),
+    "CA": F("No more than 10 mg of THC per serving, in standardised servings.", "MAUCRSA, as the AB 2532 "
+            "digest restates it",
+            "https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202520260AB2532",
+            note="The 100 mg per package limit is in the regulations (4 CCR), which the report read only "
+                 "from an unofficial copy."),
+    "CO": NOT_CONFIRMED("The report reads the edible limits (Rule 4-115) only from Cornell's reproduction of "
+                        "the rules, not the official text.", "1 CCR 212-3"),
+    "CT": F("No more than 5 mg of THC per serving and 100 mg per package.", "DCP and Attorney General release",
+            "https://portal.ct.gov/ag/press-releases/2024-press-releases/attorney-general-dcp-commissioner-"
+            "cafferelli-announce-psa-regarding-illegal-cannabis-edibles"),
+    "DC": NOT_CONFIRMED("The report found no per-serving or per-package edible limit in the D.C. Code sections "
+                        "it opened, but did not establish that none exists."),
+    "DE": F("No more than 10 mg of total THC per serving and 100 mg in a multi-serving package.",
+            "4 Del.C. §1331", "https://delcode.delaware.gov/title4/c013/sc03/index.html", note=CHK),
+    "FL": F("No more than 10 mg of THC per serving and 200 mg per edible. Edibles may not be attractive to "
+            "children, shaped like a person, cartoon or animal, or resemble commercial candy.",
+            "Fla. Stat. §381.986(8)(e)8.",
+            "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0381/Sections/0381.986.html"),
+    "GA": F("Medical cannabis products (low-THC only): up to 1,200 mg of THC per package.",
+            "SB 220; DPH Low THC Oil Registry",
+            "https://dph.georgia.gov/low-thc-oil-registry/patients-and-caregivers",
+            note="Whether gummies count as an allowed ingestible or a banned candy or food product is "
+                 "unresolved."),
+    "HI": NOT_CONFIRMED("The report lists the product forms Hawaii's dispensaries may sell but gives no "
+                        "confirmed per-serving or per-package limit for edibles.", "HRS §329D-10"),
+    "IA": F("No edibles: manufacturers may not make edible medical cannabidiol products. Oral, topical, "
+            "nebulised or vaporised, and rectal or vaginal forms are allowed; nothing smokable.",
+            "Iowa Code §124E.7(12)(c); §124E.17", IA_URL, note=CHK),
+    "IL": F("No more than 10 mg of THC per serving and 100 mg per package; the Department of Agriculture may "
+            "change the amounts by rule.", "410 ILCS 705/55-21(k)",
+            "https://ilga.gov/legislation/ilcs/fulltext?DocName=041007050K55-21"),
+    "KY": F("Edibles and other oral products: no more than 10 mg of delta-9 THC per serving.",
+            "915 KAR 1:070", "https://apps.legislature.ky.gov/law/kar/titles/915/001/070/",
+            note="Whether there is also a per-package limit (915 KAR 1:100) is not confirmed."),
+    "LA": NOT_CONFIRMED("The report finds edible forms (such as gelatin chewables) allowed by rule but no "
+                        "confirmed per-serving or per-package limit.", "La. R.S. 40:1046"),
+    "MA": F("5 mg of THC per serving and 100 mg per package (5.5 mg and 110 mg with the allowed 10% "
+            "variance), and no more than 20 servings a package.", "935 CMR 500.150(4)",
+            "https://masscannabiscontrol.com/document/935-cmr-500-000-adult-use-of-marijuana-effective-06-18-26-pdf-2/"),
+    "MD": F("Adult use: no more than 10 mg of THC per serving and 100 mg per package. Higher-potency products "
+            "are for patients only.", "COMAR 14.17.13.05", "https://cannabis.maryland.gov/Pages/law.aspx"),
+    "ME": F("No more than 10 mg of THC per serving and 200 mg per package.", "28-B M.R.S. §703(1)(F)",
+            "https://www.mainelegislature.org/LEGIS/STATUTES/28-B/title28-Bsec703.pdf"),
+    "MI": NOT_CONFIRMED("The report takes Michigan's edible limits from a secondary reproduction of a CRA "
+                        "bulletin, and its sources conflict on the medical limits."),
+    "MN": NOT_CONFIRMED("The report's per-serving and per-package figures are for lower-potency hemp edibles; "
+                        "it does not give the limits for adult-use cannabis edibles.", "Minn. Stat. ch. 342"),
+    "MO": NOT_CONFIRMED("The report found no general per-serving or per-package edible limit in Article XIV or "
+                        "19 CSR 100-1.120 as read, and rejects the 10 mg / 100 mg figures in secondary sources.",
+                        "19 CSR 100-1.120"),
+    "MS": F("No more than 10 mg of THC per serving (within ±10%).", "MSDH Medical Cannabis Program rules",
+            "https://www.mmcp.ms.gov/sites/default/files/Documents/RevisedAdminRegulationsMMCPBOHADOPTED10.11.2023.pdf"),
+    "MT": NOT_CONFIRMED("The report's figures (5 mg per serving from 1 July 2026 under HB 636; 100 mg per "
+                        "package) are among the sections it lists as not yet opened in official text.",
+                        "MCA §16-12-224"),
+    "ND": F("Only low-dose lozenges, soft or hard and square in shape: no more than 5 mg of THC per serving "
+            "and 50 mg per package, with the Department's prior approval. Other THC foods and drinks are not "
+            "allowed.", "N.D.C.C. §19-24.1-24.1 (HB 1203, 2025)", "https://www.legis.nd.gov/cencode/t19c24-1.pdf"),
+    "NE": NOT_CONFIRMED("No dispensary had been licensed as of 30 Oct 2026, and the report gives no confirmed "
+                        "product rules for edibles.", "Neb. Rev. Stat. §71-24,104"),
+    "NH": NOT_CONFIRMED("The report found no edible limit in New Hampshire law; the figures in search results "
+                        "come from failed adult-use bills."),
+    "NJ": F("No more than 10 mg of THC per serving and 100 mg per package.", "N.J.A.C. 17:30",
+            "http://www.state.nj.us/cannabis/documents/businesses/Business%20Resources/Labeling%20of%20Total%20Active%20THC%20for%20Ingestibles%20Guidance%20.pdf"),
+    "NM": F("Adult use: no more than 10 mg of total THC per serving and 100 mg per container. Medical edibles "
+            "may have up to 50 mg per serving.", "16.8.3.12 NMAC",
+            "https://www.srca.nm.gov/nmac/nmregister/xxxiii/16.8.3_xxxiii01.pdf"),
+    "NV": F("No more than 10 mg of THC per serving and 100 mg per package.", "NRS 678D.420(1), (2)(e)",
+            "https://www.leg.state.nv.us/NRS/NRS-678D.html", note=CHK),
+    "NY": F("No more than 10 mg of THC per serving.", "9 NYCRR Part 128",
+            "https://cannabis.ny.gov/part-128-guidance",
+            note="A 100 mg per package limit is reported only by secondary sources so far."),
+    "OH": NOT_CONFIRMED("The report gives limits for medical product forms (oral drops, patches and others) "
+                        "but not for adult-use edibles."),
+    "OK": F("No per-serving or per-package THC limit. From 1 Nov 2026, packages must state the servings and the "
+            "THC per serving, and edibles may not be attractive to children, shaped like a person, animal or "
+            "cartoon, or resemble commercial candy.", "63 O.S. §423(C)(7) (HB 4454)",
+            "https://oklahoma.gov/omma/about/news/2026/hb-4454-clarification-processor-and-dispensary-requirements.html"),
+    "OR": F("Adult use: no more than 10 mg of THC per serving and 100 mg per package (since 1 Apr 2022). "
+            "Medical-grade edibles: up to 100 mg per package, with no serving-size rule.",
+            "OAR 845-026-0210, -0220",
+            "http://cms.oregon.gov/olcc/marijuana/Documents/Bulletins/IB2022-01-Potency-Limits-Edibles.pdf"),
+    "PA": F("No commercial edibles: making medical marijuana into an edible is unlawful, except a patient or "
+            "caregiver mixing it into food to help take it.", "Medical Marijuana Act §304",
+            "https://www.legis.state.pa.us/WU01/LI/LI/US/HTM/2016/0/0016..HTM"),
+    "RI": F("No more than 10 mg of THC per serving and 100 mg per package; some designated medical products "
+            "may exceed these.", "560-RICR-10-10-2", "https://ccc.ri.gov/media/2311/download?language=en"),
+    "SD": F("No more than 50 mg of THC per serving, under the 2023 rules.", "ARSD 44:90:07:04",
+            "https://rules.sd.gov/Uploads/782_AdoptedRules.pdf",
+            note="A labelling rule (44:90:10:12) still refers to 10 mg servings; the report flags the "
+                 "conflict."),
+    "TX": F("Low-THC products only, which may include edibles: no more than 10 mg of THC per dose and 1 g per "
+            "package.", "HB 46 (2025)", "https://capitol.texas.gov/tlodocs/89R/analysis/html/HB00046E.htm"),
+    "UT": NOT_CONFIRMED("The report gives no confirmed per-serving or per-package limit for Utah's medical "
+                        "edible products."),
+    "VA": F("No adult-use sales are licensed. Medical products: no more than 10 mg of THC per dose, except as "
+            "§4.1-1603.2 allows.", "Va. Code §4.1-1602", "https://law.lis.virginia.gov/vacode/4.1-1602/"),
+    "VT": F("No more than 5 mg of THC per serving and 100 mg per package, in opaque, child-resistant "
+            "packaging with the standard symbol.", "7 V.S.A. §881(a)(3)",
+            "https://legislature.vermont.gov/statutes/section/07/033/00881"),
+    "WA": F("No more than 10 mg of active THC per serving and 100 mg per package, at most 10 servings. Some "
+            "patient-only products (capsules, tinctures and similar, not edibles) may have up to 50 mg per "
+            "serving.", "WAC 314-55-095", "https://lcb.wa.gov/education2cb/reading_a_product_label"),
+    "WV": NOT_CONFIRMED("The report found no statutory per-serving or per-package limit; any limit would be in "
+                        "the bureau's rules or product approvals, which it did not confirm.", "W. Va. Code ch. 16A"),
+    "ID": F(NO_MARKET, 'Idaho Code §37-2701 et seq.', 'https://legislature.idaho.gov/statutesrules/idstat/Title37/T37CH27/SECT37-2701', note=HEMP),
+    "IN": F(NO_MARKET, 'Ind. Code art. 35-48 (marijuana now defined at IC 35-48-1.1-29)', 'https://public.courts.in.gov/Decisions/api/Document/Opinion?Id=DmYIl2h3bOKWWdQQvJyPZ_rjZgo14Y_LmDtP2-HSBr7Uf3wsJD127SUP1Lq0Mzh20', note=HEMP),
+    "KS": F(NO_MARKET, 'K.S.A. 65-4101(aa) and 21-5706', 'https://kslegislature.gov/li_2022/b2021_22/statute/065_000_0000_chapter/065_041_0000_article/065_041_0001_section/065_041_0001_k/', note=HEMP),
+    "NC": F(NO_MARKET, 'N.C.G.S. 90-87(16), 90-94 (Schedule VI), 90-95', 'https://ncleg.gov/EnactedLegislation/SessionLaws/HTML/2021-2022/SL2022-32.html', note=HEMP),
+    "SC": F(NO_MARKET, 'S.C. Code §44-53-110(27), §44-53-370', 'https://www.scstatehouse.gov/code/t44c053.php', note=HEMP),
+    "TN": F(NO_MARKET, 'Tenn. Code §39-17-402(16) and Schedule VI', '', note=NO_LINK),
+    "WI": F(NO_MARKET, 'Wis. Stat. ch. 961 (§961.41', 'https://docs.legis.wisconsin.gov/document/acts/2019/68,54n', note=HEMP),
+    "WY": F(NO_MARKET, 'Wyoming Controlled Substances Act, W.S. 35-7-1001 et seq. (35-7-1031(c))', '', note=NO_LINK),
+}
+
+for _code, _fact in EDIBLES.items():
+    QUICK[_code]["edibles"] = _fact
+
+
+# --------------------------------------------------------------------------------------
+# Advertising (added 20 Nov 2026). Published only where the rule is confirmed from an
+# official source: the report's own confirmed row, or the official text read online on
+# 20 Nov 2026 (AZ, AR, DE, FL, NM, NV). Most reports name the advertising rule without
+# confirming what it says; those states are held back with the reason.
+NO_ADS = "None: there is no legal marijuana market, so no marijuana advertising."
+NO_LINK_ADS = "The audited report cites the state's statutes, but no official link for them was captured."
+ADVERTISING = {
+    "AR": F("Dispensary ads may not be false or misleading, target children (cartoons, toys), show use, or "
+            "promote marijuana as an intoxicant, and must carry four warnings. No ads within 1,000 feet of a "
+            "school or daycare, on public transit or on public property; TV, radio, print and internet ads "
+            "only where no more than 30% of the audience is expected to be under 18. Cultivators may not "
+            "advertise to the public.", "ABC medical marijuana rules, Subpart 17",
+            "https://www.dfa.arkansas.gov/wp-content/uploads/Medical_Marijuana_Rules_1.pdf", note=CHK),
+    "AZ": F("No advertising aimed at under-21s (cartoons, imitation food brands, scenes of use, THC potency). "
+            "Online and social-media ads only where at least 73.6% of the audience is 21 or over. No ads at "
+            "public airports or on public transport, and no untrue health claims. No billboards within 1,000 "
+            "feet of a school, child care centre, church, recovery facility, park or playground. Every ad "
+            "carries a set warning.", "A.R.S. §36-2859", "https://www.azleg.gov/ars/36/02859.htm", note=CHK),
+    "DE": F("The Commissioner must restrict advertising, marketing and signage, including a ban on mass-market "
+            "campaigns likely to reach minors, and products may not be displayed so they are visible from a "
+            "public right-of-way.", "4 Del.C. §1331(15)-(16)",
+            "https://delcode.delaware.gov/title4/c013/sc03/index.html",
+            note="The detailed rules are in the Commissioner's regulations, not yet confirmed. " + CHK),
+    "FL": F("No advertising visible from any street, sidewalk, park or other public place, except a sign on the "
+            "dispensary naming it. Internet ads must be approved by the Department, may not attract children "
+            "or promote recreational use, and may not be unsolicited pop-ups.", "Fla. Stat. §381.986(8)(h)",
+            "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0381/Sections/0381.986.html",
+            note=CHK),
+    "MA": F("Ads only where at least 85% of the audience is reasonably expected to be 21 or over, with set "
+            "warnings. No price advertising or free promotional items; since 2026 discounts may be advertised "
+            "only inside the store or by opt-in email, not on websites.", "935 CMR 500.105(4); St. 2026, c. 65",
+            "https://masscannabiscontrol.com/2026/09/bulletin-advertising-compliance-regard"),
+    "ME": F("No health-benefit claims, unsolicited internet ads, or opt-in ads without an easy permanent "
+            "opt-out. No signs or ads within 1,000 feet of a school; a town may reduce this to no less than "
+            "500 feet.", "28-B M.R.S. §702", "https://mainelegislature.org/statutes/28-B/title28-Bsec402.html"),
+    "NM": F("No broadcast, internet pop-up or mass-transit ads (except to subscribers who are 21 or over), no "
+            "false or unproven health claims, no billboards or posters within 300 feet of a school, daycare "
+            "or church, and no cartoons or people who look under 21. Print and digital ads only where the "
+            "audience is reasonably expected to be 21 or over.", "NMSA §26-2C-20", NM_PDF, note=NM_NOTE),
+    "NV": F("No advertising that in any way makes cannabis appeal to children (cartoons, mascots, toys, fruit "
+            "and similar images).", "NRS 678B.520(4)",
+            "https://www.leg.state.nv.us/NRS/NRS-678B.html",
+            note="The Cannabis Compliance Board's own advertising rules are not yet confirmed. " + CHK),
+    "OH": F("Every ad needs the Division of Cannabis Control's written approval first. No billboards, radio, TV "
+            "or internet programming, public transit, stadiums or arenas, or publicly owned property, and no "
+            "promotions. Websites must check age (18 for patients, 21 for adult use).",
+            "ORC 3796.32; OAC 1301:18-4-22", "https://codes.ohio.gov/ohio-revised-code/section-3796.32"),
+    "RI": F("Online (age-gated), broadcast, print and outdoor ads are allowed if at least 85% of the audience is "
+            "reasonably expected to be 21 or over, with the universal symbol, licence number and \"For Ages 21+ "
+            "and medical cannabis patients\". No therapeutic claims, nothing aimed at or attractive to minors, "
+            "no showing use, and nothing within 500 feet of a K-12 school.", "560-RICR-10-10-2 §2.8",
+            "https://ccc.ri.gov/media/3386/download?language=en"),
+    "UT": F("Advertising medical cannabis is banned in general: no ads for discounts or incentives, particular "
+            "products, brands or dosage forms, or promises of medical outcomes. Narrow exceptions apply.",
+            "Utah Code §4-41a-109", "https://le.utah.gov/xcode/Title4/Chapter41A"),
+    "WA": F("No false, misleading or therapeutic claims, no promoting overconsumption, and nothing that appeals "
+            "to young people. No ads within 1,000 feet of the sites the rule protects (a local ordinance may "
+            "reduce this). Ads must say they are for 21 and over, may not target other states, no giveaways, "
+            "and no coupons below cost.", "WAC 314-55-155",
+            "https://app.leg.wa.gov/wac/default.aspx?cite=314-55-155"),
+    "AK": NOT_CONFIRMED('The report names the advertising regulation (3 AAC 306.360) but marks its current text, and the 2026 replacement drafts, as unverified.'),
+    "AL": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "CA": NOT_CONFIRMED('The report confirms only a 2027 beverage-advertising provision (AB 2532); the general advertising rules are not confirmed from official text.'),
+    "CO": NOT_CONFIRMED('The report takes the advertising rules (the Rule 3-700 series) from a reproduction; they were not opened in official text.'),
+    "CT": NOT_CONFIRMED('The report confirms only a narrow rule against advertising discounted prices, not the general advertising rules.'),
+    "DC": NOT_CONFIRMED("The D.C. Code's bans on child-appealing packaging and marketing are confirmed, but the advertising regulations (22-C DCMR ch. 58) were not opened."),
+    "GA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "HI": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "IA": F("Manufacturers and dispensaries must follow the restrictions the Department of Health and Human "
+            "Services sets on signage, marketing, display and advertising.", "Iowa Code §124E.7(11), §124E.9(11)",
+            IA_URL, note="The department's restrictions themselves are not yet confirmed. " + CHK),
+    "IL": NOT_CONFIRMED("The report confirms only a ban on misleading or copy-cat marketing (SB 3222, from the Governor's release), not the Act's advertising rules."),
+    "KY": NOT_CONFIRMED('The report confirms only that 915 KAR chapter 1 covers advertising, not what the rules require.'),
+    "LA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "MD": NOT_CONFIRMED('The report confirms that SB 594 (2026) changed the advertising rules but does not set out the rules themselves.'),
+    "MI": NOT_CONFIRMED('The report names the advertising rule but does not confirm what it requires.'),
+    "MN": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "MS": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "MO": NOT_CONFIRMED('The report keeps the dispensary advertising rule (19 CSR 100-1.100(5)) flagged for verification.'),
+    "MT": NOT_CONFIRMED('The report names the advertising rule (ARM 42.39.123) but does not confirm what it requires.'),
+    "ND": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "NE": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "NH": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "NJ": NOT_CONFIRMED('The 71.6% audience rule is read from a reproduction of N.J.A.C. 17:30-17.2, and the report says not to present it without a caveat.'),
+    "NY": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "OK": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "OR": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "PA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "SD": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "TX": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "VA": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "VT": NOT_CONFIRMED('The report gives no advertising rule confirmed from an official source.'),
+    "WV": NOT_CONFIRMED("The report's citation (§16A-3-1(a)(14)) was not re-opened in its audit."),
+    "ID": F(NO_ADS, 'Idaho Code §37-2701 et seq.', 'https://legislature.idaho.gov/statutesrules/idstat/Title37/T37CH27/SECT37-2701'),
+    "IN": F(NO_ADS, 'Ind. Code art. 35-48 (marijuana now defined at IC 35-48-1.1-29)', 'https://public.courts.in.gov/Decisions/api/Document/Opinion?Id=DmYIl2h3bOKWWdQQvJyPZ_rjZgo14Y_LmDtP2-HSBr7Uf3wsJD127SUP1Lq0Mzh20'),
+    "KS": F(NO_ADS, 'K.S.A. 65-4101(aa) and 21-5706', 'https://kslegislature.gov/li_2022/b2021_22/statute/065_000_0000_chapter/065_041_0000_article/065_041_0001_section/065_041_0001_k/'),
+    "NC": F(NO_ADS, 'N.C.G.S. 90-87(16), 90-94 (Schedule VI), 90-95', 'https://ncleg.gov/EnactedLegislation/SessionLaws/HTML/2021-2022/SL2022-32.html'),
+    "SC": F(NO_ADS, 'S.C. Code §44-53-110(27), §44-53-370', 'https://www.scstatehouse.gov/code/t44c053.php'),
+    "TN": F(NO_ADS, 'Tenn. Code §39-17-402(16) and Schedule VI', '', note=NO_LINK_ADS),
+    "WI": F(NO_ADS, 'Wis. Stat. ch. 961 (§961.41', 'https://docs.legis.wisconsin.gov/document/acts/2019/68,54n'),
+    "WY": F(NO_ADS, 'Wyoming Controlled Substances Act, W.S. 35-7-1001 et seq. (35-7-1031(c))', '', note=NO_LINK_ADS),
+}
+
+for _code, _fact in ADVERTISING.items():
+    QUICK[_code]["advertising"] = _fact

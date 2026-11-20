@@ -21,21 +21,21 @@
   - data/clean/nj_crc_permits.csv keeps its own schema and is not one of the three 43-column tables, so it carries no standard_type itself. The NJ rows built FROM it do: `python3 scripts/add_standard_type.py --apply` is the last step of the New Jersey pipeline.
 
 ## Next
-1. Post-election re-check: **Idaho HJR 4 — checked 13 Nov 2026, NOT yet certified, re-check on or after 24 Nov 2026.** Idaho HJR 4 was the only 2026 cannabis-related measure on any state ballot (the 2026 Idaho Medical Cannabis Act failed to qualify on 14 July 2026; HANDOFF records that Florida and Arkansas had none). As of 13 Nov the Secretary of State's press site carries no state canvass or certification — its most recent items are county-level and the counts are still moving: "Latah County Recount Complete" (11 Nov 2026) and "Bannock County Reports Additional Election Day Ballots" with a vote-margin correction (10 Nov 2026). Idaho Code §34-1211 requires the State Board of Canvassers to meet "within twenty-one (21) days after the general election", so certification is due by **24 Nov 2026** (https://legislature.idaho.gov/statutesrules/idstat/Title34/T34CH12/SECT34-1211/).
+1. Post-election re-check: **Idaho HJR 4 — checked 13 Nov and again 20 Nov 2026, NOT yet certified, re-check on or after 24 Nov 2026.** On 20 Nov the official results page (voteidaho.gov) still headed the 3 Nov 2026 results "Unofficial Results". The Cannabis-Database environment now allows sos.idaho.gov and voteidaho.gov; the press pages live on press.sos.idaho.gov and press.voteidaho.gov, which are not yet allowed. Idaho HJR 4 was the only 2026 cannabis-related measure on any state ballot (the 2026 Idaho Medical Cannabis Act failed to qualify on 14 July 2026; HANDOFF records that Florida and Arkansas had none). As of 13 Nov the Secretary of State's press site carries no state canvass or certification — its most recent items are county-level and the counts are still moving: "Latah County Recount Complete" (11 Nov 2026) and "Bannock County Reports Additional Election Day Ballots" with a vote-margin correction (10 Nov 2026). Idaho Code §34-1211 requires the State Board of Canvassers to meet "within twenty-one (21) days after the general election", so certification is due by **24 Nov 2026** (https://legislature.idaho.gov/statutesrules/idstat/Title34/T34CH12/SECT34-1211/).
    - **The Idaho report is now past its own expiry and one of its statements is stale.** reports/regions/8-mountain/idaho/idaho-audited.html says on its face: "Do not carry this file forward after 3 November 2026 without replacing the HJR 4 passages with certified Secretary of State / VoteIdaho results." Its Part 0 / 1.9 wording — HJR 4 "on 3 Nov 2026 ballot, not yet voted on" — is no longer true: the vote has happened and only the result is pending. Part 1.2's discipline still holds exactly as written ("No constitutional amendment limiting legalisation currently in force; only PROPOSED HJR 4"), because an uncertified measure is not in force. The report is deliberately NOT edited yet: the plan is to replace those passages once there is a certified result to put in them, and a two-step edit would put an uncertified outcome into an audited file. Until then HJR 4 must be described as voted on 3 Nov 2026 with the result uncertified, never as pending a vote and never with an outcome.
    - **The home-page map carries Idaho too** (scripts/legal_status_data.py, row ID), and so does the Laws tab's medical row (scripts/quick_reference_data.py, MEDICAL["ID"]). Its note says HJR 4 was voted and is uncertified. Update it in the same change as the report, then re-run build_legal_status.py and build_site_data.py.
    - Do not take a result from the unofficial county totals. A recount has already changed one county's count, and the project's rule against reconciling two differently-dated figures applies to election returns as much as to licence counts.
 2. The remaining **1,006** county gaps (CA 275, CO 240, NY 196, HI 64, FL 59, TX 51, IL 36, ME 23, PA 22, MO 11, AL 9, CT 5, VA 5, MD 3, MA 2, RI 2, NJ 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish. Down from 1,133: New Jersey's permits closed 86, Connecticut's villages 8, and fixing the wrong-state geocode query closed 34 in Texas.
-3. Resolve the licence numbers **PA and DE** do not publish — they publish none anywhere found so far. **NJ and MD are DONE**: NJ's 655 licences carry the CRC's real numbers, and MD's 191 carry the MCA's (see "New Jersey: rebuilt from the permit PDFs" and "Maryland publishes licence numbers after all" below).
+3. Resolve the licence numbers **PA and DE** do not publish — they publish none anywhere found so far. Checked again 20 Nov 2026 for Delaware: OMC's Dispensaries page lists names and addresses with no licence numbers, and its lottery-selected applicant list (licLot-List.pdf) is a scanned image with no text layer. Reading it would need OCR, which risks misread names and numbers, so nothing was taken from it. **NJ and MD are DONE**: NJ's 655 licences carry the CRC's real numbers, and MD's 191 carry the MCA's (see "New Jersey: rebuilt from the permit PDFs" and "Maryland publishes licence numbers after all" below).
 4. DONE (14 Nov 2026) — see "The USDA hemp list: 25 jurisdictions to 50" below. 2,009 federal hemp licences built in, taking coverage from 25 of 51 jurisdictions to 50.
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They now cover eight facts per state (possession, home grow, tax, regulator, where it may be used, employment, driving, and who qualifies for medical use); packaging and advertising, pending bills and local taxes are still to come, and each tab says so.
+8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They now cover ten facts per state (possession, home grow, tax, regulator, where it may be used, employment, driving, who qualifies for medical use, edibles and advertising); wider packaging rules, pending bills and local taxes are still to come, and each tab says so.
 
 9. **Turn on the daily update** — BUILT 19 Nov 2026, NOT YET RUNNING (see "The daily update" below). Three steps, all yours: merge to the default branch (scheduled workflows only run there); to publish the site, set Settings > Pages to "GitHub Actions" and add the repository variable `DEPLOY_SITE` = `true`; and check the first run's summary. GitHub Pages on a private repository needs a paid plan.
 
-10. **Approve one official host: knowthefactsmmj.com** (the Florida Department of Health's medical marijuana site, where OMMU publishes its weekly update). Florida's patient count (943,271, 23 Oct 2026) comes from it, but the host is not on domains/all-domains.txt, and adding it also needs a `WebFetch(domain:knowthefactsmmj.com)` rule in .claude/settings.json, which the session was not permitted to edit. Until then the figure shows with "no official link captured yet" and a note naming the source. Once added, put the URL back in scripts/market_data.py (FL.patients) and rebuild.
+10. DONE (20 Nov 2026, at your request): **knowthefactsmmj.com approved** as an official host (the Florida Department of Health's medical marijuana site, where OMMU publishes its weekly update). It is in domains/all-domains.txt (now 1,258 sites) and the Florida section of domains/MASTER_DOMAINS.md, and has a `WebFetch(domain:knowthefactsmmj.com)` rule in .claude/settings.json. Florida's patient count (943,271, 23 Oct 2026) now links to https://knowthefactsmmj.com/about/weekly-updates/.
 
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
@@ -332,6 +332,99 @@ reference (official link, citation guard, figure guard). The table now holds 408
   Checked in headless Chromium for California, Ohio, Nebraska, Texas (held back), Idaho and Wyoming
   on a phone, with no page errors and no sideways scroll. verify.py passes.
 
+## Held-back facts released after reading the official text (20 Nov 2026)
+
+With the new environment's hosts, held-back facts in the reachable states were read in the
+official text:
+
+- **Published:**
+  - Arizona's qualifying conditions (§36-2801, azleg.gov) and patient employment protection
+    (§36-2813(B)).
+  - Nevada's pre-employment screening rule (NRS 613.132), with its exceptions.
+  - New Mexico's patient employment protection (§26-2B-9, from RLD's copy of Article 2B).
+  - Iowa's advertising rule (§124E.7(11), §124E.9(11): the department sets the restrictions).
+- **Strengthened reason, still held back:** Arkansas edibles. The DFA's compilation of the
+  amendment and rules gives no milligram limit either.
+- **Not reachable from this session:** New Mexico driving (§66-8-102; NMOneSource shows a bot
+  check) and Arkansas driving (§5-65-103; the Arkansas Code is not on an allowed host).
+
+The quick reference now holds 510 facts, 79 held back.
+
+## Laws tab: advertising (20 Nov 2026)
+
+A tenth law topic: **advertising**, in `ADVERTISING` in `scripts/quick_reference_data.py`. You
+chose (20 Nov) to publish only rules confirmed from an official source, the same as every other
+topic, although most states would show a gap. The quick reference now holds 510 facts.
+
+- **12 states with rules published, 8 with no legal market ("None"), 31 held back.** Most reports
+  name the advertising rule (a CMR chapter, an ARM or R number) without confirming what it requires,
+  or mark the detail "Verify".
+- **Read in the official text on 20 Nov 2026:**
+  - Arizona §36-2859: under-21 targeting ban, 73.6% audience rule, 1,000-ft billboard buffer,
+    warning.
+  - Arkansas 20 CAR §810-1701: 30%-under-18 audience cap, 1,000 ft from schools and daycares,
+    warnings.
+  - Delaware 4 Del.C. §1331(15)-(16): the Commissioner must restrict advertising; the regulation's
+    detail is unconfirmed.
+  - Florida §381.986(8)(h): nothing visible from public places except the dispensary sign; internet
+    ads Department-approved.
+  - New Mexico §26-2C-20: RLD's copy.
+  - Nevada NRS 678B.520(4): child-appeal ban. §678B.530 was also read, but it is not cited in the
+    audited report, so the citation guard keeps it off.
+- **From the report's confirmed rows:**
+  - Massachusetts 935 CMR 500.105(4) and the 2026 discount rule.
+  - Maine 28-B §702.
+  - Ohio ORC 3796.32: prior approval; billboard, broadcast and transit bans.
+  - Rhode Island 560-RICR-10-10-2 §2.8: 85% audience rule, 500 ft from schools.
+  - Utah §4-41a-109: a general ban.
+  - Washington WAC 314-55-155.
+- **Held back with a specific reason** where the report confirms only a fragment: California (a
+  2027 beverage provision), Illinois (SB 3222's copy-cat ban), Connecticut (discount ads),
+  Kentucky (the rule's scope only), New Jersey (71.6% from a reproduction), DC (packaging only),
+  Maryland (SB 594 changed the rules, not stated). The rest carry a general reason.
+- The Laws tab's "not covered yet" list is now: packaging and labelling beyond the edible limits,
+  and pending bills. Checked in headless Chromium for Arizona, Rhode Island, California (held
+  back) and Wyoming. verify.py passes.
+
+## Laws tab: edibles (20 Nov 2026)
+
+A ninth law topic on every state's Laws tab: **edibles**, meaning the THC limits per serving and
+per package, plus the product rules that go with them (shape and candy bans, forms allowed). It is
+in `EDIBLES` in `scripts/quick_reference_data.py`, under the same checks as the rest. The quick
+reference now holds 459 facts.
+
+- **37 published, 14 held back.** A limit is published only where the report ties it to an
+  official statute, rule or regulator page. Nevada (NRS 678D.420(1), (2)(e)) and Delaware
+  (4 Del.C. §1331) were also read online. Hemp products follow other rules and are left out.
+- **A report that found no limit is held back, not read as "none"**: DC, Missouri, New Hampshire,
+  West Virginia, Hawaii, Louisiana and Utah. Each note says what the report did find.
+- Held back for the source:
+  - Colorado: rules read via Cornell.
+  - Michigan: CRA bulletin via a secondary reproduction.
+  - Arkansas: a secondary claim only.
+  - Montana: HB 636 not yet opened in official text.
+  - Minnesota: only hemp-edible figures in the report.
+  - Ohio: medical product forms only.
+  - Nebraska: no dispensary licensed.
+- Partial, saying so in the note:
+  - California: 10 mg per serving from the official bill digest; the 100 mg package rule was read
+    only from an unofficial copy.
+  - New York: 100 mg per package is secondary-only.
+  - Kentucky: no package limit confirmed.
+  - South Dakota: 50 mg per serving under the 2023 rules, while a labelling rule still says 10 mg.
+- Shapes that differ from the usual 10 mg / 100 mg:
+  - Alabama: no food edibles; gelatin cubes and lozenges only.
+  - Iowa: no edibles at all (§124E.7(12)(c)).
+  - Pennsylvania: no commercial edibles (Act 16 §304).
+  - North Dakota: square lozenges only, 5 mg / 50 mg.
+  - Oklahoma: no milligram cap; HB 4454's child-appeal and labelling rules apply from 1 Nov 2026.
+  - Florida: 10 mg / 200 mg.
+  - Maine: 10 mg / 200 mg.
+  - Connecticut, Massachusetts and Vermont: 5 mg per serving.
+- The Laws tab's "not covered yet" list is now: advertising, packaging and labelling beyond the
+  edible limits, and pending bills. Checked in headless Chromium for Massachusetts, Pennsylvania,
+  Michigan (held back) and Wyoming. verify.py passes.
+
 ## Quick reference: facts that rested only on Justia or FindLaw copies (20 Nov 2026)
 
 CLAUDE.md: "News, blogs, law firms, Justia, FindLaw, LegiScan and Wikipedia are never a source of
@@ -355,14 +448,45 @@ itself state the fact. Four reports say so outright, and those were reviewed fac
 - **Wyoming**: possession tiers and driving were read from FindLaw and Justia. Driving: **now held
   back**. Possession drops the 3 oz misdemeanour line and says why in its note.
 
-The quick reference now holds 408 facts, 38 held back, 11 without an official link. **Still to
-review by hand** (not known to be wrong): facts whose cited sections a report lists among those it
-did not open in official text. These are Arkansas driving (§5-65-103) and public use (Act 271),
-Arizona public use (§36-2853), Delaware's Ch. 49A citations (OMC confirms the possession limits
-themselves), Florida driving (§316.193, "partly resolved"), Iowa possession and public use (Code
-2026 not re-opened), New Mexico possession, home grow, tax and public use (NMOneSource "direct
-opens"), and Nevada tax (§372A.290). For each, the question is whether the official page the
-fact links to states the fact itself.
+**Second pass, same day: the other candidates, read in the official text.** Facts whose cited
+sections a report lists among those it did not open in official text were each read on an official
+page. The session's network did not reach these hosts at first; a new cloud environment,
+**Cannabis-Database**, was created (with your approval) allowing 11 official hosts: www.rld.nm.gov,
+nmonesource.com, www.azleg.gov, omc.delaware.gov, revenue.delaware.gov, delcode.delaware.gov,
+www.leg.state.fl.us, www.legis.iowa.gov, www.leg.state.nv.us, www.dfa.arkansas.gov and
+www.arkleg.state.ar.us. Results:
+
+- **Confirmed as written:** Arizona public use (§36-2853(C) verbatim), Florida driving (2026
+  §316.193(1): impairment for drugs, numeric limits for alcohol only), Iowa possession, home grow and
+  public use (§124E.9(14)-(15), §124E.6, §§124E.7(5), 124E.9(5), §124.401(5)), New Mexico possession
+  and home grow (§26-2C-25(A)(2) and (A)(9), word for word), Delaware possession (§4701(36)) with
+  the 6 oz medical note (§4903A).
+- **Corrected link:** Florida driving pointed at §381.986 (the medical statute); it now points at
+  §316.193. Iowa's links now point at the current Code, not the 2024 one. New Mexico's possession,
+  home grow and public use now link to the Regulation and Licensing Department's own copy of the Act
+  (posted August 2023), since NMOneSource answers automated requests with a bot check.
+- **Reworded to what the official text says:**
+  - Arkansas public use: Amendment 98 §6(a)(2), (a)(4). The tobacco rule covers smoking only, and the
+    list adds school buses, daycares and military property.
+  - Delaware employment: §1304, and §4905A(a)(3) for patients, which has an exception for use or
+    impairment at work.
+  - Delaware home grow: OMC's words. The medical-patient claim, which rested on an unchecked
+    §4764A(c), is dropped.
+  - New Mexico public use: §26-2C-26(A)-(B), and RLD's "only at a licensed consumption lounge or at
+    an individual's residence".
+- **Figures dropped because no official text gives them:**
+  - Delaware's per-container beverage tax and its 21 Oct 2026 date. §1382 confirms only that infused
+    beverages are outside the 15% tax.
+  - New Mexico's year-by-year excise rates. RLD gives "12 percent … until July 1, 2025 … 18 percent
+    beginning July 1, 2030"; the steps between are in §7-42-3, not yet read.
+  - Nevada's "at least 6.85%" sales tax. It is not in chapter 372A, although the report credits it
+    there.
+- **Held back:** Arkansas driving. The official Amendment 98 compilation says only that a patient may
+  not drive under the influence; §5-65-103 (the per se question) is in no official source opened.
+
+Each re-read fact's note says "Re-read in the official text on 20 Nov 2026". The quick reference now
+holds 408 facts, 39 held back, 11 without an official link. Downloaded pages were kept in the
+session scratchpad only, not committed.
 
 ## Business tab per state, and the glossary (20 Nov 2026)
 
@@ -424,8 +548,8 @@ whatever measure the state publishes, and **registered medical patients**. Both 
 - **A number guard.** The build refuses any figure whose numbers do not appear verbatim in
   that state's own audited report. Tested by changing one digit in Colorado's sales and one in
   New Jersey's patients: both rejected.
-- **One link withheld:** Florida's patient count comes from knowthefactsmmj.com (the Department of
-  Health's site), which is not yet on the official-domain list (item 10).
+- **Florida's patient count** comes from knowthefactsmmj.com (the Department of Health's site). It
+  was withheld until that host was approved on 20 Nov 2026 (item 10) and now carries its link.
 - `verify.py` checks the table and that the site matches it. `update_all.py` runs
   `build_market.py` daily. Checked in headless Chromium: Colorado, Oklahoma (tax, not sales),
   Texas (both held back), Florida (no link), Idaho (no market) and Alaska on a phone. No errors.

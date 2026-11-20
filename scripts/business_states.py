@@ -69,4 +69,4 @@ def derive(b):
     named = (_named(b.get("states_served")) | _named(b.get("scope")) | (codes & set(STATES))) - based
     out = {s: "based" for s in based}
     out.update({s: "named" for s in named})
-    return out
+    return dict(sorted(out.items()))  # sets iterate in a per-run order; keep the output stable

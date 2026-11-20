@@ -300,10 +300,13 @@ function laws(panel) {
     block("Employment", qf.employment),
     block("Driving", qf.driving),
     block("Who qualifies for medical use", qf.medical),
+    block("Edibles", qf.edibles),
+    block("Advertising", qf.advertising),
     block("Who regulates", qf.regulator),
     el("div", { class: "panel" },
       el("p", { style: "margin:0" }, el("strong", { text: "Not covered yet: " }),
-        "packaging and advertising, and pending bills. The audited report covers them; "
+        "packaging and labelling beyond the edible limits, and pending bills. The audited report "
+        + "covers them; "
         + "they are not yet turned into sourced, dated statements, and an unsourced summary of the "
         + "law would be worse than none.")),
   );
