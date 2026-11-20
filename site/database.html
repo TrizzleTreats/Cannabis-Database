@@ -44,6 +44,10 @@
         <label for="category">Category</label>
         <select id="category"></select>
       </div>
+      <div class="field" id="serves-field" hidden>
+        <label for="serves">In or serving</label>
+        <select id="serves"></select>
+      </div>
       <button type="button" class="plain" id="reset">Reset</button>
       <button type="button" class="plain" id="export">Export CSV</button>
     </div>
@@ -57,16 +61,16 @@
 
 <script type="module">
 import { loadJSON, fmt, el, statusBadge, readParams, writeParams, debounce,
-         toCSV, download, sortRows, mountFooter, mountTopbar } from "./assets/app.js";
+         toCSV, download, sortRows, mountFooter, mountTopbar,
+         loadLicence, licenceDetail, profileHref } from "./assets/app.js";
 
 const DEFAULTS = { mode: "operators", state: "", q: "", type: "", status: "Active + Provisional",
-                   county: "", category: "", sort: "legal_name", dir: "ascending" };
+                   county: "", category: "", serves: "", sort: "legal_name", dir: "ascending" };
 const S = readParams(DEFAULTS);
 const $ = (id) => document.getElementById(id);
 
 let summary = null;
 let rows = [];          // the loaded set for the current mode/state
-let detailCache = {};   // state -> full detail records, loaded on demand
 let chosen = null;
 
 const OPERATOR_COLUMNS = [
@@ -85,6 +89,7 @@ const SERVICE_COLUMNS = [
   { key: "category", label: "Category" },
   { key: "home_state", label: "Based" },
   { key: "states_served", label: "Serves" },
+  { key: "states", label: "States", get: (r) => Object.keys(r.states || {}).join(", ") },
   { key: "website", label: "Website" },
 ];
 
@@ -132,8 +137,11 @@ function matches(r) {
     if (S.status === "Active + Provisional") {
       if (r.standard_status !== "Active" && r.standard_status !== "Provisional") return false;
     } else if (S.status && (r.standard_status || "") !== S.status) return false;
-  } else if (S.category && r.category !== S.category) {
-    return false;
+  } else {
+    if (S.category && r.category !== S.category) return false;
+    // The same derived states as the state page's Business tab (scripts/business_states.py):
+    // an address there, or the state named in the entry's own service area.
+    if (S.serves && !(r.states && r.states[S.serves])) return false;
   }
   return true;
 }
@@ -171,7 +179,7 @@ function renderTable(visible) {
         return el("td", {}, el("a", { href: r.website, target: "_blank", rel: "noopener" },
           r.website.replace(/^https?:\/\//, "").replace(/\/$/, "")));
       }
-      return el("td", { class: c.cls || "" }, r[c.key] || "—");
+      return el("td", { class: c.cls || "" }, (c.get ? c.get(r) : r[c.key]) || "—");
     });
     const tr = el("tr", {
       class: chosen === r ? "chosen" : "",
@@ -199,49 +207,13 @@ async function openDetail(r) {
   if (S.mode === "services") return renderServiceDetail(panel, r);
 
   panel.replaceChildren(el("p", { class: "loading", text: "Loading the full record…" }));
-  if (!detailCache[S.state]) {
-    const data = await loadJSON(`licences/${S.state}.detail.json`);
-    detailCache[S.state] = Object.fromEntries(data.licences.map((x) => [x.licence_id, x]));
-  }
-  renderLicenceDetail(panel, detailCache[S.state][r.licence_id] || r);
+  const full = await loadLicence(r.state, r.licence_id, summary);
+  renderLicenceDetail(panel, full || r);
 }
 
-const row = (label, value) => (value ? [el("dt", { text: label }), el("dd", {}, value)] : []);
-
 function renderLicenceDetail(panel, d) {
-  // extra_details is "key=value; key=value" — the per-row flags the build wrote.
-  const flags = (d.extra_details || "").split("; ").filter(Boolean);
-  panel.replaceChildren(
-    el("h3", { text: d.legal_name || "(the regulator publishes no name)" }),
-    el("p", { class: "sub" }, [d.dba && `trading as ${d.dba}`, d.licence_id].filter(Boolean).join(" · ")),
-    el("dl", {},
-      row("Licence type", d.licence_type),
-      row("Standard type", d.standard_types_all || d.standard_type),
-      row("Programme", d.program),
-      row("Status", d.status),
-      row("Standard status", d.standard_status || "not published"),
-      row("Tier", d.tier),
-      row("Issued", d.issue_date),
-      row("First issued", d.first_issue_date),
-      row("Expires", d.expiry_date),
-      row("Address", [d.street_address, d.town, d.county && `${d.county} County`].filter(Boolean).join(", ")),
-      row("Town as listed", d.town_as_listed !== d.town ? d.town_as_listed : ""),
-      row("County source", d.county_source),
-      row("Location basis", d.location_basis),
-      row("Website", d.website && el("a", { href: d.website, target: "_blank", rel: "noopener" }, d.website)),
-      row("Part of", d.linked_group && `${d.linked_group} (${d.licences_in_group} licences)`),
-    ),
-    flags.length
-      ? el("div", { class: "flags" },
-          el("b", { text: "What this row says about itself" }),
-          el("ul", { style: "margin:.4rem 0 0; padding-left:1.1rem" },
-            flags.map((f) => el("li", { text: f }))))
-      : null,
-    el("p", { class: "source" },
-      d.source || "",
-      d.source_url ? [" — ", el("a", { href: d.source_url, target: "_blank", rel: "noopener" }, "source")] : "",
-      d.data_as_of ? ` · read ${d.data_as_of}` : ""),
-  );
+  panel.replaceChildren(...licenceDetail(d),
+    el("p", {}, el("a", { class: "cta", href: profileHref(d) }, "Open the full profile →")));
 }
 
 function renderServiceDetail(panel, b) {
@@ -288,6 +260,10 @@ function refreshFilters(visible) {
   } else {
     fillSelect($("category"), Object.entries(summary.businesses.by_category),
                { chosenValue: S.category });
+    const serving = {};
+    for (const r of rows) for (const st of Object.keys(r.states || {})) serving[st] = (serving[st] || 0) + 1;
+    fillSelect($("serves"), Object.entries(serving).sort((a, b) => a[0].localeCompare(b[0])),
+               { all: "Any state", chosenValue: S.serves });
   }
 }
 
@@ -298,6 +274,7 @@ function setModeChrome() {
     $(id).hidden = !operators;
   }
   $("category-field").hidden = operators;
+  $("serves-field").hidden = operators;
   $("blurb").textContent = operators
     ? "Every licensed cannabis and hemp operator this project has been able to read from an "
       + "official source, with the regulator's own licence name and status beside the standard "
@@ -320,7 +297,13 @@ async function apply() {
       `Could not load the data (${err.message}). Run scripts/build_site_data.py.`));
     return;
   }
-  const visible = sortRows(rows.filter(matches), S.sort, S.dir);
+  // A column with its own formatter sorts by what it shows, not by the raw value.
+  const col = columns().find((c) => c.key === S.sort);
+  const visible = col?.get
+    ? rows.filter(matches).map((r) => [col.get(r), r])
+        .sort((a, b) => (a[0] || "\uffff").localeCompare(b[0] || "\uffff") * (S.dir === "descending" ? -1 : 1))
+        .map(([, r]) => r)
+    : sortRows(rows.filter(matches), S.sort, S.dir);
   refreshFilters(visible);
   renderTable(visible);
   const total = S.mode === "operators"
@@ -347,7 +330,7 @@ function wire() {
   $("state").addEventListener("change", (e) => { S.state = e.target.value; S.county = ""; apply(); });
   $("q").addEventListener("input", debounce((e) => { S.q = e.target.value; apply(); }));
   for (const [id, key] of [["type", "type"], ["status", "status"], ["county", "county"],
-                           ["category", "category"]]) {
+                           ["category", "category"], ["serves", "serves"]]) {
     $(id).addEventListener("change", (e) => { S[key] = e.target.value; apply(); });
   }
   $("reset").addEventListener("click", () => {
@@ -356,7 +339,7 @@ function wire() {
     apply();
   });
   $("export").addEventListener("click", () => {
-    const cols = columns().map((c) => ({ label: c.label, get: (r) => r[c.key] ?? "" }));
+    const cols = columns().map((c) => ({ label: c.label, get: c.get || ((r) => r[c.key] ?? "") }));
     const name = S.mode === "operators" ? `licences-${S.state || "all"}.csv` : "industry-services.csv";
     download(name, toCSV(window.__visible || [], cols));
   });

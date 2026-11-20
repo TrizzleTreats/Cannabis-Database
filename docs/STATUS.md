@@ -1,14 +1,14 @@
-# Status (13 November 2026)
+# Status (19 November 2026)
 
 ## Done
 - Research and audits for all 50 states + DC, federal, the national business directory and all 10 regional business directories (California separate).
 - Every report checked for completeness in Claude chat. Re-checked in Claude Code on 12 Nov 2026: all 64 files in docs/FILE_INDEX.md are present, none missing, none truncated, nothing on disk outside the index.
 - Git repository started (local only, no remote). data/private/ is git-ignored and nothing under it is tracked. CLAUDE.md now names the private columns that live inside tracked data/clean/ files, so the public build has something authoritative to strip against.
 - Master list of official sites, allowed to Claude Code in .claude/settings.json as WebFetch(domain:...) rules — **1,257 hosts**. Five were added during the build: paauditor.b-cdn.net, content.govdelivery.com, www.arcgis.com, maryland.maps.arcgis.com, and data.mmcp.ms.gov (Mississippi's cannabis transparency portal, 14 Nov 2026). einpresswire.com was deliberately left out as a secondary news reprint.
-- New England licence table rebuilt from data/raw/ on 12 Nov 2026 (scripts/build_new_england.py): 3,917 to 4,267 rows. CT 253 to 498, MA 967 to 1,072; ME, VT, RI and NH carried forward unchanged because their raw files hold nothing the table did not already have. A `standard_status` column was added so one search spans all six states.
+- New England licence table rebuilt from data/raw/ on 12 Nov 2026 (scripts/build_new_england.py): 3,917 to 4,267 rows, then **4,236 on 19 Nov 2026 after 31 regulator test records were removed** (see "Test records" below). CT 253 to 498 (470 without its test records), MA 967 to 1,072; ME, VT, RI and NH carried forward unchanged because their raw files hold nothing the table did not already have. A `standard_status` column was added so one search spans all six states.
 - Mid-Atlantic raw licence data captured for all six jurisdictions (scripts/fetch_raw.py, declared in scripts/sources.json, logged in data/raw/manifest.csv). 23 of 24 declared sources fetched.
 - Mid-Atlantic clean table built: data/clean/mid_atlantic_licences.csv, 4,236 rows (scripts/build_mid_atlantic.py). NY 3,056, NJ 678, PA 197, MD 191, DC 100, DE 14. Same columns as the New England table, in the same order, so the two union cleanly. NJ was rebuilt from its permit PDFs on 12 Nov 2026 (586 → 678) and PA's dispensary source moved to the DOH PDF (181 → 197).
-- Regions 3-9: data/clean/regions_3_to_9_licences.csv, 44,203 rows (scripts/build_states.py), one declarative spec per state plus a USDA federal-hemp spec. CA 20,984, TX 12,853, OR 3,701, CO 1,832, WA 1,226, FL 289, IL 289, MO 238, OH 232, NV 345, HI 94, AL 85, VA 26, and 2,009 USDA hemp producers across 25 further jurisdictions. Same column set as the other two tables; all three union to 52,706 rows across **50 of the 51 jurisdictions**.
+- Regions 3-9: data/clean/regions_3_to_9_licences.csv, 44,203 rows (scripts/build_states.py), one declarative spec per state plus a USDA federal-hemp spec. CA 20,984, TX 12,853, OR 3,701, CO 1,832, WA 1,226, FL 289, IL 289, MO 238, OH 232, NV 345, HI 94, AL 85, VA 26, and 2,009 USDA hemp producers across 25 further jurisdictions. Same column set as the other two tables; all three union to 52,706 rows (**52,675** since the test records came out on 19 Nov 2026) across **50 of the 51 jurisdictions**.
 - Business directory built: all 11 audited directories parsed into data/clean/businesses_master.csv, 355 to 2,087 entries, every row on HANDOFF's 17 standard categories (scripts/build_businesses.py). California 371, National 237, Great Lakes 196, Plains 192, Pacific 192, Southeast 189, Mid-Atlantic 173, Southwest 165, South Central 130, Mountain 124, New England 118.
 - Business-to-licence matching done (scripts/match_businesses_to_licences.py): 22 directory entries hold a state licence under the same name, flagged on the row with their licence numbers and written to data/clean/business_licence_matches.csv.
 - USDA hemp list (May 2026) parsed.
@@ -23,14 +23,19 @@
 ## Next
 1. Post-election re-check: **Idaho HJR 4 — checked 13 Nov 2026, NOT yet certified, re-check on or after 24 Nov 2026.** Idaho HJR 4 was the only 2026 cannabis-related measure on any state ballot (the 2026 Idaho Medical Cannabis Act failed to qualify on 14 July 2026; HANDOFF records that Florida and Arkansas had none). As of 13 Nov the Secretary of State's press site carries no state canvass or certification — its most recent items are county-level and the counts are still moving: "Latah County Recount Complete" (11 Nov 2026) and "Bannock County Reports Additional Election Day Ballots" with a vote-margin correction (10 Nov 2026). Idaho Code §34-1211 requires the State Board of Canvassers to meet "within twenty-one (21) days after the general election", so certification is due by **24 Nov 2026** (https://legislature.idaho.gov/statutesrules/idstat/Title34/T34CH12/SECT34-1211/).
    - **The Idaho report is now past its own expiry and one of its statements is stale.** reports/regions/8-mountain/idaho/idaho-audited.html says on its face: "Do not carry this file forward after 3 November 2026 without replacing the HJR 4 passages with certified Secretary of State / VoteIdaho results." Its Part 0 / 1.9 wording — HJR 4 "on 3 Nov 2026 ballot, not yet voted on" — is no longer true: the vote has happened and only the result is pending. Part 1.2's discipline still holds exactly as written ("No constitutional amendment limiting legalisation currently in force; only PROPOSED HJR 4"), because an uncertified measure is not in force. The report is deliberately NOT edited yet: the plan is to replace those passages once there is a certified result to put in them, and a two-step edit would put an uncertified outcome into an audited file. Until then HJR 4 must be described as voted on 3 Nov 2026 with the result uncertified, never as pending a vote and never with an outcome.
+   - **The home-page map carries Idaho too** (scripts/legal_status_data.py, row ID), and so does the Laws tab's medical row (scripts/quick_reference_data.py, MEDICAL["ID"]). Its note says HJR 4 was voted and is uncertified. Update it in the same change as the report, then re-run build_legal_status.py and build_site_data.py.
    - Do not take a result from the unofficial county totals. A recount has already changed one county's count, and the project's rule against reconciling two differently-dated figures applies to election returns as much as to licence counts.
-2. The remaining **1,005** county gaps (CA 275, CO 240, NY 196, HI 64, FL 59, TX 51, IL 36, ME 23, PA 22, MO 11, AL 9, CT 5, VA 4, MD 3, MA 2, RI 2, NJ 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish. Down from 1,133: New Jersey's permits closed 86, Connecticut's villages 8, and fixing the wrong-state geocode query closed 34 in Texas.
+2. The remaining **1,006** county gaps (CA 275, CO 240, NY 196, HI 64, FL 59, TX 51, IL 36, ME 23, PA 22, MO 11, AL 9, CT 5, VA 5, MD 3, MA 2, RI 2, NJ 2, DE 1). Every one carries a `county unavailable=` note saying why, so none is a silent blank. Most need an address the regulator does not publish. Down from 1,133: New Jersey's permits closed 86, Connecticut's villages 8, and fixing the wrong-state geocode query closed 34 in Texas.
 3. Resolve the licence numbers **PA and DE** do not publish — they publish none anywhere found so far. **NJ and MD are DONE**: NJ's 655 licences carry the CRC's real numbers, and MD's 191 carry the MCA's (see "New Jersey: rebuilt from the permit PDFs" and "Maryland publishes licence numbers after all" below).
 4. DONE (14 Nov 2026) — see "The USDA hemp list: 25 jurisdictions to 50" below. 2,009 federal hemp licences built in, taking coverage from 25 of 51 jurisdictions to 50.
 5. Finish Regions 3-9: 13 of 39 jurisdictions are built, 26 remain. Those 26 were swept directly and publish no licensee list at all — see the systematic negative result below. Finishing them needs a data request to each regulator or a per-licensee portal crawl, not more parsing. scripts/sources.json plus a spec in scripts/build_states.py is the pattern for any that do turn out to publish one.
 6. DONE (13 Nov 2026) — see "Connecticut's villages" below. 13 rows went to 5, and the 5 left are premises in other states that the Census geocoder cannot match at all.
 7. DONE (13 Nov 2026) — see "The business directory: profiles, California's contact detail" below. What is left for a person, not a script: 4 licence matches whose geography cannot be checked, 11 that match only a licensee's trading name, and the 242 California entries the audit still marks unverified.
-8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page** and the terms page (see "The site" below). Still to build: the home page's legal-status map, the county and city pages with their maps, licence profile pages, and the Laws / Taxes / Market tabs on each state page — those three rest on the law rather than licence data, and each says so on its face rather than showing an empty frame.
+8. Build the site — IN PROGRESS. Done: the public data build, the Database page, **50 state pages, the federal page**, the terms page (see "The site" below) **the home page's legal-status map** (see "The legal-status map" below), and **licence profile pages, county pages and the state Overview's county map** (see "Profiles and county pages" below). **Town pages are now built too** (see "Town pages and local rules" below), **and the Market tab** (see "The Market tab" below). Every tab and page level in HANDOFF's site layout now exists; what each does not cover yet, it says on its face. **The Laws and Taxes tabs and the Overview's quick-reference boxes are now built** (see "State quick reference" below). They now cover eight facts per state (possession, home grow, tax, regulator, where it may be used, employment, driving, and who qualifies for medical use); packaging and advertising, pending bills and local taxes are still to come, and each tab says so.
+
+9. **Turn on the daily update** — BUILT 19 Nov 2026, NOT YET RUNNING (see "The daily update" below). Three steps, all yours: merge to the default branch (scheduled workflows only run there); to publish the site, set Settings > Pages to "GitHub Actions" and add the repository variable `DEPLOY_SITE` = `true`; and check the first run's summary. GitHub Pages on a private repository needs a paid plan.
+
+10. **Approve one official host: knowthefactsmmj.com** (the Florida Department of Health's medical marijuana site, where OMMU publishes its weekly update). Florida's patient count (943,271, 23 Oct 2026) comes from it, but the host is not on domains/all-domains.txt, and adding it also needs a `WebFetch(domain:knowthefactsmmj.com)` rule in .claude/settings.json, which the session was not permitted to edit. Until then the figure shows with "no official link captured yet" and a note naming the source. Once added, put the URL back in scripts/market_data.py (FL.patients) and rebuild.
 
 ## What the build corrected in the research
 These are findings from the official sources themselves, not re-readings of the reports. Each needs folding back into the relevant state report.
@@ -230,6 +235,517 @@ villages" below. The Census geocoder's County Subdivisions layer resolves a vill
 municipality at address level, which beat the village-level assumption: 56 River Rd, Cornwall
 Bridge is in Sharon, not Cornwall, and 37 Willow Street settles which of Stonington and Groton
 Mystic's address sits in. 13 rows went to 5; the 5 left are premises in other states.
+
+## Laws tab: where it may be used, and employment (20 Nov 2026)
+
+Two more law topics on every state's Laws tab, on the same terms as the quick reference:
+**where cannabis may be used** (public consumption, vehicles, places it is banned) and
+**employment** (what protection, if any, employees and patients have). They are in `LAW_MORE` in
+`scripts/quick_reference_data.py`, merged into the quick reference, so the build's checks apply to
+them too: an official link, the citation guard (every cited section must be in the state's own
+report), and no text for an unconfirmed fact. The table now holds 306 facts.
+
+- Read from each report's "Employment and drug-testing protections" section and its
+  public-consumption rules (§1.3, Part 12 and the audit rows).
+- **14 of the 102 new facts are held back**, almost all employment rules the report quotes only
+  from a mirror, a bill reproduction, a search excerpt or law-firm analyses:
+  - Employment: Alabama, Arizona, Colorado, Hawaii, Maryland, Missouri, Montana, Nevada, New
+    Mexico, North Dakota, Oklahoma (whose rules changed on 1 Nov 2026).
+  - Public use: Alabama, New York (§222.10 only partly corrected) and West Virginia (a searched
+    absence).
+- **The wording keeps each protection's real reach.** Kentucky's and South Dakota's patients are
+  treated "as if prescribed a pharmaceutical drug" for testing, not given a general shield.
+  Louisiana's protection covers state employers only, and Utah's public employers only.
+  Washington's covers initial hiring. Georgia's public-use ban targets vapour devices, not every
+  form. Where a statute has exceptions not spelled out on the page, a note says to read it in full.
+- The Laws tab's "not covered yet" list is now: driving, packaging and advertising, qualifying
+  conditions, and pending bills. Checked in headless Chromium for California, Arizona and
+  Wyoming on a phone. verify.py passes.
+
+## Laws tab: driving (20 Nov 2026)
+
+A sixth law topic on every state's Laws tab: **driving**, meaning whether the state has a per se
+THC limit (a number in the blood that is an offence by itself), a zero-tolerance rule, or an
+impairment test. It is in `DRIVING` in `scripts/quick_reference_data.py`, under the same checks
+as the rest of the quick reference. The table now holds 357 facts.
+
+- Read from each report's impaired-driving section (Part 12 in most) and its audit rows.
+- **46 published, 5 held back**: Maine, New Hampshire, New Mexico, Texas and Virginia, where the
+  report marks the per se detail unverified or rests it on secondary summaries.
+- **The wording keeps the real shape of each rule.** Per se states give the limit and the sample it
+  is measured in (Illinois 5 ng/mL in whole blood within two hours; Ohio 2 ng/mL; Washington
+  5.00 ng/mL). Colorado's 5 ng/mL is a permissible inference, not a per se limit. Nevada's per se
+  limits now apply to felony DUI only. Zero-tolerance states (Iowa, Indiana, Pennsylvania, Utah)
+  say so, with what they exempt.
+- **Two corrections made while spot-checking citations the token guard cannot test:**
+  - Delaware was first written as purely impairment-based. 21 Del.C. §4177 also makes it an offence
+    to have any amount of a drug in the blood within 4 hours of driving where its use was
+    unlawful; lawful adult or medical use, which the driver must prove, falls outside that rule.
+  - Georgia's any-amount provision (§40-6-391(a)(6)) was narrowed by Love v. State (1999), but the
+    report flags how it is charged today as unverified, so the fact says no more than that.
+- **Every figure in every published fact now has to appear in that state's own report.** A check of
+  all 357 facts found none astray, and `build_quick_reference.py` now refuses a figure (three or
+  more digits, or a decimal) that its report does not hold, the same rule as the market table.
+  A planted "3.00 ng/mL" for Washington and a "$1,250" fine for Alaska were both refused.
+- **The citation guard now tests bare section numbers too** ("§4177", "271 Ga. 398"), which the
+  token pattern used to skip: 414 citation tokens across the quick reference, all found. The market
+  table had no citation guard; it now has the same one (36 tokens, all found). A planted "§4178" for
+  Delaware was refused.
+- The Laws tab's "not covered yet" list is now: packaging and advertising, qualifying conditions,
+  and pending bills. Checked in headless Chromium for Colorado, Illinois, Iowa, Delaware, Georgia,
+  Texas (held back) and Wyoming on a phone, with no page errors and no sideways scroll. verify.py
+  passes.
+
+## Laws tab: who qualifies for medical use (20 Nov 2026)
+
+An eighth law topic on every state's Laws tab: **who qualifies for medical use**, meaning the
+qualifying conditions or, where there is no list, the rule a practitioner applies. It is in
+`MEDICAL` in `scripts/quick_reference_data.py`, under the same checks as the rest of the quick
+reference (official link, citation guard, figure guard). The table now holds 408 facts.
+
+- Read from each report's medical-programme section (§1.4 in most) and its audit rows.
+- **44 published, 7 held back.** A list is published only where the report confirms it from an
+  official source:
+  - Arizona, Mississippi and Texas: the report reads the list from a mirror or a Justia copy of
+    the statute, not the official text (CLAUDE.md: Justia is never a source of truth).
+  - Michigan: the list comes from secondary sources and the audit leaves the section unverified
+    in part.
+  - New Jersey: the list rests on a secondary source, and its stated count (17) does not match the
+    18 conditions it names.
+  - Oregon: the report names ORS 475C.777 but does not reproduce its list; the 2026 HB 4142
+    expansion is worded from a law-firm summary.
+  - Rhode Island: the report quotes only the closing clause of the definition.
+- **Counts are given only where the report confirms the count itself**: Alabama 16, Connecticut 42
+  adult and 11 under-18, Illinois 58, Minnesota 19 named plus practitioner discretion, New Mexico
+  30, Ohio 26, Pennsylvania 24 plus 2 research-only, Iowa 13, Georgia 18, West Virginia 15. Where
+  a list is long or the report gives only part of it, the text says "includes" or "among them"
+  instead of passing a part off as the whole (Missouri, New Mexico, North Dakota, Nevada, Utah,
+  Washington).
+- **No-list states say so** (Delaware since 2024, DC, Maine, Nebraska, New York, Oklahoma,
+  Virginia, and New Hampshire for adults 21+), with the practitioner's test in the law's words.
+- **The 8 states with no programme** say "None", and a note names any narrow CBD or low-THC oil
+  exception, which is not a medical programme. Idaho's row carries the HJR 4 note: change it with
+  the rest of the Idaho rows once the result is certified (Next, item 1).
+- One wording caught on re-reading: Georgia's list was first written as ending with hospice care;
+  the report says only that the 18 items include it.
+- The Laws tab's "not covered yet" list is now: packaging and advertising, and pending bills.
+  Checked in headless Chromium for California, Ohio, Nebraska, Texas (held back), Idaho and Wyoming
+  on a phone, with no page errors and no sideways scroll. verify.py passes.
+
+## Quick reference: facts that rested only on Justia or FindLaw copies (20 Nov 2026)
+
+CLAUDE.md: "News, blogs, law firms, Justia, FindLaw, LegiScan and Wikipedia are never a source of
+truth." Holding back the medical lists that came from mirror copies raised the same question for
+facts already published. Several audit rows mark a statement "Confirmed" when the text was read
+from a Justia republication, and the official link on the site was a programme page that does not
+itself state the fact. Four reports say so outright, and those were reviewed fact by fact:
+
+- **Georgia**: the report lists the live legis.ga.gov text of §§16-12-*, 16-13-*, 31-2A-18 and
+  40-6-391 as still unverified. Employment (§16-12-191(e)) and driving (§40-6-391) were confirmed
+  only from Justia: **now held back**. Possession, home grow, public use and the medical list rest
+  on DPH and GMCC pages and stay.
+- **Mississippi**: "every §41-137, §41-29, §27-72-1 … quotation rests on Justia/FindLaw
+  reproductions except where an official bill text corroborates it." Home grow, public use,
+  employment and driving: **now held back**. Possession keeps the cardholder limits (MMCP and
+  SB 2748) but drops the penalty for a small amount without a card. Tax (Department of Revenue,
+  SOS rules) and regulator stay.
+- **Tennessee**: the report says its Code links are reproductions, "never … official Code
+  citations". Driving: **now held back**. Home grow drops the "production" detail. The rest follow
+  from the legal status the map already shows (no programme, so nothing to grow, use or protect).
+- **Wyoming**: possession tiers and driving were read from FindLaw and Justia. Driving: **now held
+  back**. Possession drops the 3 oz misdemeanour line and says why in its note.
+
+The quick reference now holds 408 facts, 38 held back, 11 without an official link. **Still to
+review by hand** (not known to be wrong): facts whose cited sections a report lists among those it
+did not open in official text. These are Arkansas driving (§5-65-103) and public use (Act 271),
+Arizona public use (§36-2853), Delaware's Ch. 49A citations (OMC confirms the possession limits
+themselves), Florida driving (§316.193, "partly resolved"), Iowa possession and public use (Code
+2026 not re-opened), New Mexico possession, home grow, tax and public use (NMOneSource "direct
+opens"), and Nevada tax (§372A.290). For each, the question is whether the official page the
+fact links to states the fact itself.
+
+## Business tab per state, and the glossary (20 Nov 2026)
+
+- **The Business tab now lists the directory's businesses for each state.** The directories' service
+  areas are free text, and only 76 of 1,158 published entries carried coded states, so
+  `scripts/business_states.py` derives them at build time, conservatively, with the basis for each:
+  - **"Based"**: an address in the state ("City, ST 12345", or "City, ST" where no ZIP is
+    published), a recorded home state, or an entry from the California directory.
+  - **"Named"**: the entry's own service-area or scope text names the state, by full name or
+    capitalised code. "Washington-DC" is read as DC, "Virginia Beach" as Virginia, and
+    "Kansas City" is not read as Kansas.
+
+  Nothing is inferred from a region: a Mid-Atlantic directory entry is not attached to every
+  Mid-Atlantic state. National firms are not attached to every state; each state page counts
+  them separately. 896 of the 1,158 published entries now carry at least one state; the other
+  262 have no address and no state named. The clean data is unchanged; the states are added to
+  `site/data/businesses.json` only. The tab works for states with no licence data too (Alaska shows
+  2), and was checked for Colorado, Alaska and New York on a phone.
+- **Glossary** (`site/glossary.html`, linked from the top bar on every page), as HANDOFF's home page
+  asks. It covers how to read the figures (read and checked dates, "not yet confirmed", "not
+  published", records vs licences, never adding issued/approved/licensed/operating), the four
+  legal-status classes, the 16 standard licence types, the 10 standard statuses and the 17
+  business categories. Every definition follows HANDOFF's own wording and decisions, and federal
+  law is left to the Federal law page. verify.py fails if the glossary's types or statuses ever
+  differ from the project's own lists.
+- **The Database's industry-services view has an "In or serving" state filter** on the same derived
+  states, and a States column (also in the CSV export). Each state's Business tab links to it
+  pre-filtered (`database.html?mode=services&serves=CO` gives the same 65 as Colorado's tab).
+- Fixed: the fourth top-bar link pushed phone pages 5 px too wide. The bar now wraps.
+
+## The Market tab (20 Nov 2026)
+
+Each state page's Market tab now shows two official figures: **the size of the legal market** in
+whatever measure the state publishes, and **registered medical patients**. Both are in
+`scripts/market_data.py`, and `scripts/build_market.py` writes them to `data/clean/market.csv`.
+
+- **Mostly taken from rows of the audit tables marked Confirmed or Corrected, with an official
+  source**, so each figure carries the audit's own verdict. 34 market figures and 34 patient
+  figures are published; 17 of each are held back.
+  - **Held back because the audit marks them Unverified or secondary-only:** for example
+    California's annual sales ("do not use": they do not reconcile with CDTFA's quarterly
+    figures), Arkansas, Michigan, Oregon, Washington and Maryland sales, and Texas, Michigan,
+    Minnesota and Missouri patient counts.
+  - **Held back because no official figure exists yet:** for example Alabama, which began
+    sales in June 2026.
+
+  A held-back fact shows "not yet confirmed" and the reason, never the figure.
+- **Measures are never mixed or converted.**
+  - Where a state publishes tax collected rather than sales (Arizona, Oklahoma, Vermont,
+    Hawaii, California's quarter), the figure says so. Oklahoma's sales are not back-computed
+    from its 7% excise, because that is arithmetic, not an OMMA figure.
+  - Rhode Island's "combined sales" adds wholesale to retail, so the retail figure is shown
+    and the difference explained.
+  - Pennsylvania's $9.6B is cumulative since 2018 and says so.
+  - Ohio's 476,589 registered patients are shown beside the 73,396 who had an active
+    registration and recommendation.
+  - A month, a quarter or nine months is labelled as such. The tab warns that figures from
+    different states are not comparable side by side.
+- **A number guard.** The build refuses any figure whose numbers do not appear verbatim in
+  that state's own audited report. Tested by changing one digit in Colorado's sales and one in
+  New Jersey's patients: both rejected.
+- **One link withheld:** Florida's patient count comes from knowthefactsmmj.com (the Department of
+  Health's site), which is not yet on the official-domain list (item 10).
+- `verify.py` checks the table and that the site matches it. `update_all.py` runs
+  `build_market.py` daily. Checked in headless Chromium: Colorado, Oklahoma (tax, not sales),
+  Texas (both held back), Florida (no link), Idaho (no market) and Alaska on a phone. No errors.
+  Also fixed: an unknown `?tab=` used to call a removed function; it now opens the Overview.
+
+## Town pages and local rules (20 Nov 2026)
+
+HANDOFF's drill-down is now complete: state, then county, then town, then licence.
+
+- **`town.html?state=XX&county=<county>&town=<town>`.** A town is keyed by state AND county,
+  because town names repeat across counties (CLAUDE.md). It shows the town's licences, linked to
+  their profiles, its counts by type and status, its county on the state map, and a Database
+  search. A licence profile's "Town" now links there, and so does each row of a county page's
+  town table.
+- **Local rules where a regulator publishes them town by town:** Massachusetts (the CCC municipal
+  zoning tracker: adult use, delivery and social consumption for all 351 towns) and Connecticut
+  (DCP's Cannabis Zoning dataset, khc7-gd9u: the status of each of 169 municipalities' law on
+  cannabis businesses). Both were already in data/clean/ma_towns.csv and ct_towns.csv. They are
+  now published as `site/data/local_rules.json` in the regulator's own words, with source and
+  date. A blank stays a blank: 56 Connecticut towns have no status, and the page says "No status
+  recorded", not "allowed".
+- **Villages take their municipality's rules.** A Connecticut village (Mystic, Baltic, Kensington,
+  Terryville, Cornwall Bridge) uses the municipality its licence row records (Stonington, Sprague,
+  Berlin and so on, from the Census geocoder). The page says so. A place the regulator's list
+  does not name (Massachusetts' Roslindale, West Wareham) gets "no entry in the regulator's list",
+  never a guess.
+- **County pages for MA and CT** show each town's rule beside its licence count. Every other
+  state's town and county pages say plainly that local rules are not published yet.
+- Checked in headless Chromium: Cambridge MA, Mystic CT, Denver CO, a town with no records, the
+  Middlesex County page and a phone width, plus the profile's town link. No errors, and no
+  horizontal scroll. verify.py passes (8 pages carry the footer).
+
+## The daily update (19 Nov 2026)
+
+HANDOFF says the site "will update itself daily with scripts and agents". Until now nothing
+could: the builders opened raw files by dated name (`…_2026-11-12.csv`) and stamped a fixed
+`TODAY = "2026-11-12"`, and `fetch_raw.py` skipped any file already on disk. A daily fetch would
+have downloaded nothing, and if forced it would have overwritten files whose names and rows still
+said 12 November.
+
+- **`scripts/update_all.py`** runs the whole pipeline in a fixed order and stops at the first
+  failure: fetch, the three licence builders, geocode new addresses, apply, canonicalise and
+  validate counties, independent cities, standard types, review worksheet, legal status, quick
+  reference, site data, verify. It prints a summary (step results, which sources changed, and
+  licence rows per state before and after), and `--summary FILE` writes it as markdown.
+  `--offline` skips the fetch and the geocoder.
+- **The order was found, not assumed.** A rebuild from data/raw/ in a separate worktree, compared
+  row by row with the committed tables, first differed on 50,000 rows. After the fixes below, all
+  three licence tables come back **identical**. The full offline pipeline then runs in about 35
+  seconds, passes verify, and leaves every data file unchanged, in the worktree and in the real
+  working tree.
+- **`scripts/fetch_raw.py --refresh`** downloads every declared source again:
+  - **Same bytes as the current file:** logged `ok: unchanged`, and nothing is written.
+  - **New bytes that pass the checks:** saved as `<declared name>__fetched-<date>`. The file it
+    supersedes is removed from the working tree; git keeps it.
+  - **A suspect or failed download:** logged, NOT written, and the last good file stays current.
+
+  A source can declare `drop_columns`, removed before saving and hashing. Massachusetts' two CCC
+  files are now declared with the EIN/TIN column dropped (CLAUDE.md), so Massachusetts refreshes
+  too. Both URLs were already in the repository. Tested offline against simulated downloads:
+  unchanged, changed, too small to be real, a paged source failing, and a CSV with an EIN_TIN
+  column, which came back byte-identical to the stripped original.
+- **`scripts/raw_files.py`** tells the builders which file is current for each source (the newest
+  good download in the manifest) and its date. The rule for `data_as_of`:
+  - **While a builder still reads the file its spec was written for,** the documented date
+    stands. For about ten sources that is the regulator's own "as of" date, read off the file,
+    which is more precise than the download date.
+  - **Once a newer download is current,** the date is the day its bytes were first saved.
+  - **An unchanged daily check does not move it,** so an unchanged source does not rewrite every
+    row's date each day. `raw_files.last_checked()` gives the last check.
+
+  Parsing each regulator's own date out of each new file is a per-source refinement still to do.
+  Colorado's builder used to read every CSV in its folder; it now reads one current file per
+  declared sheet, so an old and a new copy can never both be counted.
+- **Bugs found by the rebuild, and fixed:**
+  - **My own regression in `fill_counties.py`** (commit e5289a2, the independent-cities change)
+    had dropped an `if hit:` line, so canonicalisation only fixed city names and silently skipped
+    "Dade" → "Miami-Dade", "Saint Lucie" → "St. Lucie" and 200-odd others. The committed data
+    was unaffected, because it was normalised earlier, but the next rebuild would have undone it.
+  - **`build_new_england.py` carried a county forward but not the note explaining it** (a premises
+    in another state, a CT village's municipality). It also re-filled, by town name, a county the
+    prior table had cleared on purpose with a stated reason. Both notes are now carried, and a
+    deliberate blank stays blank.
+  - **`resolve_independent_cities.py` now also annotates "Baltimore city" rows** that the fixed
+    normaliser writes directly, so every such row says how it was settled.
+- **`site/` is now public by construction.** `build_site_data.py` used to write the held-back
+  unverified business entries to `site/data/businesses_unverified.json`, so deploying the folder
+  would have published them. They now go to data/private/ (git-ignored, never deployed). verify.py
+  fails if anything under site/ is marked not for the public site; it was tested by putting the
+  file back.
+- **`.github/workflows/daily-update.yml`** runs the pipeline daily at 10:23 UTC, and on demand.
+  - It commits data/raw and data/clean only when every step passed.
+  - A failed scheduled run commits nothing, and GitHub emails the repository owner.
+  - The deploy job publishes site/ to GitHub Pages, and is **off** until the repository variable
+    `DEPLOY_SITE` is `true`.
+  - Scheduled runs only happen on the default branch, so nothing runs from this branch.
+  - `requirements.txt` pins the one third-party package (pypdf 6.17.0). Both fetchers now also
+    find Ubuntu's CA bundle, since a runner may not have certifi.
+- **Not in the daily run**, and the script says so:
+  - New Jersey's 517 permit PDFs, which have their own fetcher.
+  - The business directory, built once from the audited reports.
+  - Maine, Vermont, Rhode Island and New Hampshire, which have no downloadable source and are
+    carried forward.
+- **Not tested here:** an online run. This sandbox reaches only package registries, so the real
+  fetch and geocoder steps run for the first time on GitHub's runner. Expect some regulators to
+  refuse a cloud IP. Those show as failed in the summary and keep their last good file; they do
+  not fail the run.
+
+## State quick reference: possession, home grow, tax, regulator (19 Nov 2026)
+
+Each state page now opens with HANDOFF's quick-reference boxes: legal status, possession, home
+grow, the state's own cannabis tax, and the regulator. The Laws and Taxes tabs show the same
+facts with their full citations, and both say plainly what they do not cover yet.
+
+- **204 facts, 4 per jurisdiction**, in `scripts/quick_reference_data.py`, written to
+  `data/clean/quick_reference.csv` by `scripts/build_quick_reference.py`. Each was restated by
+  hand from the state's audited report, mostly from §1.3 (possession and home grow), §1.4
+  (medical), §2.1 (tax) and §9.1 (regulators). Each carries a citation, an official link the
+  report itself cites, and the report's own "Last audited" date.
+- **The rule for "confirmed".** A figure is published only if the final report states it as
+  fact. A Verify flag on the *verbatim wording* of a quotation does not unconfirm the figure;
+  a Verify flag on the figure itself, or a secondary-only source, does. **Four facts are held
+  back** and show as "Not yet confirmed from an official source", with the reason:
+  - Georgia tax: "no cannabis tax" is recorded only as a search result.
+  - Texas tax: sales-tax treatment of TCUP rests on secondary guides.
+  - Utah tax: the medical sales-tax exemption is from a secondary summary.
+  - Virginia tax: no adult-use sale until 1 July 2027, and medical treatment is disputed.
+
+  Alabama's dose caps are left out of its possession text for the same reason, and a note says so.
+- **A citation guard.** The build fails if any statute or section number in a citation is not
+  found, as a whole token, in that state's own report ("41-137-3" is not found inside
+  "41-137-35"). It caught three citations written in the wrong form on the first run (DC
+  "ch. 7-16B", Idaho "ch. 22-17", a stray "2-3" in Massachusetts), and it rejects invented
+  sections when tested. It does not test citations with no number, such as "Act 16".
+- **Links.** Where the report gives no section-level official link, the fact uses the nearest
+  official page the report cites, and the citation names the exact section; no URL was built by
+  hand. **5 facts have no official link at all**: Tennessee's possession and home grow, and
+  Wyoming's possession, home grow and tax. Their reports link only Justia/FindLaw, and the page
+  says "no official link captured yet".
+- **Changes since older summaries that the reports catch, and the boxes now show:**
+  - Illinois' possession limits doubled on 12 June 2026 (60 g).
+  - Massachusetts went to 2 oz on 19 April 2026.
+  - Vermont's limits doubled on 1 July 2026.
+  - Virginia moved to 2 oz on 1 July 2026.
+  - Connecticut's tax became a flat 10.75% on 1 Oct 2026.
+  - Maine's adult-use tax rose to 14% on 1 Jan 2026.
+  - Michigan added a 24% wholesale excise on 1 Jan 2026.
+  - New Mexico's excise is 14% from 1 July 2026.
+  - Nevada allows home grow only more than 25 miles from a store.
+- **Taxes are never totalled.** The tax fact names the state's cannabis taxes, and general and
+  local taxes only where confirmed, but never adds them into one "combined rate". Local rates
+  vary by town, and taxes on different bases (a grower's sale, a retail sale) cannot be summed.
+  This is a deliberate departure from HANDOFF's "combined tax rate" box.
+- `verify.py` checks that the table is valid and current, that no unconfirmed fact's text reaches
+  the site, and that the site shows what the table holds. Checked in headless Chromium: Colorado,
+  Alaska (no licence data, so the boxes show without the licence sections), the Texas Laws tab, the
+  Georgia Taxes tab (an unconfirmed fact), the Tennessee Laws tab (no official link), and
+  Massachusetts on a phone. No errors, and no horizontal scroll. The page's old trap struck
+  again (constants read by `render()` before their declaration) and is fixed the same way.
+- **Re-check when the law moves.** These facts are dated, not live. Idaho's row must change
+  with the HJR 4 result (item 1), and the federal hemp change on 11 Dec 2026 does not touch
+  them, because they cover marijuana, not hemp.
+
+## Profiles and county pages (19 Nov 2026)
+
+HANDOFF's site layout now has its profile and county levels.
+
+- **Licence profiles**, `licence.html?state=XX&id=<licence id>`. Each shows the full public record,
+  its status and type badges, the row's own flags, its source and read date, and a small county
+  map. Below that are the licences it is linked to: **same group** (the regulator's or the build's
+  grouping), **same holder** (the same company name in the state, normalised for punctuation and
+  LLC/Inc), and **same address** (the same premises). Holders who are individuals are never
+  matched by name, because two hemp growers called John Smith are not one person. Placeholder
+  addresses ("Data Not Available", 18,978 California rows) are never treated as shared. Each list
+  shows 12 with the true total; past 12, the holder list links to the Database filtered by name.
+  A licence id that does not exist gets a plain "no such licence" page, not an error.
+  The Database's side panel now carries an "Open the full profile" link, and both use one
+  renderer in `site/assets/app.js`.
+- **The detail records are bucketed.** Each state's full records were one file (California's was
+  21 MB, loaded on the first click of any California row). They are now split into ~300-record
+  buckets by an FNV-1a hash of the licence id: `site/data/licences/detail/<ST>/<n>.json`. Python
+  (`build_site_data.py`) and JavaScript (`app.js`) compute the same hash. Every id is ASCII,
+  where the two agree. Opening a California profile now loads ~300 KB. The related lists
+  raise the total from 53 MB to 79 MB, but no page loads more than one bucket.
+- **County pages**, `county.html?state=XX&county=<value>`. Each has the county highlighted on its state
+  map, record counts, the counts by standard type and by status, the towns, the first 300 licences
+  linked to their profiles, and a link to the Database. "Local rules" says plainly that it is not
+  published yet. A county with no records says that a missing record is not proof of no business,
+  and how many of the state's records carry no county.
+- **Display names come from Census**, so a reader sees "Baltimore City", "Winchester City" (an
+  independent city with no county of that name), "Denver County" and "Acadia Parish", never
+  "Winchester County". `us_map.county_display_names()` builds them; CT keeps its traditional
+  eight counties.
+- **The state Overview opens with a clickable county map**, as HANDOFF specifies. It is uncoloured
+  on purpose: HANDOFF lists county colour-coding as "later, not now". The counts are in each
+  county's tooltip and in the county table, whose links now open the county page.
+- **County shapes**: US Census 2017 cartographic county boundaries via us-atlas 3.0.1, stored in
+  data/raw/us-atlas/ and logged in the manifest. The 2017 vintage still has Connecticut's
+  traditional eight counties, the vocabulary this project uses. The six city/county name pairs
+  are told apart by Census county code (500 and up is the city). 58 licence rows in 43
+  county values have no shape in their own state. Every one is already flagged as premises
+  outside the licensing state, and they are listed but not drawn.
+- **Checked in headless Chromium**: profiles in MA and CO, a missing id, county pages for Baltimore
+  City, Los Angeles and an empty county (Hinsdale), the Colorado Overview, and a click through from
+  the Database panel to a California profile. No console errors, and no horizontal scroll at
+  390 px. Fixed along the way: the Database panel printed a stray "null" under every record, the
+  address repeated the town, and the state page's six tabs widened the page on a phone.
+- **A commit-hygiene note.** Part of this work (the buckets and the shared renderer) went in
+  with e5289a2, the independent-cities commit, because `git add -A` picked it up. The site
+  worked at that commit, so it was left there rather than rewritten.
+
+## Independent cities were merged into their counties (19 Nov 2026)
+
+Census gives an independent city and the county of the same name one basename: Baltimore city and
+Baltimore County, St. Louis city and St. Louis County, plus four Virginia pairs (Fairfax,
+Franklin, Richmond, Roanoke). The county column holds basenames, and `fill_counties.py` stripped
+the "City" designator when it normalised spellings, so **"Baltimore City" and "Baltimore County"
+both became "Baltimore"**. Any per-county count or county page would have added two separate
+jurisdictions together. 82 rows were affected.
+
+- **Rule now.** A city is written as Census writes its county-equivalent name, "Baltimore city".
+  The county keeps its bare basename, like every other county, and carries a
+  `city or county checked=` note saying which source settled it. `fill_counties.py` keeps the
+  designator from now on, and verify.py fails on a bare ambiguous name without that note.
+- **Settled from the regulators' own county fields** (`scripts/resolve_independent_cities.py`),
+  never from the town: a Baltimore mailing address is often in Baltimore County. Missouri: DCR
+  GIS County field, 39 St. Louis County and 10 St. Louis city. Maryland: MCA Dispensary Locator
+  county column, 22 Baltimore County and 10 Baltimore city. Both splits match the 10 + 10 rows
+  the earlier normalisation had marked "spelling normalised".
+- **One cleared rather than guessed.** VA-HEMP-PROC-001 (2004 Dabney Rd, Richmond 23230). VDACS
+  lists its locality as "Richmond", which is both the city and Richmond County. The address rules
+  out the county, which is on the Northern Neck, but ZIP 23230 also covers Henrico County. Its
+  county is now blank, with the reason on the row. A geocoder run (not reachable from this
+  sandbox) settles it. Virginia's county gaps go from 4 to 5.
+
+## Test records removed: 28 Connecticut, 3 Vermont (19 Nov 2026)
+
+Found while grouping licences by shared address for the profile pages. **28 Connecticut rows were
+the DCP's own test credentials**: legal name and DBA "TEST RECORD", registered to the DCP's office
+at 450 Columbus Blvd, Hartford. They were on the public site, which showed 28 of them. They
+covered every credential type, and some carried real-looking numbers (ACRE.0015712, CSW.0005793-TIB),
+so a number-based rule would have missed them. **3 Vermont rows**, all `Active`, were CCB test entries:
+"Test - MANU0123", "Test - RTLR0086" and "High Society - Test - Manufacturing" (MANU0073).
+
+- `scripts/build_new_england.py` now excludes them. Connecticut's are matched by the name "TEST
+  RECORD", so a daily refresh that brings in new ones drops them too. Vermont's are named by
+  licence id, because their only marker is the name. The run prints how many it dropped per state.
+- **The table was NOT rebuilt to apply this.** A rebuild also clears the county notes that
+  `scripts/fill_counties.py` writes (58 rows), and that step needs the Census geocoder, which this
+  sandbox cannot reach. Instead the 31 rows were deleted from the existing table, and the diff is
+  exactly 31 deletions. The next full rebuild produces the same result.
+- **A second bug in the same builder, fixed.** Massachusetts rows were stamped
+  `data_as_of = today` on every run, and Connecticut rows with no refresh date fell back to today
+  too. So a rebuild on any later day would have claimed every MA licence was read that day.
+  Both now use the date the raw file was read: 12 Nov 2026 (`MA_READ_ON`, `CT_READ_ON`).
+- Checked and left alone: California's "La Test Labs LLC" (trading as Pacific Star Labs) and
+  "we'd Test" match the word "test" but read as real business names. The superseded inputs
+  data/clean/ct_licences.csv and vt_licences.csv still hold the test rows. They are not
+  built into the site.
+- Totals: New England 4,267 → 4,236; all three tables 52,706 → 52,675. verify.py passes.
+
+## The legal-status map (19 Nov 2026)
+
+The home page now opens with a clickable map of all 51 jurisdictions coloured by the legal
+status of cannabis **under state law**. The colour comes from `data/clean/legal_status.csv`,
+never from whether this project holds licence data for a state.
+
+- **Where the status comes from.** `scripts/legal_status_data.py` restates section 1.1 ("Legal
+  status") of each audited report, by hand, with the citation the report gives and a link the
+  report itself cites in that section. Every citation was checked against the report's own text
+  before it went in. One that came from memory rather than the report was corrected: South Dakota's
+  measure is "IM 26", as the report writes it.
+  `scripts/build_legal_status.py` writes the CSV and refuses on an unknown status, a link that
+  is not on an official host in domains/all-domains.txt, a row with no link and no reason, or a
+  report with no readable "Last audited" date. That date is read from the report, so it cannot
+  drift from its source.
+- **Four statuses, no more.** 25 adult use and medical (including DC and Virginia), 15 medical
+  only, **3 limited (low-THC) medical only** (Georgia, Iowa, Texas), 8 no medical programme
+  (Idaho, Indiana, Kansas, North Carolina, South Carolina, Tennessee, Wisconsin, Wyoming). The
+  third class is not in HANDOFF's colour list, which names dark green, medium green and "lighter
+  green adult-only if needed". No state is adult-use only, so that shade is used for low-THC
+  instead. Folding Texas or Georgia into "medical only" would overstate the law, and folding them
+  into "none" would erase a licensed programme. No medical programme is a neutral grey, not red:
+  the map states the law, it does not grade it.
+- **What the colour cannot say, the card says.** Hovering over a state, tabbing to it, or tapping it
+  on a phone shows its citation, the official link, the date the law was checked, and a note
+  where the colour alone would mislead. Virginia: adult possession is legal, but retail opens only on
+  1 July 2027. Nebraska: patients are protected but no dispensary licence had been issued. Delaware,
+  New Jersey, Washington: home grow limits. Hawaii, New Hampshire: decriminalised, not legal. Idaho:
+  **"HJR 4 was voted on 3 Nov 2026 and the result is not yet certified"**, which is the
+  wording item 1 above requires. The map note says the law was checked between 23 Oct and 1 Nov 2026 and that
+  federal law differs, with a link to the federal page. A "map as a list" table under the map
+  carries the same facts for screen readers and for anyone who wants all 51 at once.
+- **Shapes.** US Census Bureau cartographic state boundaries (2017), already projected with
+  Alaska and Hawaii inset, from the us-atlas 3.0.1 package. They are stored in data/raw/us-atlas/
+  and logged in the manifest. They came from the npm registry because census.gov is not reachable
+  from this sandbox. `scripts/us_map.py` turns them into SVG paths at build time (116 KB), so
+  the site loads no mapping library and nothing from a CDN. The nine states too small to label
+  (VT NH MA RI CT NJ DE MD DC) get a callout column to the right of the map, and each callout can also be clicked.
+- **Checked in a real browser** (headless Chromium, desktop and iPhone 13): all 51 shapes
+  render with no console errors and no horizontal scroll at 390 px. Hovering shows the card,
+  clicking opens `state.html?state=XX`, and on touch the first tap shows the card and the
+  second opens the page. `scripts/verify.py` now checks that the CSV is valid, current, and
+  is what the site's map shows. Changing Texas's status by hand makes it fail on both counts.
+- **verify.py now runs off a Mac.** Its PDF page counter called macOS `mdls` unconditionally and
+  crashed on Linux. It now reports "?" pages when `mdls` is absent. Every other check is unchanged
+  and all pass.
+
+**Gaps this leaves, recorded rather than papered over:**
+- **Tennessee and Wyoming carry no official link.** Their reports cite the statutes (Tenn. Code
+  §39-17-402; W.S. 35-7-1001 et seq.) but link only Justia/FindLaw, which CLAUDE.md rules out. The
+  card says "no official link captured yet". The fix is the official code page for each.
+  Tennessee's official online code is published through LexisNexis.
+- **Michigan's link is the medical act.** The report gives no official link for the adult-use act
+  (MRTMA, MCL 333.27951 et seq.); the row's note says so.
+- **Idaho must be re-checked on or after 24 Nov 2026** (item 1). If HJR 4 is certified, update
+  the Idaho row in scripts/legal_status_data.py as well as the report. The map is the most visible
+  place an outcome would show.
+- The map colours by **state** law only. Tribal programmes (e.g. the Eastern Band of Cherokee in
+  North Carolina) are noted on the card, not coloured.
 
 ## What needs a person, in one worksheet (14 Nov 2026)
 

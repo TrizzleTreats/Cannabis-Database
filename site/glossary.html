@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary — US Cannabis &amp; Hemp Law</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main id="main">
+  <h2 style="margin-top:0">Glossary</h2>
+  <p class="note">The words this site uses, and what they mean here. Where a regulator uses its own
+    word for something, the site shows that word too: the standard terms below are for searching
+    across states, never a replacement for the regulator's wording. For federal law (Schedule I and
+    III, section 280E, the hemp definition), see <a href="federal.html">Federal law</a>.</p>
+
+  <h2 id="reading">Reading the figures</h2>
+  <dl class="facts gloss">
+    <dt>Official source</dt><dd>A government website: a regulator, a legislature, a tax agency, an official data portal. News, blogs, law firms and legal-information sites are never a source of truth here.</dd>
+    <dt>Read, checked</dt><dd>The date a figure was taken from its source. Licence records carry the date the regulator's file was read; facts about the law carry the date the state's report was audited. A date is never the day this site was rebuilt.</dd>
+    <dt>Not yet confirmed</dt><dd>The research found a figure, but the audit could not confirm it from an official source, so it is not shown. The page gives the reason instead.</dd>
+    <dt>Not published</dt><dd>The regulator does not publish this item at all, for example a status or an address. An empty status is never read as Active.</dd>
+    <dt>Licence record</dt><dd>One row as the regulator publishes it. Some regulators publish one row per location or per licence term, and some include applicants, so a count of records is not always a count of licences. Each state page says which.</dd>
+    <dt>Active + Provisional</dt><dd>The default search: records whose standard status is Active or Provisional. Other statuses are one click away.</dd>
+    <dt>Issued, approved, licensed, operating</dt><dd>Different measures. A licence can be issued before a business opens, and approved before it is issued. They are never added together into one count.</dd>
+    <dt>County</dt><dd>The county the premises are in, with its source on every row. An independent city, such as Baltimore City or St. Louis City, is its own county-equivalent, never folded into the county of the same name. Connecticut uses its traditional eight counties.</dd>
+  </dl>
+
+  <h2 id="legal-status">Legal status (the home-page map)</h2>
+  <dl class="facts gloss">
+    <dt>Adult use and medical</dt><dd>Both are legal under state law. Retail sales may still be months away; the state's card says when.</dd>
+    <dt>Medical only</dt><dd>A comprehensive medical programme; adult use is illegal.</dd>
+    <dt>Limited medical (low-THC) only</dt><dd>A medical programme that state law limits to low-THC products; adult use is illegal.</dd>
+    <dt>No medical programme</dt><dd>Neither, beyond at most a narrow exception for CBD or low-THC oil.</dd>
+  </dl>
+  <p class="note">The map shows state law only. Federal law differs, and tribal law governs on tribal land.</p>
+
+  <h2 id="types">Standard licence types</h2>
+  <p class="note">Sixteen types, so one search can span every state. A licence that authorises several
+    activities (a vertically integrated licence) is filed under its most consumer-facing one, and
+    lists the rest beside it.</p>
+  <dl class="facts gloss">
+    <dt>Cultivation</dt><dd>Growing cannabis, including smaller micro-cultivation licences (the size cap is kept separately).</dd>
+    <dt>Nursery</dt><dd>Producing immature plants, clones and seeds for other licensees.</dd>
+    <dt>Manufacturing</dt><dd>Making cannabis products: extraction, infusion, edibles, pre-rolls, vapes, packaging.</dd>
+    <dt>Retail</dt><dd>Selling to consumers or patients, including medical dispensaries and hybrid stores.</dd>
+    <dt>Delivery</dt><dd>Delivering to consumers or patients.</dd>
+    <dt>Transport &amp; Distribution</dt><dd>Moving or wholesaling products between licensees. Distributors sell to businesses, not to the public.</dd>
+    <dt>Testing Lab</dt><dd>Testing products for potency and contaminants.</dd>
+    <dt>Microbusiness</dt><dd>Several activities (for example growing, making and selling) under one small licence. Not the same as a micro-cultivator, which only grows.</dd>
+    <dt>Consumption Lounge</dt><dd>A licensed place to consume cannabis on site.</dd>
+    <dt>Research</dt><dd>Licensed research and development.</dd>
+    <dt>Caregiver</dt><dd>A person licensed or registered to grow or supply medical cannabis for patients.</dd>
+    <dt>Event Organizer</dt><dd>A licence to run cannabis events (California).</dd>
+    <dt>Operator</dt><dd>A company licensed to run a licensed business on the licensee's behalf (Colorado).</dd>
+    <dt>Hemp Grower</dt><dd>Growing hemp, under a state plan or the USDA's own licence. A USDA licence is federal, not state.</dd>
+    <dt>Hemp Processor</dt><dd>Processing hemp or making hemp products.</dd>
+    <dt>Hemp Retail</dt><dd>Selling hemp products, such as hemp-derived THC or CBD, to the public.</dd>
+  </dl>
+
+  <h2 id="statuses">Standard statuses</h2>
+  <p class="note">Ten statuses, roughly from most to least live. The regulator's own word is always
+    shown beside the standard one.</p>
+  <dl class="facts gloss">
+    <dt>Active</dt><dd>Licensed and in good standing.</dd>
+    <dt>Provisional</dt><dd>A conditional or provisional licence, granted before final approval to operate.</dd>
+    <dt>Limited Operations</dt><dd>Licensed, but allowed only some activities for now.</dd>
+    <dt>Pending</dt><dd>An application or renewal not yet decided.</dd>
+    <dt>Suspended</dt><dd>Temporarily not allowed to operate, including a temporary closure.</dd>
+    <dt>Expired</dt><dd>The licence term ended without renewal.</dd>
+    <dt>Inactive</dt><dd>Not currently in use, as the regulator records it.</dd>
+    <dt>Surrendered</dt><dd>Handed back voluntarily by the licensee.</dd>
+    <dt>Canceled</dt><dd>Ended administratively.</dd>
+    <dt>Revoked</dt><dd>Taken away as an enforcement outcome.</dd>
+  </dl>
+
+  <h2 id="business">Business directory categories</h2>
+  <p class="note">Seventeen categories of businesses that serve the industry. A business that holds a
+    cannabis licence itself is in the licence database instead. Each entry is also tagged Local,
+    Regional or National.</p>
+  <ul class="note" id="cats"></ul>
+</main>
+
+<script type="module">
+import { el, mountFooter, mountTopbar } from "./assets/app.js";
+mountTopbar(document.body, "glossary.html");
+mountFooter(document.body);
+const CATEGORIES = ["Legal", "Accounting and Tax", "Insurance", "Real Estate",
+  "Construction and Facilities", "Security", "Cash Management", "Waste Services",
+  "Staffing and Recruiting", "Compliance and Consulting", "Marketing and Advertising", "Software",
+  "Packaging and Labelling", "Grow Supplies and Equipment", "Extraction and Lab Equipment",
+  "Consumer Brands", "Hemp and CBD Products"];
+document.getElementById("cats").replaceChildren(...CATEGORIES.map((c) => el("li", { text: c })));
+</script>
+</body>
+</html>

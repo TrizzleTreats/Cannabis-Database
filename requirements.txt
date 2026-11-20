@@ -1,0 +1,3 @@
+# The only third-party package the scripts need (PDF text extraction).
+# Pinned to the version the build was tested with.
+pypdf==6.17.0

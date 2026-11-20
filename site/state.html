@@ -16,7 +16,7 @@
 </main>
 
 <script type="module">
-import { loadJSON, fmt, el, mountFooter, mountTopbar, statusBadge } from "./assets/app.js";
+import { loadJSON, fmt, el, mountFooter, mountTopbar, statusBadge, countyMap, countyHref } from "./assets/app.js";
 
 mountTopbar(document.body, "state.html");
 mountFooter(document.body);
@@ -31,23 +31,39 @@ const NAMES = { AL:"Alabama", AK:"Alaska", AZ:"Arizona", AR:"Arkansas", CA:"Cali
   SC:"South Carolina", SD:"South Dakota", TN:"Tennessee", TX:"Texas", UT:"Utah", VT:"Vermont",
   VA:"Virginia", WA:"Washington", WV:"West Virginia", WI:"Wisconsin", WY:"Wyoming" };
 
-/* HANDOFF's state page has six tabs. Three of them rest on the law rather than
-   on licence data, and that research is not published yet — so they say so
-   instead of showing an empty frame that looks like "nothing here". */
+/* HANDOFF's state page has six tabs. Laws and Taxes carry the confirmed
+   quick-reference facts (data/clean/quick_reference.csv) and Market the official
+   market and patient figures (data/clean/market.csv), each with its source and the
+   date its report was audited. What a tab does not cover yet, it says so. */
 const TABS = [
   ["overview", "Overview", true],
   ["licences", "Licences", true],
-  ["laws", "Laws", false],
-  ["taxes", "Taxes", false],
+  ["laws", "Laws", true],
+  ["taxes", "Taxes", true],
   ["business", "Business", true],
-  ["market", "Market", false],
+  ["market", "Market", true],
 ];
 
 const q = new URLSearchParams(location.search);
 const code = (q.get("state") || "").toUpperCase();
 let tab = q.get("tab") || "overview";
-const summary = await loadJSON("summary.json");
+const [summary, quickAll, lawAll, marketAll] = await Promise.all(
+  [loadJSON("summary.json"), loadJSON("quick_reference.json"), loadJSON("legal_status.json"),
+   loadJSON("market.json")]);
 const s = summary.states[code];
+const qf = quickAll.states[code] || {};
+const mf = marketAll.states[code] || {};
+const law = lawAll.states[code];
+// Declared before the first render(): render() runs during module evaluation, and a
+// const read before its line throws (the bug STATUS.md records for this page).
+const LAW_CLASS = {
+  "Adult use and medical": "law-adult", "Medical only": "law-medical",
+  "Limited medical (low-THC) only": "law-lowthc", "No medical programme": "law-none",
+};
+function longDate(iso) {
+  return iso ? new Date(iso + "T12:00:00Z").toLocaleDateString(
+    "en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }) : "";
+}
 
 document.getElementById("title").textContent = NAMES[code]
   ? `${NAMES[code]} (${code})` : "Choose a state";
@@ -92,23 +108,26 @@ function render() {
   const panel = document.getElementById("panel");
   const lede = document.getElementById("lede");
 
+  lede.textContent = s
+    ? `${fmt(s.licences)} licence records, read ${asof(s)}. `
+      + `${fmt(s.default_search_set)} are Active or Provisional — the default search set. `
+      + `These are different measures on different dates and must not be added into one figure.`
+    : "";
+  if (tab === "laws") return laws(panel);
+  if (tab === "taxes") return taxes(panel);
+  if (tab === "market") return market(panel);
+  if (tab === "business") return business(panel);
   if (!s) {
-    lede.textContent = "";
-    panel.replaceChildren(el("div", { class: "panel" },
+    panel.replaceChildren(...(tab === "overview" ? [quickRef()] : []), el("div", { class: "panel" },
       el("p", {}, `This project holds no licence data for ${NAMES[code]} yet. `,
         "Its regulator publishes licence data only through a lookup that answers one record at a ",
         "time, which cannot be enumerated, and a data request has been drafted for it — see ",
         el("code", {}, "outreach/data-requests/"), " in the repository.")));
     return;
   }
-  lede.textContent = `${fmt(s.licences)} licence records, read ${asof(s)}. `
-    + `${fmt(s.default_search_set)} are Active or Provisional — the default search set. `
-    + `These are different measures on different dates and must not be added into one figure.`;
-
   if (tab === "overview") return overview(panel);
   if (tab === "licences") return licences(panel);
-  if (tab === "business") return business(panel);
-  return notYet(panel, tab);
+  return overview(panel);   // an unknown ?tab= falls back to the Overview
 }
 
 function stat(n, label) {
@@ -118,7 +137,18 @@ function stat(n, label) {
 
 function overview(panel) {
   const counties = Object.entries(s.by_county || {});
+  // HANDOFF: the Overview opens with a clickable county map. Uncoloured —
+  // county colour-coding is listed as "later, not now".
+  const mapHost = el("div", { class: "map-card", style: "margin-bottom:1rem" },
+    el("p", { class: "loading", text: "Loading the county map…" }));
+  loadJSON(`counties/${code}.json`).then((cm) => mapHost.replaceChildren(
+    countyMap(cm, { counts: s.by_county || {}, label: `Counties of ${NAMES[code]}` }),
+    el("p", { class: "map-note" }, `Click a county to see the licences placed in it. `
+      + `${cm.counties.length} counties and county-equivalents; shapes from the US Census Bureau.`)))
+    .catch(() => mapHost.remove());
   panel.replaceChildren(
+    quickRef(),
+    mapHost,
     el("div", { class: "stats" },
       stat(s.licences, "licence records"),
       stat(s.with_a_licence_number, "with the regulator's own number"),
@@ -137,7 +167,7 @@ function overview(panel) {
         ? `${fmt(s.rows_without_a_county)} records have none, and each says why.` : "")) : null,
     counties.length ? el("div", { class: "table-scroll" }, table(
       ["County", "Records"], counties,
-      ([k, v]) => [el("a", { href: `database.html?state=${code}&county=${encodeURIComponent(k)}` }, k),
+      ([k, v]) => [el("a", { href: countyHref(code, k) }, s.county_names?.[k] || k),
                    fmt(v)])) : null,
     el("h2", {}, "Where this came from"),
     el("ul", { class: "note" }, (s.sources || []).map((x) => el("li", { text: x }))),
@@ -168,34 +198,149 @@ function licences(panel) {
 }
 
 function business(panel) {
+  panel.replaceChildren(el("p", { class: "loading", text: "Loading the business directory…" }));
+  loadJSON("businesses.json").then((data) => {
+    const all = data.businesses;
+    const here = all.filter((b) => b.states && b.states[code])
+      .sort((a, b) => (a.states[code] === b.states[code] ? 0 : a.states[code] === "based" ? -1 : 1)
+        || (a.category || "").localeCompare(b.category || "")
+        || (a.business_name || "").localeCompare(b.business_name || ""));
+    const national = all.filter((b) => /^national/i.test(b.scope || "") && !(b.states && b.states[code]));
+    const based = here.filter((b) => b.states[code] === "based").length;
+    const cats = Object.entries(here.reduce((m, b) => {
+      m[b.category] = (m[b.category] || 0) + 1; return m; }, {})).sort((a, b) => b[1] - a[1]);
+    panel.replaceChildren(
+      el("div", { class: "stats" },
+        stat(here.length, `service businesses in or serving ${NAMES[code]}`),
+        stat(based, "with an address here"),
+        stat(national.length, "national firms elsewhere")),
+      el("p", { class: "note" },
+        "From the audited business directories. A business is listed here only if it has an "
+        + `address in ${NAMES[code]}, or its own service area names ${NAMES[code]}. Nothing is `
+        + "inferred from a region, and national firms are not attached to every state; they are "
+        + "counted separately. Entries an audit could not verify are not published at all."),
+      here.length ? el("h2", {}, "By category") : null,
+      here.length ? el("div", { class: "table-scroll" }, table(["Category", "Businesses"], cats,
+        ([k, v]) => [k, fmt(v)])) : null,
+      here.length ? el("h2", {}, "Businesses") : null,
+      here.length ? el("div", { class: "table-scroll" }, el("table", {},
+        el("thead", {}, el("tr", {}, ["Business", "Category", "Here because", "Scope"]
+          .map((h) => el("th", { text: h })))),
+        el("tbody", {}, here.slice(0, 400).map((b) => el("tr", {},
+          el("td", {}, b.website
+            ? el("a", { href: b.website, target: "_blank", rel: "noopener" }, b.business_name)
+            : b.business_name),
+          el("td", { text: b.category || "" }),
+          el("td", { text: b.states[code] === "based" ? "address here" : "names this state" }),
+          el("td", { text: (b.scope || "").slice(0, 60) })))))) : el("div", { class: "panel" },
+          el("p", { style: "margin:0" }, `No published directory entry has an address in ${NAMES[code]} `
+            + "or names it in its service area.")),
+      el("p", {}, el("a", { class: "cta", href: `database.html?mode=services&serves=${code}` },
+        `Search these in the database`)),
+    );
+  }).catch(() => panel.replaceChildren(el("p", { class: "note", text: "The business directory could not be loaded." })));
+}
+
+function sourceLine(f, { full = false } = {}) {
+  const link = f.source_url
+    ? el("a", { href: f.source_url, rel: "noopener", title: f.cite || "" }, "official source")
+    : "no official link captured yet";
+  return el("p", { class: "source" },
+    full && f.cite ? `${f.cite} · ` : "", link,
+    f.report_last_audited ? ` · checked ${longDate(f.report_last_audited)}` : "");
+}
+
+function factBody(f, { full = false } = {}) {
+  if (!f) return [el("p", { class: "cite", text: "Not covered yet." })];
+  if (f.confirmed !== "Y") {
+    return [el("p", { class: "unconfirmed", text: "Not yet confirmed from an official source." }),
+            full && f.note ? el("p", { class: "note", text: f.note }) : null,
+            full && f.cite ? el("p", { class: "source", text: f.cite }) : null];
+  }
+  return [el("p", { class: "fact", text: f.text }),
+          full && f.note ? el("p", { class: "note", text: f.note }) : null,
+          sourceLine(f, { full })];
+}
+
+function lawStatus() {
+  return el("span", { class: `law-chip ${LAW_CLASS[law.legal_status] || ""}`, text: law.legal_status });
+}
+
+/* HANDOFF's quick-reference boxes on the Overview. */
+function quickRef() {
+  const card = (label, ...kids) => el("div", { class: "qr-card" },
+    el("h3", { text: label }), ...kids.flat().filter(Boolean));
+  return el("section", { class: "qr" },
+    card("Legal status", lawStatus(), el("p", { class: "fact", text: law.citation }),
+      sourceLine({ source_url: law.source_url, cite: law.citation,
+                   report_last_audited: law.report_last_audited })),
+    card("Possession", factBody(qf.possession)),
+    card("Home grow", factBody(qf.home_grow)),
+    card("State cannabis tax", factBody(qf.state_tax)),
+    card("Regulator", factBody(qf.regulator)),
+    el("p", { class: "note qr-foot" },
+      `State law, as checked on ${longDate(law.report_last_audited)} from the audited report for `
+      + `${NAMES[code]}. Federal law differs — see `, el("a", { href: "federal.html" }, "federal law"),
+      ". The Laws and Taxes tabs give each fact's full citation."));
+}
+
+function laws(panel) {
+  const block = (title, f) => el("section", { class: "law-block" },
+    el("h2", { text: title }), ...factBody(f, { full: true }).filter(Boolean));
   panel.replaceChildren(
-    el("p", { class: "note" },
-      `${fmt(summary.businesses.publishable)} service businesses are published across all states — `
-      + "lawyers, accountants, insurers, security, packaging and the rest. The database page "
-      + "searches them; a per-state view needs the states_served field parsed into codes, which "
-      + "is not done for every directory yet."),
-    el("p", {}, el("a", { class: "cta", href: "database.html?mode=services" },
-      "Search industry services")),
+    el("section", { class: "law-block" },
+      el("h2", { text: "Legal status" }), lawStatus(),
+      el("p", { class: "fact", text: law.citation }),
+      law.note ? el("p", { class: "note", text: law.note }) : null,
+      sourceLine({ source_url: law.source_url, report_last_audited: law.report_last_audited },
+                 { full: false })),
+    block("Possession", qf.possession),
+    block("Home grow", qf.home_grow),
+    block("Where it may be used", qf.public_use),
+    block("Employment", qf.employment),
+    block("Driving", qf.driving),
+    block("Who qualifies for medical use", qf.medical),
+    block("Who regulates", qf.regulator),
+    el("div", { class: "panel" },
+      el("p", { style: "margin:0" }, el("strong", { text: "Not covered yet: " }),
+        "packaging and advertising, and pending bills. The audited report covers them; "
+        + "they are not yet turned into sourced, dated statements, and an unsourced summary of the "
+        + "law would be worse than none.")),
   );
 }
 
-function notYet(panel, which) {
-  const why = {
-    laws: "possession and use, home grow, the medical programme, hemp, business rules, "
-        + "employment, consumer rules and pending bills",
-    taxes: "the state's cannabis excise and sales taxes, local add-ons, and what 280E means for "
-         + "operators in this state",
-    market: "sales, patient and operator counts published by the regulator",
-  }[which];
-  panel.replaceChildren(el("div", { class: "panel" },
-    el("h2", { style: "margin-top:0" }, "Not published yet"),
-    el("p", {}, `This tab will cover ${why}.`),
+function taxes(panel) {
+  panel.replaceChildren(
+    el("section", { class: "law-block" },
+      el("h2", { text: "The state's cannabis tax" }), ...factBody(qf.state_tax, { full: true }).filter(Boolean)),
     el("p", { class: "note" },
-      "It rests on the law rather than on licence data, and this project's rule is that every "
-      + "fact carries a source and a date. The research exists in the audited state report for "
-      + `${NAMES[code]}, but it has not been turned into sourced, dated statements yet, and `
-      + "showing an unsourced summary of the law would be worse than showing nothing. "
-      + "The licence data on the other tabs is complete and sourced.")));
+      "General sales tax and local taxes are named only where the audit confirmed them, and rates "
+      + "are never added into one combined figure: local rates vary from town to town, and rates on "
+      + "different bases (a cultivator's sale, a retail sale) cannot be summed."),
+    el("div", { class: "panel" },
+      el("p", { style: "margin:0" }, el("strong", { text: "Not covered yet: " }),
+        "each town's and county's own cannabis tax, how revenue is spent, and how federal "
+        + "section 280E applies to operators here.")),
+  );
+}
+
+function market(panel) {
+  panel.replaceChildren(
+    el("section", { class: "law-block" },
+      el("h2", { text: "Size of the legal market" }), ...factBody(mf.market, { full: true }).filter(Boolean)),
+    el("section", { class: "law-block" },
+      el("h2", { text: "Registered medical patients" }), ...factBody(mf.patients, { full: true }).filter(Boolean)),
+    el("p", { class: "note" },
+      "Each state publishes a different measure, for a different period: calendar-year sales, a "
+      + "fiscal year, one month, tax collected rather than sales, active cards rather than people. "
+      + "Each figure says exactly what it measures, and figures from different states are not "
+      + "comparable side by side. A figure the audit could not confirm from an official source is "
+      + "not shown."),
+    el("div", { class: "panel" },
+      el("p", { style: "margin:0" }, el("strong", { text: "Not covered yet: " }),
+        "prices, licence counts over time, hemp acreage, and sales by county. The audited report "
+        + "covers them; they are not yet turned into sourced, dated statements.")),
+  );
 }
 
 function table(headers, rows, cells) {

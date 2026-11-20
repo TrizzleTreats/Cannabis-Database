@@ -38,7 +38,9 @@ def ssl_context():
         return ssl.create_default_context(cafile=certifi.where())
     except ImportError:
         pass
-    for ca in ("/etc/ssl/cert.pem", "/private/etc/ssl/cert.pem"):
+    # macOS keeps its bundle at the first two; Debian/Ubuntu (a CI runner) at the third.
+    for ca in ("/etc/ssl/cert.pem", "/private/etc/ssl/cert.pem",
+               "/etc/ssl/certs/ca-certificates.crt"):
         if os.path.exists(ca):
             return ssl.create_default_context(cafile=ca)
     sys.exit("no CA bundle found - refusing to fetch without certificate verification")
@@ -241,6 +243,17 @@ def ct_town_counties():
         return {r["town"].strip().lower(): r["county"] for r in csv.DictReader(f)}
 
 
+def independent_cities():
+    """(state, basename) pairs that are both an independent city and a county."""
+    path = ROOT / "data/raw/census_counties_by_state.csv"
+    names = collections.defaultdict(set)
+    if path.exists():
+        with open(path, encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                names[(r["state"], r["county_basename"])].add(r["county_name"])
+    return {k for k, v in names.items() if len(v) > 1}
+
+
 def official_counties():
     path = ROOT / "data/raw/census_counties_by_state.csv"
     if not path.exists():
@@ -249,6 +262,8 @@ def official_counties():
     with open(path, encoding="utf-8") as f:
         for r in csv.DictReader(f):
             out[r["state"]].add(r["county_basename"])
+            if r["county_name"].endswith(" city"):
+                out[r["state"]].add(r["county_name"])
     return out
 
 
@@ -305,6 +320,12 @@ def canonicalise(all_rows):
                               r"Municipality|City)$", "", c, flags=re.I).strip()
             for cand in ([alias] if alias else []) + [c, stripped]:
                 hit = folded.get(st, {}).get(_fold(cand))
+                # Baltimore, St. Louis and four Virginia names are both an
+                # independent city and a county. Stripping "City" would merge
+                # them, so the city keeps Census's own "<name> city" form
+                # (scripts/resolve_independent_cities.py explains the rule).
+                if hit and re.search(r"\bcity$", c, re.I) and (st, hit) in independent_cities():
+                    hit = f"{hit} city"
                 if hit:
                     if hit != r["county"]:
                         r["county"] = hit

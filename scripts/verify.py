@@ -30,8 +30,11 @@ def git(*a):
 
 def pdf_pages(p):
     """Spotlight reads PDFs with compressed object streams; a regex does not."""
-    out = subprocess.run(["mdls", "-raw", "-name", "kMDItemNumberOfPages", str(p)],
-                         capture_output=True, text=True).stdout.strip()
+    try:
+        out = subprocess.run(["mdls", "-raw", "-name", "kMDItemNumberOfPages", str(p)],
+                             capture_output=True, text=True).stdout.strip()
+    except FileNotFoundError:   # mdls is macOS-only; elsewhere the count is unknown
+        return "?"
     return out if out.isdigit() else "?"
 
 
@@ -285,8 +288,18 @@ head("Counties must exist in their state")
 cpath = ROOT / "data/raw/census_counties_by_state.csv"
 if cpath.exists():
     official = collections.defaultdict(set)
+    names = collections.defaultdict(set)
     for r in csv.DictReader(open(cpath, encoding="utf-8")):
         official[r["state"]].add(r["county_basename"])
+        names[(r["state"], r["county_basename"])].add(r["county_name"])
+    # Baltimore, St. Louis, Fairfax, Franklin, Richmond and Roanoke (VA) are both an
+    # independent city and a county under one basename. The city is written
+    # "<name> city" (Census's own form); a bare name means the county, and must
+    # say on the row that the question was checked.
+    both = {k for k, v in names.items() if len(v) > 1}
+    for st, base in both:
+        official[st].add(f"{base} city")
+    unsettled = collections.Counter()
     # Connecticut uses its traditional eight counties by project decision
     # (12 Nov 2026), not the nine Planning Regions that replaced them as Census
     # county-equivalents in 2022. Current TIGER lists only the Planning
@@ -309,6 +322,8 @@ if cpath.exists():
             if r["state"] == "CT" and c in CT_TRADITIONAL:
                 ct_trad += 1
                 continue
+            if (r["state"], c) in both and "city or county checked=" not in r["extra_details"]:
+                unsettled[(r["state"], c)] += 1
             if c not in official.get(r["state"], set()):
                 # A row that already says its county is wrong is a known gap,
                 # not a regression. An UNflagged bad county is what must fail.
@@ -332,6 +347,9 @@ if cpath.exists():
     print(f"  -- {offstate} rows are flagged as premises outside their licensing state")
     print(f"  -- {known_bad} rows carry a county that is not their state's and say so on the row "
           f"(ambiguous names inherited from the 24 Oct 2026 table)")
+    check(not unsettled, "no county name that is also an independent city is left unsettled",
+          "" if not unsettled else f"{sum(unsettled.values())} rows, e.g. {list(unsettled.items())[:4]} "
+          "— run python3 scripts/resolve_independent_cities.py")
     check(not bad, "every county exists in its own state",
           "" if not bad else f"{sum(bad.values())} rows, e.g. {list(bad.items())[:5]}")
 else:
@@ -341,6 +359,13 @@ else:
 head("No private data reaches the public site build")
 site_data = ROOT / "site" / "data"
 site_files = sorted(site_data.rglob("*.json")) if site_data.exists() else []
+# The deploy publishes site/ as it stands, so nothing under it may be marked
+# not-for-public (the held-back business entries are written to data/private/).
+marked = [f.relative_to(ROOT) for f in sorted((ROOT / "site").rglob("*"))
+          if f.is_file() and f.suffix in (".json", ".html", ".js", ".css")
+          and "NOT FOR THE PUBLIC SITE" in f.read_text(encoding="utf-8", errors="replace")]
+check(not marked, "nothing under site/ is marked not for the public site",
+      f"({[str(m) for m in marked][:3]})" if marked else "the whole folder is deployable")
 if not site_files:
     print("  -- site/data/ not built; nothing to check "
           "(run scripts/build_site_data.py)")
@@ -636,6 +661,95 @@ if p.exists():
     print("  These figures are NOT expected to agree: the dataset is a year later, counts")
     print("  one row per location rather than per licence, and includes mere applicants.")
     print("  Do not reconcile them into a single number.")
+
+head("Legal status: the map's colour is a statement about the law")
+p = ROOT / "data/clean/legal_status.csv"
+if not p.exists():
+    check(False, "data/clean/legal_status.csv exists", "run python3 scripts/build_legal_status.py")
+else:
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import build_legal_status as bls
+    expected, problems = bls.build()
+    check(not problems, "every row has a known status, a citation, an official link or a "
+          "stated reason for none, and an audit date read from its report",
+          f"({problems[:2]})" if problems else "")
+    have = list(csv.DictReader(open(p, encoding="utf-8")))
+    by_state = {h["state"]: h for h in have}
+    stale = [r["state"] for r in expected if by_state.get(r["state"]) != r]
+    check(len(have) == 51 and not stale, "legal_status.csv is 51 rows and matches its source",
+          f"stale: {sorted(stale)[:5]} — run python3 scripts/build_legal_status.py" if stale else "")
+    built = ROOT / "site/data/legal_status.json"
+    if built.exists():
+        site_law = json.loads(built.read_text(encoding="utf-8"))["states"]
+        drift = [r["state"] for r in have
+                 if site_law.get(r["state"], {}).get("legal_status") != r["legal_status"]]
+        check(not drift, "the site's map shows the status the table holds",
+              f"({drift[:5]}) — run python3 scripts/build_site_data.py" if drift else "")
+
+head("Quick reference: every published fact is confirmed, sourced and in its report")
+p = ROOT / "data/clean/quick_reference.csv"
+if not p.exists():
+    check(False, "data/clean/quick_reference.csv exists", "run python3 scripts/build_quick_reference.py")
+else:
+    import build_quick_reference as bqr
+    expected, problems = bqr.build()
+    check(not problems, "every fact is confirmed with text and a source, or unconfirmed with no "
+          "text and a reason, and every cited section and figure appears in its own report",
+          f"({problems[:2]})" if problems else f"{len(expected)} facts")
+    have = list(csv.DictReader(open(p, encoding="utf-8")))
+    key = lambda r: (r["state"], r["fact"])
+    by_key = {key(h): h for h in have}
+    stale = [f"{r['state']}.{r['fact']}" for r in expected if by_key.get(key(r)) != r]
+    check(len(have) == len(expected) and not stale, "quick_reference.csv matches its source",
+          f"stale: {stale[:5]} — run python3 scripts/build_quick_reference.py" if stale else "")
+    built = ROOT / "site/data/quick_reference.json"
+    if built.exists():
+        site_q = json.loads(built.read_text(encoding="utf-8"))["states"]
+        leaked = [f"{r['state']}.{r['fact']}" for r in have if r["confirmed"] != "Y"
+                  and site_q.get(r["state"], {}).get(r["fact"], {}).get("text")]
+        drift = [f"{r['state']}.{r['fact']}" for r in have
+                 if (site_q.get(r["state"], {}).get(r["fact"], {}).get("text") or "") != r["text"]]
+        check(not leaked, "no unconfirmed fact's text reaches the site", str(leaked[:5]) if leaked else "")
+        check(not drift, "the site shows the facts the table holds",
+              f"({drift[:5]}) — run python3 scripts/build_site_data.py" if drift else "")
+
+head("Market: every published figure is confirmed, sourced and in its report")
+p = ROOT / "data/clean/market.csv"
+if not p.exists():
+    check(False, "data/clean/market.csv exists", "run python3 scripts/build_market.py")
+else:
+    import build_market as bmk
+    expected, problems = bmk.build()
+    check(not problems, "every figure is confirmed with a source, or unconfirmed with no text and a "
+          "reason, and every number in it appears in its own report",
+          f"({problems[:2]})" if problems else f"{len(expected)} facts")
+    have = list(csv.DictReader(open(p, encoding="utf-8")))
+    by_key = {(h["state"], h["fact"]): h for h in have}
+    stale = [f"{r['state']}.{r['fact']}" for r in expected if by_key.get((r["state"], r["fact"])) != r]
+    check(len(have) == len(expected) and not stale, "market.csv matches its source",
+          f"stale: {stale[:5]} — run python3 scripts/build_market.py" if stale else "")
+    built = ROOT / "site/data/market.json"
+    if built.exists():
+        site_m = json.loads(built.read_text(encoding="utf-8"))["states"]
+        leaked = [f"{r['state']}.{r['fact']}" for r in have if r["confirmed"] != "Y"
+                  and site_m.get(r["state"], {}).get(r["fact"], {}).get("text")]
+        drift = [f"{r['state']}.{r['fact']}" for r in have
+                 if (site_m.get(r["state"], {}).get(r["fact"], {}).get("text") or "") != r["text"]]
+        check(not leaked, "no unconfirmed market figure reaches the site", str(leaked[:5]) if leaked else "")
+        check(not drift, "the site shows the market figures the table holds",
+              f"({drift[:5]}) — run python3 scripts/build_site_data.py" if drift else "")
+
+head("The glossary uses the project's own vocabularies")
+g = (ROOT / "site/glossary.html").read_text(encoding="utf-8")
+def _dts(section):
+    seg = g.split(f'id="{section}"', 1)[1].split("<h2", 1)[0]
+    return [x.replace("&amp;", "&") for x in re.findall(r"<dt>(.*?)</dt>", seg)]
+sys.path.insert(0, str(ROOT / "scripts"))
+from build_states import STANDARD as _STD_STATUSES
+check(_dts("types") == list(STANDARD_TYPES), "the glossary lists exactly the 16 standard types, in order",
+      "" if _dts("types") == list(STANDARD_TYPES) else str(_dts("types")))
+check(set(_dts("statuses")) == set(_STD_STATUSES) and len(_dts("statuses")) == len(_STD_STATUSES),
+      "the glossary lists exactly the 10 standard statuses", "")
 
 head("Result")
 if fails:

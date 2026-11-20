@@ -10,14 +10,34 @@ Each attempt appends a row to data/raw/manifest.csv, successes and failures
 alike, so a source that could not be fetched leaves a record of why rather than
 silently going missing.
 
+--refresh is the daily mode. Without it a file already on disk is left alone, which
+is right for a first capture and wrong for keeping the data current. With it, every
+source is downloaded again and:
+  * the same bytes as the current file  -> logged "ok: unchanged", nothing written;
+    the read date still moves, because the regulator was checked that day;
+  * new bytes that pass the checks      -> saved as <declared name>__fetched-<date>,
+    logged "ok", and the file it supersedes is removed from the working tree (git
+    history keeps it);
+  * a suspect or failed download        -> logged, NOT written, and the last good
+    file stays current, so a bad day never replaces good data.
+scripts/raw_files.py is how the builders find the current file and its read date.
+
+A source may declare "drop_columns" (regular expressions matched against CSV
+headers). Those columns are removed before the file is saved or hashed: CLAUDE.md
+forbids keeping Massachusetts' EIN/TIN column at all.
+
 Usage:
   python3 scripts/fetch_raw.py --list
   python3 scripts/fetch_raw.py --state new-york [--dry-run]
   python3 scripts/fetch_raw.py --id ny-ocm-licences
+  python3 scripts/fetch_raw.py --refresh [--state ...]     # daily: re-download everything
 """
 import argparse, csv, hashlib, io, json, os, pathlib, re, ssl, sys, time
 import urllib.error, urllib.parse, urllib.request
 from datetime import datetime, timezone
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import raw_files  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SOURCES = ROOT / "scripts" / "sources.json"
@@ -52,7 +72,9 @@ def ssl_context():
         return ssl.create_default_context(cafile=certifi.where())
     except ImportError:
         pass
-    for cafile in ("/etc/ssl/cert.pem", "/private/etc/ssl/cert.pem"):
+    # macOS keeps its bundle at the first two; Debian/Ubuntu (a CI runner) at the third.
+    for cafile in ("/etc/ssl/cert.pem", "/private/etc/ssl/cert.pem",
+                   "/etc/ssl/certs/ca-certificates.crt"):
         if os.path.exists(cafile):
             return ssl.create_default_context(cafile=cafile)
     sys.exit("no CA bundle found - refusing to fetch without certificate verification")
@@ -156,7 +178,61 @@ def fetch_paged_json(src):
     return buf.getvalue().encode("utf-8"), problem
 
 
-def fetch(src, dry_run=False):
+def drop_columns(src, body):
+    """Remove declared columns from a CSV before it is saved or hashed."""
+    pats = [re.compile(p, re.I) for p in src.get("drop_columns", [])]
+    if not pats or src["format"] != "csv":
+        return body
+    rows = list(csv.reader(io.StringIO(body.decode("utf-8-sig", errors="replace"))))
+    if not rows:
+        return body
+    keep = [i for i, h in enumerate(rows[0]) if not any(p.search(h) for p in pats)]
+    out = io.StringIO()
+    w = csv.writer(out, lineterminator="\n")
+    for r in rows:
+        w.writerow([r[i] for i in keep if i < len(r)])
+    return out.getvalue().encode("utf-8")
+
+
+def dated_name(filename, day):
+    stem, ext = os.path.splitext(filename)
+    return f"{stem}__fetched-{day}{ext}"
+
+
+def store(src, row, body, problem, refresh, state_dir, dest):
+    """Save a download (or decide not to) and fill in the manifest row. Returns the
+    one-line console note."""
+    body = drop_columns(src, body)
+    row["bytes"] = str(len(body))
+    row["sha256"] = hashlib.sha256(body).hexdigest()
+    if not refresh:
+        state_dir.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(body)
+        row["status"] = f"suspect: {problem}" if problem else "ok"
+        return "saved"
+    if problem:
+        row["status"], row["filename"] = f"suspect: {problem}", ""
+        return "NOT saved; the last good file stays current"
+    current, _ = raw_files.current_by_id(src["id"])
+    # A file saved under the declared name before the fetcher logged it (Massachusetts'
+    # came with the initial commit) is the current file until something supersedes it.
+    current = current or (dest if dest.exists() else None)
+    if current and hashlib.sha256(current.read_bytes()).hexdigest() == row["sha256"]:
+        row["status"], row["filename"] = "ok: unchanged", current.name
+        return f"unchanged ({current.name})"
+    day = row["fetched_at"][:10]
+    name = src["filename"] if not current else dated_name(src["filename"], day)
+    state_dir.mkdir(parents=True, exist_ok=True)
+    (state_dir / name).write_bytes(body)
+    row["status"], row["filename"] = "ok", name
+    if current and current.name != name:
+        current.unlink()
+        row["note"] = "; ".join(x for x in (row["note"], f"supersedes {current.name}, "
+                                            "removed from the working tree (kept in git history)") if x)
+    return f"saved as {name}"
+
+
+def fetch(src, dry_run=False, refresh=False):
     url = build_url(src)
     state_dir = ROOT / "data" / "raw" / src["state"]
     dest = state_dir / src["filename"]
@@ -168,7 +244,7 @@ def fetch(src, dry_run=False):
         row["status"] = "dry-run"
         print(f"  [dry-run] {src['id']:28} -> {dest.relative_to(ROOT)}\n             {url}")
         return row
-    if dest.exists():
+    if dest.exists() and not refresh:
         row["status"] = "skipped: already on disk"
         row["bytes"] = str(dest.stat().st_size)
         print(f"  = {src['id']:28} already on disk, left untouched")
@@ -181,14 +257,10 @@ def fetch(src, dry_run=False):
             row["status"] = f"failed: {type(exc).__name__}: {exc}"
             print(f"  x {src['id']:28} {type(exc).__name__}: {exc}")
             return row
-        row["bytes"] = str(len(body))
-        row["sha256"] = hashlib.sha256(body).hexdigest()
-        state_dir.mkdir(parents=True, exist_ok=True)
-        dest.write_bytes(body)
+        how = store(src, row, body, paged_problem, refresh, state_dir, dest)
         n = max(0, len(body.decode("utf-8", "replace").splitlines()) - 1)
-        row["status"] = f"suspect: {paged_problem}" if paged_problem else "ok"
         mark = "!" if paged_problem else "+"
-        print(f"  {mark} {src['id']:28} saved {len(body):>10,} B  {n} rows"
+        print(f"  {mark} {src['id']:28} {how}  {len(body):>10,} B  {n} rows"
               + (f"  SUSPECT: {paged_problem}" if paged_problem else ""))
         return row
 
@@ -207,8 +279,6 @@ def fetch(src, dry_run=False):
         return row
 
     text = body.decode("utf-8", errors="replace")
-    row["bytes"] = str(len(body))
-    row["sha256"] = hashlib.sha256(body).hexdigest()
     problem = sniff(src["format"], body, text)
     if len(body) < src.get("min_bytes", 200):
         problem = problem or f"only {len(body)} bytes"
@@ -220,14 +290,11 @@ def fetch(src, dry_run=False):
         if n >= int(cap):
             problem = f"returned {n} rows, exactly the $limit of {cap} - result is truncated"
 
-    state_dir.mkdir(parents=True, exist_ok=True)
-    dest.write_bytes(body)
+    how = store(src, row, body, problem, refresh, state_dir, dest)
     if problem:
-        row["status"] = f"suspect: {problem}"
-        print(f"  ! {src['id']:28} saved {len(body):>10,} B  SUSPECT: {problem}")
+        print(f"  ! {src['id']:28} {how}  {len(body):>10,} B  SUSPECT: {problem}")
     else:
-        row["status"] = "ok"
-        print(f"  + {src['id']:28} saved {len(body):>10,} B  ({ctype.split(';')[0]})")
+        print(f"  + {src['id']:28} {how}  {len(body):>10,} B  ({ctype.split(';')[0]})")
     return row
 
 
@@ -248,6 +315,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--state"), ap.add_argument("--id")
     ap.add_argument("--list", action="store_true"), ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--refresh", action="store_true",
+                    help="download every source again (the daily mode; see the module notes)")
     args = ap.parse_args()
 
     srcs = json.loads(SOURCES.read_text())
@@ -266,15 +335,15 @@ def main():
 
     rows = []
     for s in srcs:
-        rows.append(fetch(s, args.dry_run))
+        rows.append(fetch(s, args.dry_run, args.refresh))
         if not args.dry_run:
             time.sleep(1.0)  # be a polite guest on state servers
     if not args.dry_run:
         write_manifest(rows)
-        ok = sum(1 for r in rows if r["status"] == "ok")
+        ok = sum(1 for r in rows if r["status"] in raw_files.GOOD)
         print(f"\n{ok}/{len(rows)} ok — manifest: {MANIFEST.relative_to(ROOT)}")
         for r in rows:
-            if r["status"] != "ok":
+            if r["status"] not in raw_files.GOOD:
                 print(f"  {r['status']:46} {r['id']}")
 
 

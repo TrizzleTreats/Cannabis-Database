@@ -1,0 +1,99 @@
+name: Daily update
+
+# HANDOFF: "The site will update itself daily with scripts and agents."
+#
+# The update job runs scripts/update_all.py: re-download every declared source, rebuild
+# the licence tables, fill counties, rebuild the site data, and run verify.py. Only if
+# every step passes is the new data committed. A suspect or failed download never
+# replaces good data (scripts/fetch_raw.py --refresh), and a failed run commits nothing;
+# GitHub emails the repository owner when a scheduled run fails.
+#
+# The deploy job publishes site/ to GitHub Pages. It is OFF until the repository
+# variable DEPLOY_SITE is set to "true" (Settings > Secrets and variables > Actions >
+# Variables) and Pages is set to deploy from GitHub Actions (Settings > Pages). Nothing
+# private is in site/: the build writes only allowlisted columns there, and verify.py
+# fails if any private column, or any file marked not for the public site, appears.
+#
+# Scheduled runs happen only on the repository's default branch.
+
+on:
+  schedule:
+    - cron: "23 10 * * *"   # 10:23 UTC every day
+  workflow_dispatch:
+
+concurrency:
+  group: daily-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Fetch, rebuild and verify
+        run: python3 scripts/update_all.py --summary "$RUNNER_TEMP/summary.md"
+
+      - name: Run summary
+        if: always()
+        run: cat "$RUNNER_TEMP/summary.md" >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Commit the new data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/raw data/clean
+          if git diff --cached --quiet; then
+            echo "No data changed today."
+            exit 0
+          fi
+          git commit -q -m "Daily data update $(date -u +%Y-%m-%d)" -m "$(cat "$RUNNER_TEMP/summary.md")"
+          git push
+
+  deploy:
+    needs: update
+    if: vars.DEPLOY_SITE == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}   # the branch head, including today's data commit
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Build the public site data and check it
+        run: |
+          python3 scripts/build_site_data.py
+          python3 scripts/verify.py
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

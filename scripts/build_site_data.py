@@ -34,11 +34,16 @@ split is about payload size and never about what is public.
 Usage:
   python3 scripts/build_site_data.py [--dry-run]
 """
-import argparse, collections, csv, json, pathlib, shutil, sys
+import argparse, collections, csv, json, pathlib, re, shutil, sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import us_map  # noqa: E402
+import business_states  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CLEAN = ROOT / "data" / "clean"
 OUT = ROOT / "site" / "data"
+HELD_BACK = ROOT / "data" / "private" / "businesses_unverified.json"
 TABLES = ["new_england_licences.csv", "mid_atlantic_licences.csv",
           "regions_3_to_9_licences.csv"]
 
@@ -74,6 +79,13 @@ BUSINESS_PUBLIC = [
     "states_served_codes", "credentials", "evidence_links", "audit_verdict",
     "needs_verify", "audit_note", "sources", "last_checked",
 ]
+
+# The home-page map's legal status per jurisdiction (scripts/build_legal_status.py).
+# Statements about the law, each with its citation, official link and audit date.
+LEGAL_PUBLIC = ["state", "state_name", "legal_status", "citation", "source_url",
+                "source_kind", "note", "report_last_audited"]
+
+QUICK_PUBLIC = ["fact", "text", "cite", "source_url", "confirmed", "note", "report_last_audited"]
 
 UNVERIFIED = ("unverif",)
 
@@ -112,6 +124,74 @@ def write(path, obj, dry_run):
     return len(text)
 
 
+# ------------------------------------------------------------ detail buckets
+BUCKET_SIZE = 300
+
+
+def buckets_for(n):
+    return max(1, -(-n // BUCKET_SIZE))
+
+
+def bucket(licence_id, nb):
+    """FNV-1a over the id's characters. site/assets/app.js computes the same
+    function to find a licence's bucket, so the two must not drift: ids are
+    ASCII (verify.py checks), where Python's ord() and JS charCodeAt() agree."""
+    h = 0x811C9DC5
+    for ch in licence_id:
+        h ^= ord(ch)
+        h = (h * 0x01000193) & 0xFFFFFFFF
+    return h % nb
+
+
+RELATED_CAP = 12
+NAME_NOISE = re.compile(r"[^a-z0-9 ]+")
+NAME_SUFFIX = re.compile(r"\b(llc|l l c|inc|incorporated|corp|corporation|co|ltd|lp|llp|pllc|pc)\b")
+
+
+def norm_name(name):
+    n = NAME_NOISE.sub(" ", name.lower())
+    return " ".join(NAME_SUFFIX.sub(" ", n).split())
+
+
+def usable_address(addr):
+    a = addr.strip().lower()
+    return bool(re.search(r"\d", a)) and "not available" not in a
+
+
+def related_licences(rows):
+    """Other licences in the same state that share this one's group, holder or
+    premises. Shared holder skips individuals: two hemp growers called John Smith
+    are not the same person. Each relation is capped, with the true total kept."""
+    keys = {
+        "same group": lambda r: r.get("group_id") or r.get("linked_group") or "",
+        "same holder": lambda r: "" if r.get("holder_is_individual") == "Y"
+                                 else norm_name(r.get("legal_name") or ""),
+        "same address": lambda r: r["street_address"].strip().lower()
+                                  if usable_address(r.get("street_address") or "") else "",
+    }
+    out = collections.defaultdict(list)
+    for relation, key in keys.items():
+        groups = collections.defaultdict(list)
+        for r in rows:
+            k = key(r)
+            if k:
+                groups[k].append(r)
+        for members in groups.values():
+            if len(members) < 2:
+                continue
+            for r in members:
+                others = [m for m in members if m["licence_id"] != r["licence_id"]]
+                out[r["licence_id"]].append({
+                    "relation": relation, "total": len(others),
+                    "licences": [{"licence_id": m["licence_id"],
+                                  "name": m.get("dba") or m.get("legal_name") or "",
+                                  "standard_type": m.get("standard_type", ""),
+                                  "standard_status": m.get("standard_status", ""),
+                                  "town": m.get("town", "")}
+                                 for m in others[:RELATED_CAP]]})
+    return out
+
+
 def is_unverified(row):
     verdict = (row.get("audit_verdict") or "").strip().lower()
     flag = (row.get("needs_verify") or "").strip().lower()
@@ -139,21 +219,34 @@ def main():
         by_state[r["state"]].append(r)
 
     summary = {"generated_from": "data/clean/*_licences.csv", "states": {}}
+    county_names = us_map.county_display_names()
     for state, rows in sorted(by_state.items()):
         bytes_written["licences (list)"] += write(
             OUT / "licences" / f"{state}.json",
             {"state": state, "count": len(rows),
              "licences": [public(r, LICENCE_LIST) for r in rows]}, args.dry_run)
-        bytes_written["licences (detail)"] += write(
-            OUT / "licences" / f"{state}.detail.json",
-            {"state": state,
-             "licences": [public(r, LICENCE_PUBLIC) for r in rows]}, args.dry_run)
+        # The full public record, in small buckets so a profile page or a detail
+        # panel loads ~300 records, not California's 21,000.
+        nb = buckets_for(len(rows))
+        shards = collections.defaultdict(list)
+        related = related_licences(rows)
+        for r in rows:
+            rec = public(r, LICENCE_PUBLIC)
+            if related.get(r["licence_id"]):
+                rec["related"] = related[r["licence_id"]]
+            shards[bucket(r["licence_id"], nb)].append(rec)
+        for b in range(nb):
+            bytes_written["licences (detail)"] += write(
+                OUT / "licences" / "detail" / state / f"{b}.json",
+                {"state": state, "bucket": b, "of": nb, "licences": shards.get(b, [])},
+                args.dry_run)
         types = collections.Counter(r["standard_type"] for r in rows if r["standard_type"])
         statuses = collections.Counter(r["standard_status"] for r in rows if r["standard_status"])
         counties = collections.Counter(r["county"] for r in rows if r["county"])
         asof = sorted({r["data_as_of"] for r in rows if r["data_as_of"]})
         summary["states"][state] = {
             "licences": len(rows),
+            "detail_buckets": nb,
             "with_a_licence_number": sum(1 for r in rows if not r["licence_id"].startswith(state + "-")),
             "standard_type": dict(types.most_common()),
             "standard_status": dict(statuses.most_common()),
@@ -161,6 +254,17 @@ def main():
                                       if r["standard_status"] in ("Active", "Provisional")),
             "counties": len(counties),
             "by_county": dict(counties.most_common()),
+            # What a reader sees: "Baltimore City", "Winchester City", "Orleans Parish".
+            "county_names": {c: county_names.get((state, c), c) for c in counties},
+            "towns_by_county": {c: dict(collections.Counter(
+                r["town"] for r in rows if r["county"] == c and r["town"]).most_common())
+                for c in counties},
+            "towns_without_county": dict(collections.Counter(
+                r["town"] for r in rows if not r["county"] and r["town"]).most_common()),
+            # A Connecticut village's local rules are its municipality's; the row
+            # records which municipality (fill_counties.py, from the Census geocoder).
+            "municipality_of": {r["town"]: m.group(1) for r in rows
+                                if (m := re.search(r"municipality=([^;]+)", r["extra_details"]))},
             "rows_without_a_county": sum(1 for r in rows if not r["county"]),
             "programs": dict(collections.Counter(
                 r["program"] for r in rows if r["program"]).most_common()),
@@ -181,10 +285,17 @@ def main():
         OUT / "businesses.json",
         {"note": "primary profiles only, and only entries the audit did not leave unverified",
          "count": len(publishable),
-         "businesses": [public(r, BUSINESS_PUBLIC) for r in publishable]}, args.dry_run)
-    # Kept, not dropped, so the number is visible and nothing is lost.
+         "businesses": [dict(public(r, BUSINESS_PUBLIC), states=business_states.derive(r))
+                        for r in publishable]}, args.dry_run)
+    # Kept, not dropped, so the number is visible and nothing is lost. Written OUTSIDE
+    # site/, so that everything under site/ is public by construction and the deploy
+    # can publish the folder as it stands. data/private/ is git-ignored and never
+    # deployed.
+    stale = OUT / "businesses_unverified.json"
+    if stale.exists() and not args.dry_run:
+        stale.unlink()
     bytes_written["businesses_held_back"] = write(
-        OUT / "businesses_unverified.json",
+        HELD_BACK,
         {"note": "NOT FOR THE PUBLIC SITE — CLAUDE.md: unverified entries stay off the public "
                  "site until checked. Built so the count is visible and the entries are not lost.",
          "count": len(held_back),
@@ -203,6 +314,86 @@ def main():
         "licences_with_a_county": sum(1 for r in licences if r["county"]),
     }
     bytes_written["summary"] = write(OUT / "summary.json", summary, args.dry_run)
+
+    legal = rows_of("legal_status.csv")
+    if len(legal) != 51:
+        sys.exit(f"legal_status.csv has {len(legal)} rows, not 51 — "
+                 "run python3 scripts/build_legal_status.py")
+    bytes_written["legal_status"] = write(
+        OUT / "legal_status.json",
+        {"note": "Each status restates section 1.1 of that jurisdiction's audited report; "
+                 "report_last_audited is the date the law was checked.",
+         "states": {r["state"]: public(r, LEGAL_PUBLIC) for r in legal}}, args.dry_run)
+    # Quick-reference facts per state (scripts/build_quick_reference.py). An
+    # unconfirmed fact is published only as "not yet confirmed" plus its reason:
+    # its text column is empty by construction, and checked again here.
+    quick = collections.defaultdict(dict)
+    for r in rows_of("quick_reference.csv"):
+        if r["confirmed"] != "Y" and r["text"]:
+            sys.exit(f"quick_reference.csv: {r['state']}.{r['fact']} is unconfirmed but carries text")
+        quick[r["state"]][r["fact"]] = public(r, QUICK_PUBLIC)
+    if len(quick) != 51:
+        sys.exit(f"quick_reference.csv covers {len(quick)} jurisdictions, not 51 — "
+                 "run python3 scripts/build_quick_reference.py")
+    bytes_written["quick_reference"] = write(
+        OUT / "quick_reference.json",
+        {"note": "Each fact restates that state's audited report; report_last_audited is the "
+                 "date it was checked. confirmed=N facts are deliberately shown without text.",
+         "states": quick}, args.dry_run)
+
+    # Market facts per state (scripts/build_market.py), on the same terms as the
+    # quick reference: an unconfirmed fact is published only as its reason.
+    market = collections.defaultdict(dict)
+    for r in rows_of("market.csv"):
+        if r["confirmed"] != "Y" and r["text"]:
+            sys.exit(f"market.csv: {r['state']}.{r['fact']} is unconfirmed but carries text")
+        market[r["state"]][r["fact"]] = public(r, QUICK_PUBLIC)
+    if len(market) != 51:
+        sys.exit(f"market.csv covers {len(market)} jurisdictions, not 51 — "
+                 "run python3 scripts/build_market.py")
+    bytes_written["market"] = write(
+        OUT / "market.json",
+        {"note": "Official market measures and patient counts, each restating that state's audited "
+                 "report. confirmed=N facts are deliberately shown without text.",
+         "states": market}, args.dry_run)
+
+    # Town-level local rules where a regulator publishes them: the Massachusetts CCC
+    # municipal zoning tracker and Connecticut DCP's "Cannabis Zoning" dataset. The
+    # regulator's own wording is kept verbatim; a blank stays a blank.
+    local = {"MA": {}, "CT": {}}
+    for r in rows_of("ma_towns.csv"):
+        local["MA"][r["town"]] = {
+            "adult_use": r["adult_use_status"], "delivery": r["delivery_status"],
+            "social_consumption": r["social_consumption_status"],
+            "source": "Cannabis Control Commission, municipal zoning tracker",
+            "source_url": r["source_url"], "data_as_of": r["data_as_of"]}
+    for r in rows_of("ct_towns.csv"):
+        local["CT"][r["town"]] = {
+            "municipal_law": r["status"],
+            "adopted": r["date_adopted"], "effective": r["date_effective"], "notes": r["notes"],
+            "source": "Department of Consumer Protection, Cannabis Zoning dataset (khc7-gd9u)",
+            "source_url": r["source_url"], "data_as_of": r["data_as_of"]}
+    bytes_written["local_rules"] = write(
+        OUT / "local_rules.json",
+        {"note": "Town-level rules as each regulator words them. Only MA and CT publish one.",
+         "states": {st: {t: {k: v for k, v in rec.items() if v} for t, rec in towns.items()}
+                    for st, towns in local.items()}}, args.dry_run)
+
+    geo = us_map.build({r["state_name"]: r["state"] for r in legal})
+    bytes_written["us_map"] = write(OUT / "us_map.json", geo, args.dry_run)
+    # One county map per state. A county value with no shape (a premises outside
+    # its licensing state, already flagged on the row) is listed, never drawn.
+    county_maps = us_map.counties({s["fips"]: s["code"] for s in geo["states"]})
+    unmatched = collections.Counter()
+    for code, cm in county_maps.items():
+        drawn = {c["county"] for c in cm["counties"]}
+        st = summary["states"].get(code)
+        if st:
+            unmatched.update({(code, c): n for c, n in st["by_county"].items() if c not in drawn})
+        bytes_written["county maps"] += write(OUT / "counties" / f"{code}.json", cm, args.dry_run)
+    if unmatched:
+        print(f"  {sum(unmatched.values())} licence rows in {len(unmatched)} county values have no "
+              f"shape in their own state (premises outside the licensing state); listed, not drawn")
 
     print(f"{len(licences):,} licence rows -> {len(by_state)} per-state files")
     print(f"{len(primaries):,} business profiles -> {len(publishable):,} publishable, "

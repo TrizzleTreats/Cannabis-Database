@@ -24,22 +24,28 @@
 </header>
 
 <main id="main">
+  <h2>Where cannabis is legal, by state law</h2>
+  <div class="map-wrap">
+    <div class="map-card">
+      <ul class="legend" id="legend"></ul>
+      <div id="map"><p class="loading">Loading the map…</p></div>
+      <p class="map-note" id="map-note"></p>
+    </div>
+    <aside class="detail state-card" id="state-card" aria-live="polite"></aside>
+  </div>
+  <details class="as-list">
+    <summary>The map as a list, with the law behind each colour</summary>
+    <div class="table-scroll">
+      <table id="law-list">
+        <thead><tr><th>State</th><th>Status</th><th>Law</th><th>Source</th><th>Checked</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </details>
+
   <h2>What is in here today</h2>
   <div class="stats" id="stats"><p class="loading">Loading…</p></div>
   <p class="note" id="coverage"></p>
-
-  <h2>The map is not built yet</h2>
-  <p class="note">
-    This page is meant to open with a clickable map of the United States, coloured by whether a
-    state allows medical cannabis, adult use, both, or neither. That colour is a statement about
-    the law, so it needs a sourced legal status for each of the 51 jurisdictions, quoted from that
-    state's own statute and regulator rather than inferred from whether this project happens to
-    hold licence data for it. Texas, for example, licenses no adult-use or broad medical operator
-    but does run a limited medical programme — so colouring the map from licence coverage would
-    misstate the law in several states.
-    The research exists in the audited state reports; turning it into a status with a citation per
-    state is the next job, and the map goes in once it is done.
-  </p>
 
   <h2>Licences, by jurisdiction</h2>
   <p class="note">
@@ -70,7 +76,9 @@ import { loadJSON, fmt, el, mountFooter, mountTopbar } from "./assets/app.js";
 mountTopbar(document.body, "index.html");
 mountFooter(document.body);
 
-const summary = await loadJSON("summary.json");
+const [summary, legal, geo] = await Promise.all(
+  [loadJSON("summary.json"), loadJSON("legal_status.json"), loadJSON("us_map.json")]);
+drawMap(legal.states, geo);
 const t = summary.totals;
 
 const stat = (n, label) => el("div", { class: "stat" }, el("b", { text: fmt(n) }), el("span", { text: label }));
@@ -107,6 +115,124 @@ document.querySelector("#states tbody").replaceChildren(...rows.map(([code, s]) 
     el("td", {}, top ? `${top[0]} (${fmt(top[1])})` : "—"),
     el("td", { text: read }));
 }));
+
+/* ------------------------------------------------------------------ the map
+   Colour = the state's legal status as its audited report states it
+   (data/clean/legal_status.csv), never whether this project holds licence data. */
+function drawMap(law, geo) {
+  const SVG = "http://www.w3.org/2000/svg";
+  const STATUS = [
+    ["Adult use and medical", "law-adult"],
+    ["Medical only", "law-medical"],
+    ["Limited medical (low-THC) only", "law-lowthc"],
+    ["No medical programme", "law-none"],
+  ];
+  const cls = Object.fromEntries(STATUS);
+  const svgEl = (tag, attrs = {}) => {
+    const n = document.createElementNS(SVG, tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    return n;
+  };
+  const longDate = (iso) => new Date(iso + "T12:00:00Z").toLocaleDateString(
+    "en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  const KIND = { statute: "the statute", regulator: "the regulator", court: "a court opinion" };
+
+  document.getElementById("legend").replaceChildren(...STATUS.map(([label, c]) => {
+    const n = Object.values(law).filter((s) => s.legal_status === label).length;
+    return el("li", { class: c }, el("i"), label, el("b", { text: String(n) }));
+  }));
+
+  const dates = Object.values(law).map((s) => s.report_last_audited).sort();
+  document.getElementById("map-note").replaceChildren(
+    `State law only, as checked between ${longDate(dates[0])} and ${longDate(dates.at(-1))}. `,
+    "Federal law differs: state-licensed medical marijuana is Schedule III from 28 April 2026, "
+    + "and all adult use is still Schedule I — see ",
+    el("a", { href: "federal.html" }, "federal law"),
+    ". Results of the 3 November 2026 election are not shown until certified. "
+    + "Map shapes: US Census Bureau cartographic boundaries, 2017.");
+
+  const card = document.getElementById("state-card");
+  function show(code) {
+    const s = law[code];
+    const kids = [
+      el("h3", { text: s.state_name }),
+      el("span", { class: `law-chip ${cls[s.legal_status]}`, text: s.legal_status }),
+      el("p", { class: "cite", text: s.citation }),
+    ];
+    if (s.note) kids.push(el("p", { class: "warn", text: s.note }));
+    kids.push(el("p", { class: "source" },
+      s.source_url
+        ? el("span", {}, "Source: ", el("a", { href: s.source_url, rel: "noopener" }, KIND[s.source_kind]),
+            ` (official). Checked ${longDate(s.report_last_audited)}.`)
+        : `No official link captured yet. Checked ${longDate(s.report_last_audited)}.`));
+    kids.push(el("a", { class: "cta", href: `state.html?state=${code}` }, `Open ${s.state_name} →`));
+    card.replaceChildren(...kids);
+  }
+  // Touch screens have no hover, so the first tap shows the card and the second opens the page.
+  const canHover = matchMedia("(hover: hover)").matches;
+  card.replaceChildren(
+    el("h3", { text: "Choose a state" }),
+    el("p", { class: "cite", text: canHover
+      ? "Point at a state, or tab to it, to see its status and the law behind it. "
+        + "Click to open the state page with its licences."
+      : "Tap a state to see its status and the law behind it. "
+        + "Tap it again, or the button here, to open the state page." }));
+
+  const [x, y, w, h] = geo.viewBox;
+  const svg = svgEl("svg", { class: "usmap", viewBox: `${x} ${y} ${w} ${h}`, role: "group",
+    "aria-label": "Map of the United States coloured by the legal status of cannabis under state law" });
+  const shapes = svgEl("g"), labels = svgEl("g");
+  let chosen = null;
+
+  for (const st of geo.states) {
+    const s = law[st.code];
+    const a = svgEl("a", { href: `state.html?state=${st.code}`, class: cls[s.legal_status],
+      "aria-label": `${s.state_name}: ${s.legal_status}` });
+    const path = svgEl("path", { d: st.d });
+    const title = svgEl("title"); title.textContent = `${s.state_name} — ${s.legal_status}`;
+    a.append(title, path);
+    a.addEventListener("mouseenter", () => show(st.code));
+    a.addEventListener("focus", () => show(st.code));
+    a.addEventListener("click", (e) => {
+      if (canHover || chosen === a) return;
+      e.preventDefault();
+      chosen?.classList.remove("chosen");
+      chosen = a; a.classList.add("chosen");
+      show(st.code);
+    });
+    shapes.append(a);
+
+    if (st.callout) {
+      const [lx, ly] = st.label, [ax, ay] = st.anchor;
+      const g = svgEl("g", { class: `callout ${cls[s.legal_status]}` });
+      g.append(svgEl("line", { x1: ax, y1: ay, x2: lx - 22, y2: ly }),
+        svgEl("rect", { x: lx - 20, y: ly - 7, width: 14, height: 14, rx: 3 }));
+      const t = svgEl("text", { x: lx, y: ly }); t.textContent = st.code;
+      g.append(t);
+      // the callout is a second click target for a state too small to hit
+      const ca = svgEl("a", { href: `state.html?state=${st.code}`, "aria-hidden": "true", tabindex: "-1" });
+      ca.append(g);
+      ca.addEventListener("mouseenter", () => show(st.code));
+      labels.append(ca);
+    } else {
+      const t = svgEl("text", { x: st.label[0], y: st.label[1], class: cls[s.legal_status] });
+      t.textContent = st.code;
+      labels.append(t);
+    }
+  }
+  svg.append(shapes, labels);
+  document.getElementById("map").replaceChildren(svg);
+
+  document.querySelector("#law-list tbody").replaceChildren(...Object.values(law)
+    .sort((p, q) => p.state_name.localeCompare(q.state_name))
+    .map((s) => el("tr", {},
+      el("td", {}, el("a", { href: `state.html?state=${s.state}` }, s.state_name)),
+      el("td", { class: `law ${cls[s.legal_status]}` }, el("i"), s.legal_status),
+      el("td", {}, s.citation, s.note ? el("div", { class: "source", text: s.note }) : null),
+      el("td", {}, s.source_url
+        ? el("a", { href: s.source_url, rel: "noopener" }, KIND[s.source_kind]) : "not captured"),
+      el("td", { text: longDate(s.report_last_audited) }))));
+}
 </script>
 </body>
 </html>

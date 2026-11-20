@@ -17,11 +17,13 @@ table does not already have, so churning them would add risk and no data.
 Usage: python3 scripts/build_new_england.py [--dry-run]
 """
 import argparse, csv, collections, pathlib, sys
-from datetime import date
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 MASTER = ROOT / "data" / "clean" / "new_england_licences.csv"
-TODAY = date.today().isoformat()
+# No TODAY: a row's data_as_of is the day its raw file was read (raw_files.resolve),
+# never the day this script happened to run.
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from raw_files import resolve  # noqa: E402
 
 # Fields the raw downloads cannot supply. Carried forward from the prior table
 # for rows that already existed; left empty for new rows.
@@ -30,6 +32,12 @@ ENRICHMENT = ["county", "county_source", "location_basis", "town_opted_in_adult_
               "owners", "owner_count", "group_id", "linked_group", "licences_in_group",
               "programs_in_group", "grow_town", "grow_county", "retail_town",
               "retail_county", "first_issue_date"]
+
+# Notes about a row's county that a rebuild must not lose (see carry()). Not
+# "county not valid for this state=": fill_counties.py --validate regenerates it, and
+# its text contains "; ", the separator these notes are split on.
+CARRIED_NOTES = ("premises outside the licensing state=", "county unavailable=",
+                 "municipality=", "place as listed=", "city or county checked=")
 
 # ---------------------------------------------------------------- Connecticut
 CT_MAP = {
@@ -113,8 +121,32 @@ def title(s):
     return s.title() if s.isupper() or s.islower() else s
 
 
+# Regulator test records are not licences. Connecticut's DCP leaves its own test
+# credentials in the public file, named "TEST RECORD" and registered to its own
+# office (450 Columbus Blvd, Hartford) — 28 of them on 12 Nov 2026, several with
+# real-looking numbers (ACRE.0015712, CSW.0005793-TIB), so they are matched by
+# name, which also catches any new ones a daily refresh brings in. Vermont's
+# three carry no such marker beyond the name, so they are named by licence id.
+CT_TEST_NAME = "TEST RECORD"
+TEST_RECORD_IDS = {
+    ("VT", "MANU0073"): "High Society - Test - Manufacturing",
+    ("VT", "MANU0123"): "Test - MANU0123",
+    ("VT", "RTLR0086"): "Test - RTLR0086",
+}
+
+
+def is_test_record(state, licence_id, legal_name, dba):
+    if (state, licence_id) in TEST_RECORD_IDS:
+        return True
+    return state == "CT" and CT_TEST_NAME in (legal_name.upper(), dba.upper())
+
+
+CT_READ_ON = "2026-11-12"   # the fetch date in the raw file's name and manifest row
+
+
 def build_ct(prior, town_county, blank):
-    src = ROOT / "data/raw/connecticut/ngch-56tr_business_credentials_2026-11-12.csv"
+    # The newest good download of this source, and the day it was read (raw_files.resolve).
+    src, ct_read_on = resolve("connecticut/ngch-56tr_business_credentials_2026-11-12.csv", CT_READ_ON)
     rows, excluded, unmapped = [], collections.Counter(), []
     with open(src, encoding="utf-8-sig") as f:
         for r in csv.DictReader(f):
@@ -151,7 +183,7 @@ def build_ct(prior, town_county, blank):
                                                         r.get("state", ""), r.get("zip", "")) if x),
                 "town": town, "town_as_listed": r.get("city", ""),
                 "source": CT_SRC, "source_url": CT_URL,
-                "data_as_of": iso(r.get("recordrefreshedon")) or TODAY,
+                "data_as_of": iso(r.get("recordrefreshedon")) or ct_read_on,
             })
             carry(row, prior.get(("CT", lid)), town_county, "CT", town)
             if std == "Provisional":
@@ -179,12 +211,23 @@ MA_STATUS = {"Active": "Active", "Expired": "Expired", "Surrendered": "Surrender
              "Revoked": "Revoked", "Suspended": "Suspended", "Payment Pending": "Pending"}
 MA_SRC = "Mass. Cannabis Control Commission, all licences (public) — EIN/TIN column dropped"
 MA_URL = "https://masscannabiscontrol.com/resource/l_licenses_all_details_public.csv"
+# The date the MA raw files were read. They predate scripts/fetch_raw.py and have no
+# manifest row; they arrived in the initial commit on 12 Nov 2026, which is the date
+# every MA row carried until a rebuild stamped the run date instead. A data_as_of
+# must say when the regulator's file was read, never when this script last ran.
+MA_READ_ON = "2026-11-12"
 
 
 def build_ma(prior, town_county, blank):
     raw, unmapped = {}, []
+    # Until the daily fetch has downloaded them, these are the files from the initial
+    # commit, read on MA_READ_ON; after that, the newest good download and its date.
+    read_on = MA_READ_ON
     for name in ("l_licenses_all_details_public.csv", "l_licenses_commence_ops.csv"):
-        with open(ROOT / "data/raw/massachusetts" / name, encoding="utf-8-sig") as f:
+        path, read_on_this = resolve(f"massachusetts/{name}", MA_READ_ON)
+        if name == "l_licenses_all_details_public.csv":
+            read_on = read_on_this
+        with open(path, encoding="utf-8-sig") as f:
             for r in csv.DictReader(f):
                 if r.get("LICENSE_NUMBER"):
                     # all_details is read first and wins; commence_ops only adds rows.
@@ -232,7 +275,7 @@ def build_ma(prior, town_county, blank):
             "town": town, "town_as_listed": r.get("ESTABLISHMENT_CITY") or r.get("BUSINESS_CITY", ""),
             "contact_phone": r.get("BUSINESS_PHONE", ""), "contact_email": r.get("BUSINESS_EMAIL", ""),
             "contact_is_law_firm": "N",
-            "source": MA_SRC, "source_url": MA_URL, "data_as_of": TODAY,
+            "source": MA_SRC, "source_url": MA_URL, "data_as_of": read_on,
         })
         carry(row, prior.get(("MA", lid)), town_county, "MA", town)
         rows.append(row)
@@ -245,7 +288,19 @@ def carry(row, old, town_county, state, town):
     for f in ENRICHMENT:
         if not row.get(f) and old and old.get(f):
             row[f] = old[f]
-    if not row.get("county") and town:
+    # A carried county keeps the notes that explain it (e.g. a premises in another
+    # state, settled by the geocoder), and a county the prior table cleared ON PURPOSE,
+    # with a stated reason, is not re-filled by a town-name guess.
+    old_notes = [n for n in (old or {}).get("extra_details", "").split("; ")
+                 if n.startswith(CARRIED_NOTES)]
+    have = row.get("extra_details", "")
+    for n in old_notes:
+        if n.split("=", 1)[0] + "=" not in have:
+            have = "; ".join(x for x in (have, n) if x)
+    row["extra_details"] = have
+    cleared_on_purpose = bool(old) and not old.get("county") and "county unavailable=" in old.get(
+        "extra_details", "")
+    if not row.get("county") and town and not cleared_on_purpose:
         c = town_county.get((state, town.lower()))
         if c:
             row["county"], row["county_source"] = c, "town lookup (carried from prior table)"
@@ -298,6 +353,9 @@ def main():
         carried.append(row)
 
     new_rows = carried + ct + ma
+    tests = [r for r in new_rows
+             if is_test_record(r["state"], r["licence_id"], r["legal_name"], r["dba"])]
+    new_rows = [r for r in new_rows if r not in tests]
     new_rows.sort(key=lambda r: (r["state"], r["licence_id"]))
     after = collections.Counter(r["state"] for r in new_rows)
 
@@ -312,6 +370,10 @@ def main():
     for k, n in ct_excluded.most_common():
         print(f"  {n:>4}  {k}")
     print(f"  {sum(ct_excluded.values()):>4}  total excluded")
+
+    print("\nRegulator test records excluded (not licences):")
+    for st, n in sorted(collections.Counter(r["state"] for r in tests).items()):
+        print(f"  {n:>4}  {st}")
 
     unmapped = collections.Counter(ct_unmapped + ma_unmapped + carried_unmapped)
     if unmapped:

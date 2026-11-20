@@ -38,7 +38,10 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
 OUT = ROOT / "data" / "clean" / "mid_atlantic_licences.csv"
 NE = ROOT / "data" / "clean" / "new_england_licences.csv"
-TODAY = "2026-11-12"
+TODAY = "2026-11-12"   # the date the files declared below were read; see raw_files.resolve
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from raw_files import current, resolve  # noqa: E402
 
 LOCAL_ID = "licence_id assigned locally — the regulator publishes no licence number in this source"
 
@@ -49,7 +52,7 @@ def cells(tr):
 
 
 def tables(path):
-    t = (RAW / path).read_text(errors="replace")
+    t = current(path)[0].read_text(errors="replace")
     return [re.findall(r"<tr.*?</tr>", tb, re.S | re.I)
             for tb in re.findall(r"<table.*?</table>", t, re.S | re.I)]
 
@@ -101,7 +104,8 @@ NY_URL = "https://data.ny.gov/d/jskf-tt3q"
 
 def build_ny(blank, unmapped):
     rows = []
-    with open(RAW / "new-york/jskf-tt3q_ocm_licences_2026-11-12.csv", encoding="utf-8-sig") as f:
+    path, asof = resolve("new-york/jskf-tt3q_ocm_licences_2026-11-12.csv", TODAY)
+    with open(path, encoding="utf-8-sig") as f:
         src = list(csv.DictReader(f))
     repeats = collections.Counter(r["License Number"] for r in src if r["License Number"].strip())
     # One application can cover several proposed locations, so its number is not
@@ -168,7 +172,7 @@ def build_ny(blank, unmapped):
             "website": r["Business Website"].strip(),
             "contact_name": r["Primary Contact Name"].strip(), "contact_is_law_firm": "",
             "source": NY_SRC + (f" — {LOCAL_ID}" if not num else ""),
-            "source_url": NY_URL, "data_as_of": TODAY,
+            "source_url": NY_URL, "data_as_of": asof,
             "extra_details": extras(
                 location_id=loc, region=r["Region"].strip(),
                 application_number=r["Application Number"].strip(),
@@ -200,7 +204,8 @@ DC_STATUS = {"Active": "Active", "Safekeeping with Location": "Suspended",
 def build_dc(blank, unmapped):
     rows = []
     for fname, layer in DC_LAYERS:
-        d = json.loads((RAW / "district-of-columbia" / fname).read_text())
+        path, asof = resolve(f"district-of-columbia/{fname}", TODAY)
+        d = json.loads(path.read_text())
         for ft in d["features"]:
             p = ft["properties"]
             ftype = (p.get("FACILITY_TYPE") or "").strip()
@@ -234,7 +239,7 @@ def build_dc(blank, unmapped):
                 "source": f"DC ABCA via DC Open Data, Health_WebMercator MapServer layer {layer}"
                           + ("" if num else f" — {LOCAL_ID}"),
                 "source_url": f"https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Health_WebMercator/MapServer/{layer}",
-                "data_as_of": TODAY,
+                "data_as_of": asof,
                 "extra_details": extras(ward=p.get("WARD"), anc=p.get("ANC"), smd=p.get("SMD"),
                                         endorsements=p.get("ENDORSEMENTS"),
                                         applicant_type=p.get("APPLICANT_TYPE"),
@@ -298,7 +303,8 @@ def build_pa(blank):
     """Parse the DOH dispensary PDF. It supersedes the PASDA layer, which is a
     Jan 2025 vintage; PASDA is kept in data/raw/ for its coordinates."""
     from pypdf import PdfReader
-    reader = PdfReader(RAW / "pennsylvania/pa_doh_dispensaries_with_product_current.pdf")
+    path, asof = resolve("pennsylvania/pa_doh_dispensaries_with_product_current.pdf", "2026-11-10")
+    reader = PdfReader(path)
     text = "\n".join(pg.extract_text() or "" for pg in reader.pages)
     rows, unparsed = [], 0
     # The PDF uses non-breaking and other unicode spaces; normalise them or the
@@ -334,7 +340,7 @@ def build_pa(blank):
             "town": town, "town_as_listed": listed,
             "location_basis": "Licensed premises",
             "website": site.strip(), "contact_phone": phone.strip(), "contact_is_law_firm": "N",
-            "source": PA_SRC, "source_url": PA_URL, "data_as_of": "2026-11-10",
+            "source": PA_SRC, "source_url": PA_URL, "data_as_of": asof,
             "extra_details": extras(
                 product_available=product, medical_available_from=mdy(avail), opened_on=mdy(opened),
                 zip_code=zipc,
@@ -596,6 +602,8 @@ def build_nj(blank, unmapped):
                 "town": town, "town_as_listed": town,
                 "location_basis": "CRC listed location (no permit published for it)",
                 "source": f"NJ CRC, Permitted & Licensed Cannabis Businesses — {LOCAL_ID}",
+                # NJ's permit PDFs are a file set fetched by scripts/fetch_nj_permits.py, not by
+                # the daily fetch, so their read date stays the documented one.
                 "source_url": NJ_URL, "data_as_of": TODAY,
                 "extra_details": extras(
                     business_types_as_listed=l["business_types"],
@@ -643,7 +651,7 @@ MD_ANCILLARY = "Ancillary Business Registration"
 
 
 def md_sheet(name):
-    rows = xlsx_reader.read(str(RAW / MD_XLSX), name)
+    rows = xlsx_reader.read(str(resolve(MD_XLSX, TODAY)[0]), name)
     header = [c.strip() for c in rows[0]]
     out = []
     for r in rows[1:]:
@@ -699,6 +707,7 @@ def md_name_key(value):
 
 
 def build_md(blank, unmapped):
+    _, md_asof = resolve(MD_XLSX, TODAY)
     licences = md_sheet("License Data")
     addresses = {r["License Number"]: r for r in md_sheet("Dispensaries Address Data")}
     # 197 social-equity records, but only 45 carry a licence number: the other
@@ -788,7 +797,7 @@ def build_md(blank, unmapped):
             "county_source": "MCA Dispensary Locator county column" if county else "",
             "location_basis": "Licensed premises" if street else "",
             "website": extra.get("URL", ""),
-            "source": MD_SRC, "source_url": MD_URL, "data_as_of": TODAY,
+            "source": MD_SRC, "source_url": MD_URL, "data_as_of": md_asof,
             "extra_details": extras(
                 record_type=record,
                 registration_type=r["Registration Type"],
@@ -824,7 +833,8 @@ DE_URL = "https://omc.delaware.gov/dispensaries/"
 
 
 def build_de(blank):
-    t = (RAW / "delaware/omc_dispensaries_2026-11-12.html").read_text(errors="replace")
+    path, asof = resolve("delaware/omc_dispensaries_2026-11-12.html", TODAY)
+    t = path.read_text(errors="replace")
     t = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", t, flags=re.S | re.I)
     t = re.sub(r"<br\s*/?>|</p>|</div>|</li>|</h\d>", "\n", t, flags=re.I)
     lines = [l.strip() for l in html.unescape(re.sub(r"<[^>]+>", "", t)).splitlines() if l.strip()]
@@ -847,7 +857,7 @@ def build_de(blank):
                 "status": "", "standard_status": "",
                 "street_address": l, "town": m.group(2).strip(), "town_as_listed": m.group(2).strip(),
                 "location_basis": "Licensed premises",
-                "source": DE_SRC, "source_url": DE_URL, "data_as_of": TODAY,
+                "source": DE_SRC, "source_url": DE_URL, "data_as_of": asof,
                 "extra_details": extras(
                     zip_code=m.group(3),
                     note="OMC publishes operator brand and address only — no licence number, type, status, "
