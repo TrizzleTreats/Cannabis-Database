@@ -41,6 +41,13 @@ def NOT_CONFIRMED(why, cite="", url=""):
     return F(None, cite, url, confirmed=False, note=why)
 
 
+# Re-checked against official pages on 20 Nov 2026 (see docs/STATUS.md).
+CHK = 'Re-read in the official text on 20 Nov 2026.'
+NM_PDF = 'https://www.rld.nm.gov/wp-content/uploads/2023/08/ARTICLE-2C-Cannabis-Regulation-_-Chapter-26-Drugs-and-Cosmetics.pdf'
+NM_NOTE = "From the Regulation and Licensing Department's own copy of the Act (posted August 2023). Re-read in the official text on 20 Nov 2026."
+IA_URL = 'https://www.legis.iowa.gov/docs/code/124E.pdf'
+
+
 QUICK = {
     "AK": {
         "possession": F("Adults 21+: 1 oz or less. At home, more than 1 oz and under 4 oz is "
@@ -133,13 +140,17 @@ QUICK = {
     "DE": {
         "possession": F("Adults 21+: a personal-use quantity of 1 oz of leaf marijuana, or 12 g "
                         "of concentrate, or products containing up to 750 mg THC.",
-                        "16 Del.C. §4701", "https://omc.delaware.gov/adult-use/",
-                        note="Registered medical patients may possess up to 6 oz of usable marijuana (16 Del.C. §4903A)."),
-        "home_grow": F("Not allowed, for adults or for medical patients and caregivers.",
-                       "16 Del.C. §4764A(c)", "https://omc.delaware.gov/adult-use/"),
-        "state_tax": F("15% of the retail price on adult-use sales; medical sales are exempt. "
-                       "From 21 Oct 2026 infused beverages pay a per-container tax instead.",
-                       "4 Del.C. §1382", "https://revenue.delaware.gov/marijuana-establishments-and-retail-tax-faqs/"),
+                        "16 Del.C. §4701(36)", "https://delcode.delaware.gov/title16/c047/sc01/index.html",
+                        note="Registered medical patients may possess up to 6 oz of usable marijuana "
+                             "(16 Del.C. §4903A). " + CHK),
+        "home_grow": F("Not allowed: home cultivation remains prohibited.",
+                       "Office of the Marijuana Commissioner", "https://omc.delaware.gov/adult-use/",
+                       note=CHK),
+        "state_tax": F("15% of the retail price on adult-use sales. Medical sales are exempt, and so "
+                       "are infused beverages sold by a package store or marijuana retail store.",
+                       "4 Del.C. §1382(a)-(b)", "https://delcode.delaware.gov/title4/c013/sc08/index.html",
+                       note="The tax infused beverages pay instead is not yet confirmed from official "
+                            "text. " + CHK),
         "regulator": F("Office of the Marijuana Commissioner (OMC), Department of Safety and "
                        "Homeland Security", "4 Del.C. ch. 13; HB 425 (2024)", "https://omc.delaware.gov/"),
     },
@@ -247,11 +258,11 @@ QUICK = {
     },
     "IA": {
         "possession": F("Registered patients only: medical cannabidiol products, up to 4.5 g of "
-                        "total THC per 90 days (more by waiver). Marijuana is not legal in any amount.",
-                        "Iowa Code §124E.9(14)-(15); §124.401(5)",
-                        "https://www.legis.iowa.gov/docs/code/2024/124E.pdf"),
-        "home_grow": F("Not allowed, including for patients.", "Iowa Code ch. 124E",
-                       "https://www.legis.iowa.gov/docs/code/2024/124E.pdf"),
+                        "total THC per 90 days (more only in the cases the statute lists). Marijuana is "
+                        "not legal in any amount.", "Iowa Code §124E.9(14)-(15); §124.401(5)",
+                        IA_URL, note=CHK),
+        "home_grow": F("Not allowed, including for patients: only licensed manufacturers may cultivate.",
+                       "Iowa Code §124E.6", IA_URL, note=CHK),
         "state_tax": F("No cannabis-specific tax. Medical cannabidiol pays the 6% state sales tax "
                        "with no exemption, plus a 1% local option tax where adopted.",
                        "Iowa Code §423.2", "https://www.legis.iowa.gov/docs/code/2024/124E.pdf",
@@ -436,10 +447,10 @@ QUICK = {
         "home_grow": F("6 plants per adult, 12 per residence, enclosed and locked, but only if "
                        "the home is more than 25 miles from a licensed retail store.",
                        "NRS 678D.200; NRS 678D.310(1)", "https://www.leg.state.nv.us/nrs/NRS-678D.html"),
-        "state_tax": F("15% wholesale excise on the first wholesale sale (medical and adult use), "
-                       "and a 10% retail excise on adult-use sales, on top of sales tax (at least "
-                       "6.85%). Medical sales are exempt from the 10%.", "NRS 372A.290",
-                       "https://www.leg.state.nv.us/NRS/NRS-372A.html"),
+        "state_tax": F("15% excise on the first wholesale sale (medical and adult use), and a 10% "
+                       "excise on adult-use retail sales, on top of state and local sales tax. Medical "
+                       "sales to cardholders are exempt from the 10%.", "NRS 372A.290(1)-(3), (8)",
+                       "https://www.leg.state.nv.us/NRS/NRS-372A.html", note=CHK),
         "regulator": F("Cannabis Compliance Board (CCB)", "NRS ch. 678A, 678B",
                        "https://ccb.nv.gov/faq/"),
     },
@@ -472,13 +483,14 @@ QUICK = {
     "NM": {
         "possession": F("Adults 21+, outside the home: 2 oz of cannabis, 16 g of concentrate and "
                         "800 mg of edibles. At home, no weight limit if kept out of public view.",
-                        "NMSA §26-2C-25(A)", "https://www.rld.nm.gov/cannabis/cannabis-in-new-mexico/adult-use/"),
+                        "NMSA §26-2C-25(A)(2)", NM_PDF, note=NM_NOTE),
         "home_grow": F("6 mature and 6 immature plants per adult; no more than 12 mature plants "
-                       "per household.", "NMSA §26-2C-25(A)(9)",
-                       "https://www.rld.nm.gov/cannabis/cannabis-in-new-mexico/adult-use/personal-use-of-cannabis/"),
-        "state_tax": F("Cannabis excise: 14% from 1 July 2026 (13% the year before), rising one "
-                       "point each 1 July to 18% in 2030. Medical sales to patients are exempt.",
-                       "NMSA §7-42-3(B)-(C)", "https://www.rld.nm.gov/cannabis/compliance/tax-reporting/"),
+                       "per household.", "NMSA §26-2C-25(A)(9)", NM_PDF, note=NM_NOTE),
+        "state_tax": F("Cannabis excise: 12% until 1 July 2025, then rising gradually to 18% from "
+                       "1 July 2030. Medical sales to patients are exempt.",
+                       "NMSA §7-42-3", "https://www.rld.nm.gov/cannabis/compliance/tax-reporting/",
+                       note="The rate for each year in between is set in §7-42-3, which is not yet checked "
+                            "in official text. " + CHK),
         "regulator": F("Regulation and Licensing Department, Cannabis Control Division (CCD); the "
                        "Department of Health runs the medical programme.", "Cannabis Regulation Act",
                        "https://www.rld.nm.gov/cannabis/"),
@@ -781,10 +793,11 @@ LAW_MORE = {
                                     "against the official statute.", "A.R.S. §36-2813"),
     },
     "AR": {
-        "public_use": F("Patients may not use medical marijuana in a public place, on public transport, "
-                        "at schools, colleges, treatment or community centres, in correctional "
-                        "facilities, or wherever tobacco smoking is banned.",
-                        "Ark. Const. Amendment 98; Acts 740 and 271",
+        "public_use": F("Patients may not use medical marijuana in a public place, on public transport "
+                        "or a school bus, on the grounds of a school, college or daycare, at a drug or "
+                        "alcohol treatment facility or community centre, in a correctional facility, or "
+                        "on military property; and may not smoke it inside a vehicle or wherever smoking "
+                        "tobacco is banned.", "Ark. Const. amend. 98 §6(a)(2), (a)(4)",
                         "https://www.dfa.arkansas.gov/wp-content/uploads/Medical_Marijuana_Rules_1.pdf"),
         "employment": F("An employer may not discriminate in hiring, firing or the terms of employment "
                         "based on an applicant's or employee's status as a qualifying patient.",
@@ -823,9 +836,11 @@ LAW_MORE = {
     "DE": {
         "public_use": F("Public consumption is prohibited.", "Office of the Marijuana Commissioner FAQ",
                         "https://omc.delaware.gov/faq/"),
-        "employment": F("Adult use: no protection; employers keep every right to set policies and "
-                        "discipline. Medical patients have statutory protection against discrimination.",
-                        "4 Del.C. §1304; 16 Del.C. ch. 49A", "https://omc.delaware.gov/adult-use/"),
+        "employment": F("Adult use: no protection; the law places no requirement on employers' "
+                        "accommodation, policies or discipline. Registered medical patients may not be "
+                        "penalised for being a cardholder or for a positive test, unless they used, "
+                        "possessed or were impaired at work.", "4 Del.C. §1304; 16 Del.C. §4905A(a)(3)",
+                        "https://delcode.delaware.gov/title4/c013/sc01/index.html", note=CHK),
     },
     "DC": {
         "public_use": F("Not in public: not on streets, alleys, sidewalks, parks or parking areas, in "
@@ -883,8 +898,7 @@ LAW_MORE = {
     "IA": {
         "public_use": F("For anyone but a patient, use is unlawful anywhere. Dispensaries and "
                         "manufacturers may not let anyone consume medical cannabidiol on their property.",
-                        "Iowa Code §§124E.7(5), 124E.9(5); §124.401(5)",
-                        "https://www.legis.iowa.gov/docs/code/2024/124E.pdf"),
+                        "Iowa Code §§124E.7(5), 124E.9(5); §124.401(5)", IA_URL, note=CHK),
         "employment": F("No protection: employers need not allow use or possession at work, and may "
                         "enforce zero-tolerance policies with drug testing.", "Iowa Code §124E.21; §730.5",
                         "https://www.legis.iowa.gov/docs/code/2024/124E.pdf"),
@@ -1017,9 +1031,10 @@ LAW_MORE = {
                         note="The statute allows action for use or impairment at work; see its full text."),
     },
     "NM": {
-        "public_use": F("Only in a private residence or a licensed consumption area. Smoking in a public "
-                        "place carries a $50 civil penalty.", "NMSA §26-2C-26(B)",
-                        "https://www.rld.nm.gov/cannabis/cannabis-in-new-mexico/yes-and-knows/"),
+        "public_use": F("Smoking in a public place is not allowed except in a licensed consumption area, "
+                        "and carries a $50 civil penalty. The regulator says cannabis may only be "
+                        "consumed at a licensed consumption lounge or at a private residence.",
+                        "NMSA §26-2C-26(A)-(B)", NM_PDF, note=NM_NOTE),
         "employment": NOT_CONFIRMED("Medical patients have an employment protection (§26-2B-9), but the report "
                                     "quotes it from a search-index excerpt, still to be checked against the "
                                     "official statute.", "NMSA §26-2B-9"),
@@ -1191,9 +1206,9 @@ DRIVING = {
             "AS 28.35.030", "https://www.akleg.gov/"),
     "AZ": F("Impairment-based: no per se THC blood limit. For adults 21+, impairment must be shown.",
             "A.R.S. §36-2852(B)", "https://www.azleg.gov/viewdocument/?docName=https://www.azleg.gov/ars/36/02850.htm"),
-    "AR": F("Impairment-based: the per se limit applies to alcohol only, and being entitled to use "
-            "marijuana under state law is no defence.", "Ark. Code §5-65-103",
-            "https://www.dfa.arkansas.gov/wp-content/uploads/Medical_Marijuana_Rules_1.pdf"),
+    "AR": NOT_CONFIRMED("The report reads Ark. Code §5-65-103 only from unofficial copies. The official "
+                        "compilation of Amendment 98 confirms only that a patient may not drive under the "
+                        "influence of marijuana, not whether there is a per se limit.", "Ark. Code §5-65-103"),
     "CA": F("Impairment-based: California has never set a per se limit for THC.", "Cal. Vehicle Code",
             "https://www.cannabis.ca.gov/cannabis-laws/"),
     "CO": F("No per se limit, but 5 ng/mL or more of delta-9 THC in whole blood allows a court to infer "
@@ -1209,7 +1224,8 @@ DRIVING = {
             "noticeably impaired.", "D.C. Code §50-2206.11",
             "https://oag.dc.gov/public-safety/driving-under-influence/marijuana-and-impaired-driving"),
     "FL": F("Impairment-based: no per se THC limit; the only per se limit is for alcohol.", "Fla. Stat. §316.193(1)",
-            "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0381/Sections/0381.986.html"),
+            "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0300-0399/0316/Sections/0316.193.html",
+            note=CHK),
     "GA": NOT_CONFIRMED("The report's reading of §40-6-391 (no numeric THC limit; the any-amount provision "
                         "narrowed by Love v. State) rests only on a Justia copy of the Code; the report "
                         "lists the live legis.ga.gov text as still unverified.",

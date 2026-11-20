@@ -355,14 +355,45 @@ itself state the fact. Four reports say so outright, and those were reviewed fac
 - **Wyoming**: possession tiers and driving were read from FindLaw and Justia. Driving: **now held
   back**. Possession drops the 3 oz misdemeanour line and says why in its note.
 
-The quick reference now holds 408 facts, 38 held back, 11 without an official link. **Still to
-review by hand** (not known to be wrong): facts whose cited sections a report lists among those it
-did not open in official text. These are Arkansas driving (§5-65-103) and public use (Act 271),
-Arizona public use (§36-2853), Delaware's Ch. 49A citations (OMC confirms the possession limits
-themselves), Florida driving (§316.193, "partly resolved"), Iowa possession and public use (Code
-2026 not re-opened), New Mexico possession, home grow, tax and public use (NMOneSource "direct
-opens"), and Nevada tax (§372A.290). For each, the question is whether the official page the
-fact links to states the fact itself.
+**Second pass, same day: the other candidates, read in the official text.** Facts whose cited
+sections a report lists among those it did not open in official text were each read on an official
+page. The session's network did not reach these hosts at first; a new cloud environment,
+**Cannabis-Database**, was created (with your approval) allowing 11 official hosts: www.rld.nm.gov,
+nmonesource.com, www.azleg.gov, omc.delaware.gov, revenue.delaware.gov, delcode.delaware.gov,
+www.leg.state.fl.us, www.legis.iowa.gov, www.leg.state.nv.us, www.dfa.arkansas.gov and
+www.arkleg.state.ar.us. Results:
+
+- **Confirmed as written:** Arizona public use (§36-2853(C) verbatim), Florida driving (2026
+  §316.193(1): impairment for drugs, numeric limits for alcohol only), Iowa possession, home grow and
+  public use (§124E.9(14)-(15), §124E.6, §§124E.7(5), 124E.9(5), §124.401(5)), New Mexico possession
+  and home grow (§26-2C-25(A)(2) and (A)(9), word for word), Delaware possession (§4701(36)) with
+  the 6 oz medical note (§4903A).
+- **Corrected link:** Florida driving pointed at §381.986 (the medical statute); it now points at
+  §316.193. Iowa's links now point at the current Code, not the 2024 one. New Mexico's possession,
+  home grow and public use now link to the Regulation and Licensing Department's own copy of the Act
+  (posted August 2023), since NMOneSource answers automated requests with a bot check.
+- **Reworded to what the official text says:**
+  - Arkansas public use: Amendment 98 §6(a)(2), (a)(4). The tobacco rule covers smoking only, and the
+    list adds school buses, daycares and military property.
+  - Delaware employment: §1304, and §4905A(a)(3) for patients, which has an exception for use or
+    impairment at work.
+  - Delaware home grow: OMC's words. The medical-patient claim, which rested on an unchecked
+    §4764A(c), is dropped.
+  - New Mexico public use: §26-2C-26(A)-(B), and RLD's "only at a licensed consumption lounge or at
+    an individual's residence".
+- **Figures dropped because no official text gives them:**
+  - Delaware's per-container beverage tax and its 21 Oct 2026 date. §1382 confirms only that infused
+    beverages are outside the 15% tax.
+  - New Mexico's year-by-year excise rates. RLD gives "12 percent … until July 1, 2025 … 18 percent
+    beginning July 1, 2030"; the steps between are in §7-42-3, not yet read.
+  - Nevada's "at least 6.85%" sales tax. It is not in chapter 372A, although the report credits it
+    there.
+- **Held back:** Arkansas driving. The official Amendment 98 compilation says only that a patient may
+  not drive under the influence; §5-65-103 (the per se question) is in no official source opened.
+
+Each re-read fact's note says "Re-read in the official text on 20 Nov 2026". The quick reference now
+holds 408 facts, 39 held back, 11 without an official link. Downloaded pages were kept in the
+session scratchpad only, not committed.
 
 ## Business tab per state, and the glossary (20 Nov 2026)
 
